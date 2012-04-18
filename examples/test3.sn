@@ -1,0 +1,3 @@
+(load "test2.sn")(LS)
+(load "test2.sn")(LS)
+print ("Hello " + "World!")

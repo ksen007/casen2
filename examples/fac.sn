@@ -1,0 +1,9 @@
+def fac @argument {|n|
+    if n > 1 then {
+        ret = n * (self fac (n-1))
+    } else {
+        ret = 1
+    }
+    ret
+}
+

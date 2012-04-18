@@ -1,0 +1,1 @@
+java -cp lib/trove-3.0.2.jar:out/production/casen edu.berkeley.cs.Interpreter $1 

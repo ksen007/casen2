@@ -1,0 +1,18 @@
+
+def Node @argument @argument {|data, next|
+    LS
+}
+
+def list @argument {|data|
+    val = (self Node data null)
+    def , @argument {|data|
+        self val = (self self Node data (self val))
+        self
+    }
+    LS
+}
+
+ret = (list 3, 4, 5, 6, 7)
+
+print (ret val next next data)
+

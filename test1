@@ -1,0 +1,56 @@
+.lexer.MetaToken;
+import edu.berkeley.cs.builtin.objects.preprocessor.Token;
+import edu.berkeley.cs.parser.Action;
+import edu.berkeley.cs.parser.ParseException;
+import edu.berkeley.cs.parser.RuleNode;
+import edu.berkeley.cs.parser.SymbolTable;
+
+@public @class CObject {
+    private Object primitive;
+    private RuleNode rules;
+
+    @public @CObject(Object lt) {
+        primitive = lt;
+    }
+
+    @public RuleNode getRuleNode() {
+        return rules;
+    }
+
+    @public @CObject getField(int symbol) {
+        return null;  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    enum TYPE {cinteger,cdouble,cstring,cobject,cfunction,cuninitialized};
+
+
+    public CObject() {
+        rules = new RuleNode();
+    }
+
+    @private RuleNode curr;
+    int argCount;
+
+    @public @void addNewRule() {
+        curr = rules;
+        argCount=0;
+    }
+
+    public void addToken(Token t) {
+        if (t instanceof MetaToken) {
+            MetaToken mt = ((MetaToken)t);
+            if (!(mt.argument==SymbolTable.getInstance().getId("argument")
+                    || mt.argument == SymbolTable.getInstance().getId("literal")
+                    || mt.argument == SymbolTable.getInstance().getId("symbol"))) {
+                throw new ParseException("First symbol of a rule cannot be a Non terminal");
+            }
+            argCount++;
+        }
+        curr = curr.addToken(t);
+    }
+
+    public void addAction(Invokable func) {
+        curr.addAction(new Action(argCount,func));
+        curr = null;
+    }
+}

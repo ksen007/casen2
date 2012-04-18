@@ -1,0 +1,221 @@
+package edu.berkeley.cs.builtin.objects;
+
+import edu.berkeley.cs.builtin.functions.GetField;
+import edu.berkeley.cs.builtin.functions.Invokable;
+import edu.berkeley.cs.builtin.functions.PutField;
+import edu.berkeley.cs.builtin.objects.preprocessor.*;
+import edu.berkeley.cs.lexer.BasicScanner;
+import edu.berkeley.cs.lexer.Lexer;
+import edu.berkeley.cs.lexer.Scanner;
+import edu.berkeley.cs.parser.*;
+import gnu.trove.map.hash.TIntObjectHashMap;
+
+import java.io.*;
+import java.util.IdentityHashMap;
+import java.util.TreeMap;
+
+/**
+ * Copyright (c) 2006-2011,
+ * Koushik Sen    <ksen@cs.berkeley.edu>
+ * All rights reserved.
+ * <p/>
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ * <p/>
+ * 1. Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * <p/>
+ * 2. Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * <p/>
+ * 3. The names of the contributors may not be used to endorse or promote
+ * products derived from this software without specific prior written
+ * permission.
+ * <p/>
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+ * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER
+ * OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/* @keywords
+    @block @argument @LS @literal @symbol @nl { } true false null number-literals string-literals def assert print ( ) ,
+    |
+
+    */
+
+public class CObject {
+    private CObject superC;  // for efficiency only
+    private RuleNode rules;
+
+    public CObject() {
+        rules = new RuleNode(null);
+    }
+
+    public void setRule(CObject methods) {
+        this.rules = methods.rules;
+    }
+
+    public void setSuperClass(CObject superClass) {
+        this.superC = superClass;
+    }
+
+    public RuleNode getRuleNode() {
+        return rules;
+    }
+
+    public CObject getSuperClass() {
+        return superC;
+    }
+
+    public CObject eval(String s) {
+        try {
+            Lexer lexer = new Lexer(new StringReader(s));
+            Scanner scnr = new BasicScanner(lexer);
+
+            CObject LS = new TokenEater(null,null);
+            CallFrame cf = new CallFrame(LS,LS,scnr);
+            CompoundToken pgm = (CompoundToken)cf.interpret();
+
+            return pgm.execute(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    private static TreeMap<String,CompoundToken> codeCache = new TreeMap<String, CompoundToken>();
+    public static String currentFile = null;
+    public static IdentityHashMap<CompoundToken,CObject> staticObjects = new IdentityHashMap<CompoundToken, CObject>();
+
+    public CObject load(String file, boolean reload) {
+        Reader in = null;
+        CompoundToken pgm;
+        try {
+            if (reload || !codeCache.containsKey(file)) {
+                in = new BufferedReader(new FileReader(file));
+                Lexer lexer = new Lexer(in);
+                Scanner scnr = new BasicScanner(lexer);
+
+                CObject LS = new TokenEater(null,file);
+                CallFrame cf = new CallFrame(LS,LS,scnr);
+                pgm = (CompoundToken)cf.interpret();
+                codeCache.put(file,pgm);
+            } else {
+                pgm = codeCache.get(file);
+            }
+            return pgm;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        } finally {
+            if (in!=null)
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+        }
+    }
+
+    public CObject equality(CObject ret) {
+        return this==ret?BooleanToken.TRUE():BooleanToken.FALSE();
+    }
+
+    public CObject disequality(CObject ret) {
+        return this==ret?BooleanToken.FALSE():BooleanToken.TRUE();
+    }
+
+
+
+    public CObject newDefinitionEater() {
+        return new CDefinitionEater(this);
+    }
+
+
+    public CObject loadFile(CObject file) {
+        File f = new File(currentFile);
+        f = new File(f.getParent(),((StringToken)file).value);
+        return load(f.getAbsolutePath(),false);
+    }
+
+    public CObject reloadFile(CObject file) {
+        File f = new File(currentFile);
+        f = new File(f.getParent(),((StringToken)file).value);
+        return load(f.getAbsolutePath(),true);
+    }
+
+    public CObject assignment(CObject sym, CObject value) {
+        CObject self = this;
+        SymbolToken symbol = (SymbolToken)sym;
+
+        Reference common = new Reference(value);
+
+        self.addNewRule();
+        self.addSymbol(symbol.symbol);
+        self.addAction(new GetField(common));
+
+        self.addNewRule();
+        self.addSymbol(symbol.symbol);
+        self.addSymbol(SymbolTable.getInstance().getId("="));
+        self.addMeta(SymbolTable.getInstance().argument);
+        self.addAction(new PutField(common));
+
+        return value;
+
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof CObject)) return false;
+        return this == o;
+    }
+
+
+    RuleNode curr;
+    int argCount;
+
+    public void addNewRule() {
+        if(rules == null) {
+            rules = new RuleNode(null);
+        }
+        curr = rules;
+        argCount=0;
+    }
+
+    public void addMeta(int argument) {
+        curr = curr.addMeta(rules,argument);
+        argCount++;
+    }
+
+    public void addMeta(int argument,boolean override) {
+        curr = curr.addMeta(rules,argument,override);
+        argCount++;
+    }
+
+    public void addSymbol(int symbol) {
+        curr = curr.addSymbol(symbol);
+    }
+
+    public void addNewLine() {
+        curr = curr.addNewLine();
+    }
+
+    public void addAction(Invokable func) {
+        curr = curr.addAction(func,argCount);
+    }
+
+    public RuleNode getSuperRuleNode() {
+        if (superC == null) return null;
+        return superC.getRuleNode();
+    }
+}
