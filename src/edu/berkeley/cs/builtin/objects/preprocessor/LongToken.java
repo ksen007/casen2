@@ -41,7 +41,7 @@ import edu.berkeley.cs.parser.TokenVisitor;
 public class LongToken extends Token {
 
     public long value;
-    private static CNonPrimitiveObject superClass =  new CNonPrimitiveObject();
+    private static CObject superClass =  new CObject();
 
     static {
         superClass.eval("def + @argument @add endef");
@@ -60,7 +60,7 @@ public class LongToken extends Token {
     public LongToken(SourcePosition position, long l) {
         super(position);
         this.value = l;
-        setSuperClass(superClass);
+        setRule(superClass);
     }
 
     public CObject add(CObject operand2) {

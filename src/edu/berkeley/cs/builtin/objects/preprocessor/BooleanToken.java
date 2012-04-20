@@ -53,7 +53,7 @@ public class BooleanToken extends Token {
     private static BooleanToken TRUE;
     private static BooleanToken FALSE;
 
-    private static CNonPrimitiveObject superClass =  new CNonPrimitiveObject();
+    private static CObject superClass =  new CObject();
 
     static {
         superClass.eval("def && @argument @and endef");
@@ -68,7 +68,7 @@ public class BooleanToken extends Token {
         super(position);
         this.value = value;
 
-        setSuperClass(superClass);
+        setRule(superClass);
     }
 
     public CObject and(CObject operand2) {

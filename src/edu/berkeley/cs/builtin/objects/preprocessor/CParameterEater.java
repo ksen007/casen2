@@ -1,7 +1,9 @@
 package edu.berkeley.cs.builtin.objects.preprocessor;
 
+import edu.berkeley.cs.builtin.functions.NativeFunction;
 import edu.berkeley.cs.builtin.objects.CNonPrimitiveObject;
 import edu.berkeley.cs.builtin.objects.CObject;
+import edu.berkeley.cs.parser.SymbolTable;
 
 import java.util.ArrayList;
 
@@ -42,17 +44,24 @@ public class CParameterEater extends CObject {
     public ArrayList<SymbolToken> parameters;
 
 
-    private static CNonPrimitiveObject superClass =  new CNonPrimitiveObject();
+    private static CObject superClass =  new CObject();
 
     static {
-        superClass.eval("def @symbol , @appendParameter endef");
-        superClass.eval("def @symbol | @appendAndReturnParent endef");
+        superClass.addNewRule();
+        superClass.addMeta(SymbolTable.getInstance().argument,true);
+        superClass.addSymbol(SymbolTable.getInstance().getId(","));
+        superClass.addAction(new NativeFunction("appendParameter"));
+
+        superClass.addNewRule();
+        superClass.addMeta(SymbolTable.getInstance().argument,true);
+        superClass.addSymbol(SymbolTable.getInstance().getId("|"));
+        superClass.addAction(new NativeFunction("appendAndReturnParent"));
     }
 
     public CParameterEater(TokenEater ss) {
         parameters = new ArrayList<SymbolToken>();
         this.parent = ss;
-        setSuperClass(superClass);
+        setRule(superClass);
     }
 
     public CObject appendParameter(CObject arg) {

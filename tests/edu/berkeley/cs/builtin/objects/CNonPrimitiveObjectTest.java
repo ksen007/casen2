@@ -42,7 +42,7 @@ import java.io.StringReader;
 public class CNonPrimitiveObjectTest extends TestCase {
     public void testAssignmentLeftAssociativity() throws Exception {
         System.out.println("------------- testAssignmentLeftAssociativity ----------------------");
-        CIntegerObjectTest.run("x = y = 1156; assert x == y;");
+        CIntegerObjectTest.run("LS x = (LS y = 1156); assert x == y;");
     }
 
     public void testAssert0() throws Exception {
@@ -50,13 +50,13 @@ public class CNonPrimitiveObjectTest extends TestCase {
     }
 
     public void testAssert1() throws Exception {
-        CIntegerObjectTest.run("x = 1156; assert x == 1156;");
+        CIntegerObjectTest.run("LS x = 1156; assert x == 1156;");
     }
 
     public void testAssert2() throws Exception {
         System.out.println("------------- testAssert2 ----------------------");
         try {
-            CIntegerObjectTest.run("x = 1156; assert (x == 0); print x");
+            CIntegerObjectTest.run("LS x = 1156; assert (x == 0); print x");
             assertFalse("x is not 0",true);
         } catch (RuntimeException e) {
             System.out.println("test is fine because x is 1156");
@@ -65,16 +65,16 @@ public class CNonPrimitiveObjectTest extends TestCase {
 
     public void testSemiColon() throws Exception {
         System.out.println("------------- testSemiColon ----------------------");
-        CIntegerObjectTest.run("x = 1156; print x");
+        CIntegerObjectTest.run("LS x = 1156; print x");
     }
 
     public void testSemiColon2() throws Exception {
         System.out.println("------------- testSemiColon2 ----------------------");
-        CIntegerObjectTest.run("x = 1156; print x;");
+        CIntegerObjectTest.run("LS x = 1156; print x;");
     }
 
     public void testSemiColon5() throws Exception {
-        CIntegerObjectTest.run("x = 1156; ; print x;");
+        CIntegerObjectTest.run("LS x = 1156; ; print x;");
     }
 
     public void testSemiColon1() throws Exception {
@@ -87,7 +87,7 @@ public class CNonPrimitiveObjectTest extends TestCase {
     }
 
     public void testSemiColon3() throws Exception {
-        CIntegerObjectTest.run("print x = 1156;");
+        CIntegerObjectTest.run("print (LS x = 1156);");
     }
 
     public void testSemiColon4() throws Exception {
@@ -99,7 +99,7 @@ public class CNonPrimitiveObjectTest extends TestCase {
     }
 
     public void testDef() throws Exception {
-        CIntegerObjectTest.run("def foo { x = 1; }");
+        CIntegerObjectTest.run("def foo { LS x = 1; }");
     }
 
     public void testDef2() throws Exception {
@@ -113,33 +113,33 @@ public class CNonPrimitiveObjectTest extends TestCase {
 
     public void testDef4() throws Exception {
         System.out.println("------------- testDef4 ----------------------");
-        CIntegerObjectTest.run("t = 899; def foo { self t = 788 }; print foo; assert (foo == 788)");
+        CIntegerObjectTest.run("LS t = 899; def foo { self t = 788 }; print foo; assert (foo == 788)");
     }
 
 
     public void testDef5() throws Exception {
         System.out.println("------------- testDef5 ----------------------");
-        CIntegerObjectTest.run("t = 899; def foo { print (self t); 1000 }; print foo");
+        CIntegerObjectTest.run("LS t = 899; def foo { print (self t); 1000 }; print foo");
     }
 
     public void testDef6() throws Exception {
         System.out.println("------------- testDef6 ----------------------");
-        CIntegerObjectTest.run("def foo { x = 1; y = x + 2; LS };  t = foo; assert ((t x) == 1); assert ((t y) == 3);");
+        CIntegerObjectTest.run("def foo { LS x = 1; LS y = x + 2; LS };  LS t = foo; assert ((t x) == 1); assert ((t y) == 3);");
     }
 
     public void testDef7() throws Exception {
         System.out.println("------------- testDef7 ----------------------");
-        CIntegerObjectTest.run("def foo @argument {|a| x = 1; y = a + 5; LS }; t = (foo 10); assert ((t x) == 1); assert ((t y) == 15);");
+        CIntegerObjectTest.run("def foo @argument {|a| LS x = 1; LS y = (a + 5); LS }; LS t = (foo 10); assert ((t x) == 1); assert ((t y) == 15);");
     }
 
     public void testDef8() throws Exception {
         System.out.println("------------- testDef8 ----------------------");
-        CIntegerObjectTest.run("def foo @argument {|a| print a  }; t = (foo 10); assert (t == 10)");
+        CIntegerObjectTest.run("def foo @argument {|a| print a  }; LS t = (foo 10); assert (t == 10)");
     }
 
     public void testDef9() throws Exception {
         System.out.println("------------- testDef9 ----------------------");
-        CIntegerObjectTest.run("foo = {x = 1; y = x + 5; LS }; print 10; print ((foo ()) y)");
+        CIntegerObjectTest.run("LS foo = {LS x = 1; LS y = (x + 5); LS }; print 10; print ((foo ()) y)");
         //System.out.println(cf);
     }
 
@@ -151,7 +151,7 @@ public class CNonPrimitiveObjectTest extends TestCase {
 
     public void testIf2() throws Exception {
         System.out.println("------------- testIf1 ----------------------");
-        CIntegerObjectTest.run("def fac @argument {|n| if n > 1 then {ret = n * (self fac (n-1)) } else { ret = 1} ret}; print (fac 10) ");
+        CIntegerObjectTest.run("def fac @argument {|n| if n > 1 then {LS ret = n * (self fac (n-1)) } else { LS ret = 1} ret}; print (fac 10) ");
         //System.out.println(cf);
     }
 
@@ -168,31 +168,26 @@ public class CNonPrimitiveObjectTest extends TestCase {
 
     public void testIf3() throws Exception {
         System.out.println("------------- testIf1 ----------------------");
-        CIntegerObjectTest.run("def do @block unless @argument {|b, cond| if cond then { print 1} else { b ( self ) } }; x = 6; do {print x} unless false ");
+        CIntegerObjectTest.run("def do @argument unless @argument {|b, cond| if cond then { print 1} else { b ( self ) } }; LS x = 6; do {print x} unless false ");
         //System.out.println(cf);
     }
 
     public void testDef10() throws Exception {
         System.out.println("------------- testDef10 ----------------------");
-        CIntegerObjectTest.run("foo = {|a| x = 1; y = a + 5; LS }; print 10; assert (((foo ( 111)) y) == 116)");
+        CIntegerObjectTest.run("LS foo = {|a| LS x = 1; LS y = (a + 5); LS }; print 10; assert (((foo ( 111)) y) == 116)");
         //System.out.println(cf);
     }
 
     public void test1() throws Exception {
         //RuleNode.DEBUG = true;
         System.out.println("------------- test1 ----------------------");
-        CIntegerObjectTest.run("x = 3 ; x = 4 ; print x;");
+        CIntegerObjectTest.run("LS x = 3 ; LS x = 4 ; print x;");
     }
 
     public void testSemiColonx() throws Exception {
         //RuleNode.DEBUG = true;
         System.out.println("------------- testSemiColon ----------------------");
-        CIntegerObjectTest.run("x = 3 ; print x;");
-    }
-
-    public void testAdd() throws Exception {
-
-        CIntegerObjectTest.run("print x = 1156 + \n 5;");
+        CIntegerObjectTest.run("LS x = 3 ; print x;");
     }
 
     public void testArray() throws Exception {

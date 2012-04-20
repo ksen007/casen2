@@ -4,6 +4,8 @@ import edu.berkeley.cs.builtin.objects.CObject;
 import edu.berkeley.cs.builtin.objects.CStatementEater;
 import edu.berkeley.cs.builtin.objects.EnvironmentObject;
 import edu.berkeley.cs.builtin.objects.NewLineToken;
+import edu.berkeley.cs.builtin.objects.preprocessor.CompoundToken;
+import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
 import edu.berkeley.cs.builtin.objects.preprocessor.Token;
 import edu.berkeley.cs.lexer.Scanner;
 import org.junit.Rule;
@@ -43,19 +45,23 @@ import java.util.Stack;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class CallFrame {
+    public static CallFrame base = new CallFrame(EnvironmentObject.instance,null,null);
 
+    private CallFrame SS;
     private Stack<RuleNode> parseRuleStack;
     private Stack<CObject> computationStack;
     private Stack<Token> tokenStack;
     private CObject LS;
     private Scanner scnr;
 
-    public CallFrame(CObject LS, Scanner scnr) {
+    public CallFrame(CObject LS, Scanner scnr, CallFrame SS) {
         init(LS,CStatementEater.instance,scnr);
+        this.SS = SS;
     }
 
-    public CallFrame(CObject LS, CObject base, Scanner scnr) {
+    public CallFrame(CObject LS, CObject base, Scanner scnr, CallFrame SS) {
         init(LS,base,scnr);
+        this.SS = SS;
     }
 
     public void init(CObject LS, CObject base, Scanner scnr) {
@@ -67,14 +73,15 @@ public class CallFrame {
         computationStack = new Stack<CObject>();
         tokenStack = new Stack<Token>();
 
-        computationStack.push(base);
-        parseRuleStack.push(base.getRuleNode());
+        if (scnr!=null){
+            computationStack.push(base);
+            parseRuleStack.push(base.getRuleNode());
 
-        t = scnr.nextToken();
-        tokenStack.push(t);
-        scnr.pushBack(t);
+            t = scnr.nextToken();
+            tokenStack.push(t);
+            scnr.pushBack(t);
+        }
 
-        if (RuleNode.DEBUG) System.out.println("L:");
     }
 
     public CObject interpret() {
@@ -111,42 +118,46 @@ public class CallFrame {
         Token t = scnr.nextToken();
         RuleNode currentRule = parseRuleStack.peek();
         Token t2 = t;
+        boolean flag = false;
 
         try {
             if (t!=null) {
-                Triple ret = (Triple)t.accept(new MatchVisitor(currentRule,null));
-                if (ret.next!=null) {
-                    if (!ret.skip) computationStack.push(t);
+                RuleNode ret = (RuleNode)t.accept(new MatchVisitor(currentRule));
+                if (ret!=null) {
                     parseRuleStack.pop();
-                    parseRuleStack.push(ret.next);
-                    if (RuleNode.DEBUG) System.out.println("M:"+t);
+                    parseRuleStack.push(ret);
                     return true;
                 }
             }
 
-            if (currentRule.getRuleForNonTerminal() !=null) {
+            if (currentRule.getRuleForNonTerminal() !=null  && t !=null) {
                 RuleNode rn = null;
-                if ((rn = lookAhead(LS.getRuleNode(),t, LS.getSuperRuleNode()))!=null) {
-                    parseRuleStack.pop();
-                    parseRuleStack.push(currentRule.getRuleForNonTerminal());
-
+                parseRuleStack.pop();
+                parseRuleStack.push(currentRule.getRuleForNonTerminal());
+                if ((rn = lookAhead(this,t))!=null) {
                     computationStack.push(LS);
                     parseRuleStack.push(rn);
                     tokenStack.push(t);
-
                     scnr.pushBack(t);
-                    if (RuleNode.DEBUG) System.out.println("L:");
                     return true;
+                } else {
+                    if (t instanceof CompoundToken) {
+                        t = new CompoundToken((CompoundToken)t,this);
+                    }
+                    computationStack.push(t);
                 }
+                flag = true;
             }
 
             if (currentRule.getRuleForAction() != null) {
                 scnr.pushBack(t);
                 parseRuleStack.pop();
                 tokenStack.pop();
-                if (RuleNode.DEBUG) System.out.print("A:" + currentRule.getRuleForAction());
                 currentRule.getRuleForAction().apply(computationStack);
+                flag = true;
+            }
 
+            if (flag) {
                 // now greedily apply the computation stack top object to the rest fo the stream if possible
                 CObject nt = computationStack.peek();
                 t = scnr.nextToken();
@@ -161,10 +172,9 @@ public class CallFrame {
                 }
 
                 RuleNode rn;
-                if ((rn=shift(reduce,nt,tmp,t))!=null) {
+                if ((rn=shift(reduce,nt.getRuleNode(),tmp,t))!=null) {
                     parseRuleStack.push(rn);
                     tokenStack.push(t);
-                    if (RuleNode.DEBUG) System.out.println("S:");
 
                 }
                 scnr.pushBack(t);
@@ -181,31 +191,34 @@ public class CallFrame {
         throw new ParseException(t2,this);
     }
 
-    private RuleNode shift(RuleNode reduce, CObject shiftO, Token reduceOperator, Token shiftOperator) {
-        boolean first = reduce!=null && lookAhead(reduce,shiftOperator,null)!=null;
-        RuleNode rn = null;
-        boolean second = shiftO.getRuleNode()!=null && (rn = lookAhead(shiftO.getRuleNode(),shiftOperator,shiftO.getSuperRuleNode()))!=null;
+    private RuleNode shift(RuleNode reduce, RuleNode shift, Token reduceOperator, Token shiftOperator) {
+        boolean first = reduce!=null
+                && ((shiftOperator!=null && (shiftOperator.accept(new MatchVisitor(reduce))!=null
+                    || reduce.getRuleForNonTerminal()!=null))
+                    || reduce.getRuleForAction()!=null);
+        boolean second = shift!=null
+                && ((shiftOperator!=null && (shiftOperator.accept(new MatchVisitor(shift))!=null
+                    || shift.getRuleForNonTerminal()!=null))
+                    || shift.getRuleForAction()!=null);
         if (!second) return null;
-        if (!first) return rn;
+        if (!first) return shift;
         if (OperatorPrecedence.getInstance().isShift(reduceOperator,shiftOperator))
-            return rn;
+            return shift;
         else
             return null;
     }
 
 
-    private RuleNode lookAhead(RuleNode current, Token t, RuleNode extra) {
-        if (t!=null) {
-            Triple tmp = (Triple)t.accept(new MatchVisitor(current,extra));
-            if (tmp.next != null) return tmp.current;
-        }
-        if (current.getRuleForNonTerminal() !=null) {
-            //RuleNode ret;
-            if (lookAhead(LS.getRuleNode(),t,LS.getSuperRuleNode())!=null) {
-                return current;
+    private RuleNode lookAhead(CallFrame cf, Token t) {
+        CallFrame currentCf = cf;
+        RuleNode ret;
+        while(currentCf!=null) {
+            ret = currentCf.LS.getRuleNode();
+            if (t.accept(new MatchVisitor(ret))!=null) {
+                return ret;
             }
+            currentCf = currentCf.SS;
         }
-        if(current.getRuleForAction() != null) return current;
         return null;
     }
 

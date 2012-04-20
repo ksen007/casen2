@@ -40,37 +40,34 @@ import edu.berkeley.cs.parser.SymbolTable;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class CNonPrimitiveObject extends CObject {
-    public static CObject superClass = new CObject();
+//    public static CObject superClass = new CObject();
 
-    static{
-        superClass.addNewRule();
-        superClass.addMeta(SymbolTable.getInstance().symbol);
-        superClass.addSymbol(SymbolTable.getInstance().getId("="));
-        superClass.addMeta(SymbolTable.getInstance().argument);
-        superClass.addAction(new NativeFunction("assignment"));
-
-        superClass.addNewRule();
-        superClass.addSymbol(SymbolTable.getInstance().getId("def"));
-        superClass.addAction(new NativeFunction("newDefinitionEater"));
-
-        superClass.addNewRule();
-        superClass.addSymbol(SymbolTable.getInstance().getId("=="));
-        superClass.addMeta(SymbolTable.getInstance().argument);
-        superClass.addAction(new NativeFunction("equality"));
-
-        superClass.addNewRule();
-        superClass.addSymbol(SymbolTable.getInstance().getId("!="));
-        superClass.addMeta(SymbolTable.getInstance().argument);
-        superClass.addAction(new NativeFunction("disequality"));
-
-        superClass.addNewRule();
-        superClass.addSymbol(SymbolTable.getInstance().getId("load"));
-        superClass.addMeta(SymbolTable.getInstance().argument);
-        superClass.addAction(new NativeFunction("loadFile"));
-    }
 
     public CNonPrimitiveObject() {
-        setSuperClass(CNonPrimitiveObject.superClass);
+        this.addNewRule();
+        this.addMeta(SymbolTable.getInstance().argument,true);
+        this.addSymbol(SymbolTable.getInstance().getId("="));
+        this.addMeta(SymbolTable.getInstance().argument);
+        this.addAction(new NativeFunction("assignment"));
+
+        this.addNewRule();
+        this.addSymbol(SymbolTable.getInstance().getId("def"));
+        this.addAction(new NativeFunction("newDefinitionEater"));
+
+        this.addNewRule();
+        this.addSymbol(SymbolTable.getInstance().getId("=="));
+        this.addMeta(SymbolTable.getInstance().argument);
+        this.addAction(new NativeFunction("equality"));
+
+        this.addNewRule();
+        this.addSymbol(SymbolTable.getInstance().getId("!="));
+        this.addMeta(SymbolTable.getInstance().argument);
+        this.addAction(new NativeFunction("disequality"));
+
+//        this.addNewRule();
+//        this.addSymbol(SymbolTable.getInstance().getId("load"));
+//        this.addMeta(SymbolTable.getInstance().argument);
+//        this.addAction(new NativeFunction("loadFile"));
 
         this.addNewRule();
         this.addSymbol(SymbolTable.getInstance().getId("LS"));

@@ -47,7 +47,7 @@ public class UserDefinedFunction implements Invokable {
     }
 
     public CObject apply(LinkedList<CObject> args) {
-        EnvironmentObject LS = new EnvironmentObject();
+        CNonPrimitiveObject LS = new CNonPrimitiveObject();
         
         LS.addNewRule();
         LS.addSymbol(SymbolTable.getInstance().getId("self"));

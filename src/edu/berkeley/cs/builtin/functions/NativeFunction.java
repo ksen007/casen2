@@ -65,8 +65,10 @@ public class NativeFunction implements Invokable {
         } catch (InvocationTargetException e) {
             if (e.getCause() instanceof ParseException)
                 throw (ParseException)e.getCause();
-            else
+            else {
+                e.getCause().printStackTrace();
                 throw new RuntimeException(e.getCause());
+            }
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e.getCause());
         }

@@ -42,145 +42,79 @@ import edu.berkeley.cs.parser.SymbolTable;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class EnvironmentObject extends CObject {
-    public static CObject superClass = new CObject();
+    public static EnvironmentObject instance = new EnvironmentObject();
 
-
-    static {
-        superClass.addNewRule();
-        superClass.addMeta(SymbolTable.getInstance().symbol);
-        superClass.addSymbol(SymbolTable.getInstance().getId("="));
-        superClass.addMeta(SymbolTable.getInstance().argument);
-        superClass.addAction(new NativeFunction("assignment"));
-
-        superClass.addNewRule();
-        superClass.addSymbol(SymbolTable.getInstance().getId("def"));
-        superClass.addAction(new NativeFunction("newDefinitionEater"));
-
-        superClass.addNewRule();
-        superClass.addMeta(SymbolTable.getInstance().literal);
-        superClass.addAction(new NativeFunction("returnArgument"));
-
-        superClass.addNewRule();
-        superClass.addMeta(SymbolTable.getInstance().block);
-        superClass.addAction(new NativeFunction("returnArgument"));
-
-        superClass.addNewRule();
-        superClass.addSymbol(SymbolTable.getInstance().getId("=="));
-        superClass.addMeta(SymbolTable.getInstance().argument);
-        superClass.addAction(new NativeFunction("equality"));
-
-        superClass.addNewRule();
-        superClass.addSymbol(SymbolTable.getInstance().getId("!="));
-        superClass.addMeta(SymbolTable.getInstance().argument);
-        superClass.addAction(new NativeFunction("disequality"));
-
-        superClass.addNewRule();
-        superClass.addSymbol(SymbolTable.getInstance().getId("("));
-        superClass.addMeta(SymbolTable.getInstance().argument);
-        superClass.addSymbol(SymbolTable.getInstance().getId(")"));
-        superClass.addAction(new NativeFunction("returnArgument"));
-
-        superClass.addNewRule();
-        superClass.addSymbol(SymbolTable.getInstance().getId("load"));
-        superClass.addMeta(SymbolTable.getInstance().argument);
-        superClass.addAction(new NativeFunction("loadFile"));
-
-        superClass.addNewRule();
-        superClass.addSymbol(SymbolTable.getInstance().getId("print"));
-        superClass.addMeta(SymbolTable.getInstance().argument);
-        superClass.addAction(new NativeFunction("print"));
-
-        superClass.addNewRule();
-        superClass.addSymbol(SymbolTable.getInstance().getId("new"));
-        superClass.addSymbol(SymbolTable.getInstance().getId("Object"));
-        superClass.addAction(new NativeFunction("newObject"));
-
-        superClass.addNewRule();
-        superClass.addSymbol(SymbolTable.getInstance().getId("assert"));
-        superClass.addMeta(SymbolTable.getInstance().argument);
-        superClass.addAction(new NativeFunction("assertEquality"));
-
-        superClass.addNewRule();
-        superClass.addSymbol(SymbolTable.getInstance().getId("if"));
-        superClass.addMeta(SymbolTable.getInstance().argument);
-        superClass.addSymbol(SymbolTable.getInstance().getId("then"));
-        superClass.addMeta(SymbolTable.getInstance().block);
-        superClass.addSymbol(SymbolTable.getInstance().getId("else"));
-        superClass.addMeta(SymbolTable.getInstance().block);
-        superClass.addAction(new NativeFunction("ifAction"));
-
-        superClass.addNewRule();
-        superClass.addSymbol(SymbolTable.getInstance().getId("while"));
-        superClass.addMeta(SymbolTable.getInstance().block);
-        superClass.addMeta(SymbolTable.getInstance().block);
-        superClass.addAction(new NativeFunction("whileAction"));
-
-        superClass.addNewRule();
-        superClass.addSymbol(SymbolTable.getInstance().getId("once"));
-        superClass.addMeta(SymbolTable.getInstance().block);
-        superClass.addAction(new NativeFunction("onceAction"));
-    }
-
-    public EnvironmentObject() {
-        setSuperClass(superClass);
+    private EnvironmentObject() {
+        this.addNewRule();
+        this.addMeta(SymbolTable.getInstance().argument,true);
+        this.addSymbol(SymbolTable.getInstance().getId("="));
+        this.addMeta(SymbolTable.getInstance().argument);
+        this.addAction(new NativeFunction("assignment"));
 
         this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().getId("LS"));
-        this.addAction(new GetField(new Reference(this)));
+        this.addSymbol(SymbolTable.getInstance().getId("def"));
+        this.addAction(new NativeFunction("newDefinitionEater"));
+
+//        this.addNewRule();
+//        this.addSymbol(SymbolTable.getInstance().getId("=="));
+//        this.addMeta(SymbolTable.getInstance().argument);
+//        this.addAction(new NativeFunction("equality"));
+//
+//        this.addNewRule();
+//        this.addSymbol(SymbolTable.getInstance().getId("!="));
+//        this.addMeta(SymbolTable.getInstance().argument);
+//        this.addAction(new NativeFunction("disequality"));
+
+        this.addNewRule();
+        this.addSymbol(SymbolTable.getInstance().getId("("));
+        this.addMeta(SymbolTable.getInstance().argument);
+        this.addSymbol(SymbolTable.getInstance().getId(")"));
+        this.addAction(new NativeFunction("returnArgument"));
+
+        this.addNewRule();
+        this.addSymbol(SymbolTable.getInstance().getId("load"));
+        this.addMeta(SymbolTable.getInstance().argument);
+        this.addAction(new NativeFunction("loadFile"));
+
+        this.addNewRule();
+        this.addSymbol(SymbolTable.getInstance().getId("print"));
+        this.addMeta(SymbolTable.getInstance().argument);
+        this.addAction(new NativeFunction("print"));
+
+        this.addNewRule();
+        this.addSymbol(SymbolTable.getInstance().getId("new"));
+        this.addSymbol(SymbolTable.getInstance().getId("Object"));
+        this.addAction(new NativeFunction("newObject"));
+
+        this.addNewRule();
+        this.addSymbol(SymbolTable.getInstance().getId("assert"));
+        this.addMeta(SymbolTable.getInstance().argument);
+        this.addAction(new NativeFunction("assertEquality"));
+
+        this.addNewRule();
+        this.addSymbol(SymbolTable.getInstance().getId("if"));
+        this.addMeta(SymbolTable.getInstance().argument);
+        this.addSymbol(SymbolTable.getInstance().getId("then"));
+        this.addMeta(SymbolTable.getInstance().argument);
+        this.addSymbol(SymbolTable.getInstance().getId("else"));
+        this.addMeta(SymbolTable.getInstance().argument);
+        this.addAction(new NativeFunction("ifAction"));
+
+        this.addNewRule();
+        this.addSymbol(SymbolTable.getInstance().getId("while"));
+        this.addMeta(SymbolTable.getInstance().argument);
+        this.addMeta(SymbolTable.getInstance().argument);
+        this.addAction(new NativeFunction("whileAction"));
+
+        this.addNewRule();
+        this.addSymbol(SymbolTable.getInstance().getId("once"));
+        this.addMeta(SymbolTable.getInstance().argument);
+        this.addAction(new NativeFunction("onceAction"));
+
+//        this.addNewRule();
+//        this.addSymbol(SymbolTable.getInstance().getId("LS"));
+//        this.addAction(new GetField(new Reference(this)));
+
     }
 
-    public CObject print(CObject ret) {
-        System.out.println(ret);
-        return ret;
-    }
-
-
-    public CObject assertEquality(CObject first) {
-        if (!((BooleanToken)first).value)
-            throw new RuntimeException("assert failed");
-        return first;
-    }
-
-    public CObject returnArgument(CObject arg) {
-        return arg;
-    }
-
-    public CObject whileAction(CObject S1, CObject S2) {
-        CompoundToken s1 = (CompoundToken)S1;
-        CompoundToken s2 = (CompoundToken)S2;
-        while(((BooleanToken)s1.execute(this)).value) {
-            s2.execute(this);
-        }
-        return this;
-    }
-
-
-
-    public CObject onceAction(CObject S) {
-        CompoundToken s = (CompoundToken)S;
-        CObject val;
-        if ((val = CObject.staticObjects.get(s))==null) {
-            val = s.execute(this);
-            CObject.staticObjects.put(s,val);
-        }
-        return val;
-    }
-
-    public CObject ifAction(CObject c1, CObject S1, CObject S2) {
-        BooleanToken cond = (BooleanToken) c1;
-        CompoundToken s1 = (CompoundToken)S1;
-        CompoundToken s2 = (CompoundToken)S2;
-        if (cond.value) {
-            s1.execute(this);
-            return this;
-        } else {
-            s2.execute(this);
-            return this;
-        }
-    }
-
-
-    public CObject newObject() {
-        return new CNonPrimitiveObject();
-    }
 }

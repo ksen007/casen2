@@ -48,15 +48,7 @@ public class CDefinitionEater extends CObject {
 
     static {
         superClass.addNewRule();
-        superClass.addMeta(SymbolTable.getInstance().symbol);
-        superClass.addAction(new NativeFunction("addToken"));
-
-        superClass.addNewRule();
-        superClass.addMeta(SymbolTable.getInstance().meta);
-        superClass.addAction(new NativeFunction("addToken"));
-
-        superClass.addNewRule();
-        superClass.addMeta(SymbolTable.getInstance().block);
+        superClass.addMeta(SymbolTable.getInstance().argument,true);
         superClass.addAction(new NativeFunction("addToken"));
     }
 
@@ -65,7 +57,7 @@ public class CDefinitionEater extends CObject {
     public CDefinitionEater(CObject parent) {
         this.parent = parent;
         parent.addNewRule();
-        setSuperClass(superClass);
+        setRule(superClass);
 
 //        setRule(methods);
 //        rules = methods.getRuleNode();
@@ -93,12 +85,7 @@ public class CDefinitionEater extends CObject {
         }
         if (arg instanceof MetaToken) {
             MetaToken mt = (MetaToken) arg;
-            if (mt.argument!= SymbolTable.getInstance().meta
-                    && mt.argument != SymbolTable.getInstance().literal
-                    && mt.argument != SymbolTable.getInstance().nl
-                    && mt.argument != SymbolTable.getInstance().argument
-                    && mt.argument != SymbolTable.getInstance().block
-                    && mt.argument != SymbolTable.getInstance().symbol) {
+            if (mt.argument!= SymbolTable.getInstance().argument) {
                 return new JavaClassEater(self.parent,SymbolTable.getInstance().getSymbol(mt.argument));
             }
         }
@@ -107,7 +94,7 @@ public class CDefinitionEater extends CObject {
         } else         if(arg instanceof MetaToken) {
             self.parent.addMeta(((MetaToken)arg).argument);
         } else {
-            throw new ParseException("Token must be Symbol or Argument");
+            throw new RuntimeException("Token must be Symbol or Argument "+arg);
         }
 //        SS.parent.addToken((Token)arg);
         return self;

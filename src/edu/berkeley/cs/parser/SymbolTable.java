@@ -40,12 +40,13 @@ public class SymbolTable {
 
     private TreeMap<String,Integer> symbolTable = new TreeMap<String, Integer>();
     private ArrayList<String> symbols = new ArrayList<String>();
+
     public int argument = getId("argument");
-    public int symbol = getId("symbol");
-    public int meta = getId("meta");
-    public int literal = getId("literal");
-    public int block = getId("block");
-    public int nl = getId("nl");
+    public int token = getId("token");
+//    public int meta = getId("meta");
+//    public int literal = getId("literal");
+//    public int block = getId("block");
+//    public int nl = getId("nl");
 
     public static SymbolTable getInstance() {
         return ourInstance;

@@ -44,7 +44,7 @@ import java.util.Stack;
  */
 public class RuleNode {
     private TIntObjectHashMap<RuleNode> nextSymbolMap;
-    private TIntObjectHashMap<RuleNode> nextArgumentMap;
+    //private TIntObjectHashMap<RuleNode> nextArgumentMap;
     private Action action;
     private RuleNode nonTerminal;
     private RuleNode newLine;
@@ -96,16 +96,16 @@ public class RuleNode {
                 }
             }
         }
-        if (nextArgumentMap!=null) {
-            for (TIntObjectIterator<RuleNode> iterator = nextArgumentMap.iterator(); iterator.hasNext(); ) {
-                iterator.advance();
-                RuleNode next = iterator.value();
-                LinkedList<String> tmp = next.print();
-                for(String child:tmp) {
-                    ret.add("@"+SymbolTable.getInstance().getSymbol(iterator.key())+" "+child);
-                }
-            }
-        }
+//        if (nextArgumentMap!=null) {
+//            for (TIntObjectIterator<RuleNode> iterator = nextArgumentMap.iterator(); iterator.hasNext(); ) {
+//                iterator.advance();
+//                RuleNode next = iterator.value();
+//                LinkedList<String> tmp = next.print();
+//                for(String child:tmp) {
+//                    ret.add("@"+SymbolTable.getInstance().getSymbol(iterator.key())+" "+child);
+//                }
+//            }
+//        }
         if (nonTerminal!=null) {
             LinkedList<String> tmp = nonTerminal.print();
             for(String child:tmp) {
@@ -130,20 +130,21 @@ public class RuleNode {
         }
 //        argCount++;
         RuleNode ret;
-        if (argument!=SymbolTable.getInstance().argument) {
-            if (nextArgumentMap == null)
-                nextArgumentMap = new TIntObjectHashMap<RuleNode>();
-            ret = nextArgumentMap.get(argument);
-            if (ret==null) {
-                nextArgumentMap.put(argument,ret=new RuleNode(this,"@"+SymbolTable.getInstance().getSymbol(argument)));
-            }
-            return ret;
-        } else {
+        if (argument==SymbolTable.getInstance().argument) {
+//            if (nextArgumentMap == null)
+//                nextArgumentMap = new TIntObjectHashMap<RuleNode>();
+//            ret = nextArgumentMap.get(argument);
+//            if (ret==null) {
+//                nextArgumentMap.put(argument,ret=new RuleNode(this,"@"+SymbolTable.getInstance().getSymbol(argument)));
+//            }
+//            return ret;
+//        } else {
             if (nonTerminal == null) {
                 nonTerminal = new RuleNode(this, "@argument");
             }
             return  this.nonTerminal;
         }
+        throw new ParseException("Bad Meta Token");
     }
 
     public RuleNode addSymbol(int symbol) {
@@ -176,13 +177,13 @@ public class RuleNode {
         return null;
     }
 
-    public RuleNode getRuleForArgument(int argument) {
-        RuleNode ret = null;
-        if (nextArgumentMap != null && (ret = nextArgumentMap.get(argument))!=null){
-            return ret;
-        }
-        return null;
-    }
+//    public RuleNode getRuleForArgument(int argument) {
+//        RuleNode ret = null;
+//        if (nextArgumentMap != null && (ret = nextArgumentMap.get(argument))!=null){
+//            return ret;
+//        }
+//        return null;
+//    }
 
     public RuleNode getNewLine() {
         return newLine;

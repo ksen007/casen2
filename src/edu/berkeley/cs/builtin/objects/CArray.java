@@ -61,7 +61,7 @@ public class CArray extends CObject implements Invokable {
 
     public CArray(long size) {
         arr = new CObject[(int)size];
-        setSuperClass(superClass);
+        setRule(superClass);
     }
 
     public CObject get(CObject index) {

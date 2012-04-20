@@ -54,7 +54,7 @@ import java.util.TreeMap;
     */
 
 public class CObject {
-    private CObject superC;  // for efficiency only
+//    private CObject superC;  // for efficiency only
     private RuleNode rules;
 
     public CObject() {
@@ -65,17 +65,17 @@ public class CObject {
         this.rules = methods.rules;
     }
 
-    public void setSuperClass(CObject superClass) {
-        this.superC = superClass;
-    }
+//    public void setSuperClass(CObject superClass) {
+//        this.superC = superClass;
+//    }
 
     public RuleNode getRuleNode() {
         return rules;
     }
 
-    public CObject getSuperClass() {
-        return superC;
-    }
+//    public CObject getSuperClass() {
+//        return superC;
+//    }
 
     public CObject eval(String s) {
         try {
@@ -83,8 +83,8 @@ public class CObject {
             Scanner scnr = new BasicScanner(lexer);
 
             CObject LS = new TokenEater(null,null);
-            CallFrame cf = new CallFrame(LS,LS,scnr);
-            CompoundToken pgm = (CompoundToken)cf.interpret();
+            CallFrame cf = new CallFrame(LS,LS,scnr,null);
+            CompoundToken pgm = (CompoundToken)((TokenEater)cf.interpret()).returnNewCompoundToken();
 
             return pgm.execute(this);
         } catch (IOException e) {
@@ -107,8 +107,8 @@ public class CObject {
                 Scanner scnr = new BasicScanner(lexer);
 
                 CObject LS = new TokenEater(null,file);
-                CallFrame cf = new CallFrame(LS,LS,scnr);
-                pgm = (CompoundToken)cf.interpret();
+                CallFrame cf = new CallFrame(LS,LS,scnr,null);
+                pgm = (CompoundToken)((TokenEater)cf.interpret()).returnNewCompoundToken();
                 codeCache.put(file,pgm);
             } else {
                 pgm = codeCache.get(file);
@@ -174,6 +174,61 @@ public class CObject {
 
     }
 
+    public CObject print(CObject ret) {
+        System.out.println(ret);
+        return ret;
+    }
+
+
+    public CObject assertEquality(CObject first) {
+        if (!((BooleanToken)first).value)
+            throw new RuntimeException("assert failed");
+        return first;
+    }
+
+    public CObject returnArgument(CObject arg) {
+        return arg;
+    }
+
+    public CObject whileAction(CObject S1, CObject S2) {
+        CompoundToken s1 = (CompoundToken)S1;
+        CompoundToken s2 = (CompoundToken)S2;
+        while(((BooleanToken)s1.execute(this)).value) {
+            s2.execute(this);
+        }
+        return this;
+    }
+
+
+
+    public CObject onceAction(CObject S) {
+        CompoundToken s = (CompoundToken)S;
+        CObject val;
+        if ((val = CObject.staticObjects.get(s))==null) {
+            val = s.execute(this);
+            CObject.staticObjects.put(s,val);
+        }
+        return val;
+    }
+
+    public CObject ifAction(CObject c1, CObject S1, CObject S2) {
+        BooleanToken cond = (BooleanToken) c1;
+        CompoundToken s1 = (CompoundToken)S1;
+        CompoundToken s2 = (CompoundToken)S2;
+        if (cond.value) {
+            s1.execute(this);
+            return this;
+        } else {
+            s2.execute(this);
+            return this;
+        }
+    }
+
+
+    public CObject newObject() {
+        return new CNonPrimitiveObject();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof CObject)) return false;
@@ -214,8 +269,8 @@ public class CObject {
         curr = curr.addAction(func,argCount);
     }
 
-    public RuleNode getSuperRuleNode() {
-        if (superC == null) return null;
-        return superC.getRuleNode();
-    }
+//    public RuleNode getSuperRuleNode() {
+//        if (superC == null) return null;
+//        return superC.getRuleNode();
+//    }
 }

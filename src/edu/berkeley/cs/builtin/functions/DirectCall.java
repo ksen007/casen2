@@ -41,7 +41,7 @@ import java.util.LinkedList;
 public class DirectCall implements Invokable {
     public CObject apply(LinkedList<CObject> args) {
         CompoundToken body = (CompoundToken)args.removeFirst();
-        EnvironmentObject LS = new EnvironmentObject();
+        CNonPrimitiveObject LS = new CNonPrimitiveObject();
         return body.execute(LS,args);
     }
 

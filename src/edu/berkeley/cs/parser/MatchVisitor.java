@@ -36,85 +36,52 @@ import edu.berkeley.cs.builtin.objects.preprocessor.*;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class MatchVisitor implements TokenVisitor {
-    private RuleNode rn1;
-    private RuleNode rn2;
+    private RuleNode rn;
 
-    public MatchVisitor(RuleNode rn1, RuleNode rn2) {
-        this.rn1 = rn1;
-        this.rn2 = rn2;
+    public MatchVisitor(RuleNode rn) {
+        this.rn = rn;
     }
-
-    public Object visitTokenAux(Token lt, int meta) {
-        RuleNode ret;
-        if (rn1!=null && (ret = rn1.getRuleForArgument(meta))!=null) {
-            return new Triple(false,ret,rn1);
-        }
-        if (rn2!=null && (ret = rn2.getRuleForArgument(meta))!=null) {
-            return new Triple(false,ret,rn2);
-        }
-        return new Triple(false,null,null);
-    }
-
 
     public Object visitNullToken(NullToken bt) {
-        return visitTokenAux(bt,SymbolTable.getInstance().literal);
+        return null;
     }
 
     public Object visitBooleanToken(BooleanToken bt) {
-        return visitTokenAux(bt,SymbolTable.getInstance().literal);
+        return null;
     }
 
     public Object visitLiteralToken(LongToken lt) {
-        return visitTokenAux(lt,SymbolTable.getInstance().literal);
+        return null;
     }
 
     public Object visitDoubleToken(DoubleToken lt) {
-        return visitTokenAux(lt,SymbolTable.getInstance().literal);
+        return null;
     }
 
     public Object visitStringToken(StringToken lt) {
-        return visitTokenAux(lt,SymbolTable.getInstance().literal);
+        return null;
     }
 
     public Object visitSymbolToken(SymbolToken st) {
         RuleNode ret;
-        if (rn1!=null && (ret = rn1.getRuleForSymbol(st.symbol))!=null){
-            return new Triple(true,ret,rn1);
+        if (rn!=null && ((ret = rn.getRuleForSymbol(st.symbol))!=null)){
+            return ret;
         }
-        if (rn2!=null && (ret = rn2.getRuleForSymbol(st.symbol))!=null){
-            return new Triple(true,ret,rn2);
-        }
-        return visitTokenAux(st,SymbolTable.getInstance().symbol);
+        return null;
     }
 
     public Object visitMetaToken(MetaToken mt) {
-        return visitTokenAux(mt,SymbolTable.getInstance().meta);
+        return null;
     }
 
     public Object visitCompoundToken(CompoundToken ct) {
-        return visitTokenAux(ct,SymbolTable.getInstance().block);
+        return null;
     }
 
     public Object visitNewLineToken(NewLineToken nt) {
-        if (rn1!=null && rn1.getNewLine() != null)
-            return new Triple(true,rn1.getNewLine(),rn1);
-        if (rn2!=null && rn2.getNewLine() != null)
-            return new Triple(true,rn2.getNewLine(),rn2);
-        return visitTokenAux(nt,SymbolTable.getInstance().nl);
+        return null;
     }
 
 
 }
 
-class Triple {
-    boolean skip;
-    RuleNode next;
-    RuleNode current;
-
-    Triple(boolean skip, RuleNode next, RuleNode current) {
-        this.skip = skip;
-        this.next = next;
-        this.current = current;
-    }
-
-}

@@ -2,6 +2,7 @@ package edu.berkeley.cs.builtin.objects.preprocessor;
 
 import edu.berkeley.cs.builtin.functions.*;
 import edu.berkeley.cs.builtin.objects.CObject;
+import edu.berkeley.cs.builtin.objects.EnvironmentObject;
 import edu.berkeley.cs.builtin.objects.Reference;
 import edu.berkeley.cs.lexer.BufferedScanner;
 import edu.berkeley.cs.lexer.Scanner;
@@ -50,8 +51,18 @@ public class CompoundToken extends Token {
     public ArrayList<SymbolToken> parameters;
     private String file;
 
+    private CallFrame SS;
+
     public BufferedScanner getScanner() {
         return new BufferedScanner(tokens);
+    }
+
+    public CompoundToken(CompoundToken cloneMe,CallFrame SS) {
+        super(null);
+        tokens = cloneMe.tokens;
+        parameters = cloneMe.parameters;
+        file = cloneMe.file;
+        this.SS = SS;
     }
 
     public CompoundToken(TokenEater ss,String file) {
@@ -61,6 +72,7 @@ public class CompoundToken extends Token {
         tokens = ss.tokens;
         parameters = ss.parameters;
         this.file = file;
+        SS = CallFrame.base;
         int N = parameters.size();
 
         this.addNewRule();
@@ -92,11 +104,11 @@ public class CompoundToken extends Token {
         String tmp = CObject.currentFile;
         CObject.currentFile = file;
         try {
-        Scanner scnr = getScanner();
-        CallFrame cf = new CallFrame(LS,scnr);
-        return cf.interpret();
+            Scanner scnr = getScanner();
+            CallFrame cf = new CallFrame(LS,scnr,SS);
+            return cf.interpret();
         } finally {
-            CObject.currentFile = file;
+            CObject.currentFile = tmp;
         }
     }
 

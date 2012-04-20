@@ -39,7 +39,7 @@ import edu.berkeley.cs.parser.TokenVisitor;
  */
 public class DoubleToken extends Token {
     public double value;
-    private static CNonPrimitiveObject superClass =  new CNonPrimitiveObject();
+    private static CObject superClass =  new CObject();
 
     static {
         superClass.eval("def + @argument @add endef");
@@ -58,7 +58,7 @@ public class DoubleToken extends Token {
     public DoubleToken(SourcePosition position, double l) {
         super(position);
         this.value = l;
-        setSuperClass(superClass);
+        setRule(superClass);
     }
 
 

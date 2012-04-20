@@ -61,34 +61,34 @@ public class CIntegerObjectTest extends TestCase {
 
     public void testAdd() throws Exception {
 
-        run("print x = 1156 + \n 5;");
+        run("print (LS x = 1156 + \n 5);");
     }
 
     public void testAdd2() throws Exception {
-        run("print x = 1156 + 1156 + 1156; assert x == 3468;");
+        run("print (LS x = 1156 + 1156 + 1156); assert x == 3468;");
     }
 
     public void testSub1() throws Exception {
-        run("print x = 5000 -  1156 - 1156; assert x== 2688; ");
+        run("print (LS x = 5000 -  1156 - 1156); assert x== 2688; ");
     }
 
     public void testAddMul1() throws Exception {
-        run("print x = 5000 - 2 * 1156; assert x== 2688; ");
+        run("print (LS x = 5000 - 2 * 1156); assert x== 2688; ");
     }
 
     public void testAddDiv1() throws Exception {
-        run("print x = 1156 - 1156 * 1156/1156; assert x== 0; ");
+        run("print (LS x = 1156 - 1156 * 1156/1156); assert x== 0; ");
     }
 
     public void testVarAddDiv1() throws Exception {
-        run("y = 1156; x = y - y*y/y; print y; assert x==0; assert y==1156;");
+        run("LS y = 1156; LS x = y - y*y/y; print y; assert x==0; assert y==1156;");
     }
 
     public void testVarAddDiv2() throws Exception {
-        run("y = 1156; y = y = y + 10; print y; assert y==1166;");
+        run("LS y = 1156; LS y = y = y + 10; print y; assert y==1166;");
     }
 
     public void testVarAddDiv3() throws Exception {
-        run("y = 1156; ; ; x = y - y*y/y; print y; assert x==0; assert y==1156;");
+        run("LS y = 1156; ; ; LS x = y - y*y/y; print y; assert x==0; assert y==1156;");
     }
 }

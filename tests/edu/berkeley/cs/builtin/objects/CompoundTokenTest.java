@@ -42,7 +42,7 @@ import java.io.StringReader;
 public class CompoundTokenTest extends TestCase {
     public void testDef6() throws Exception {
         System.out.println("------------- testDef6 ----------------------");
-        CIntegerObjectTest.run("def foo { x = 1; y = x + 2; LS };  t = foo; print (t x);");
+        CIntegerObjectTest.run("LS x = 2; print x");
     }
 
 }
