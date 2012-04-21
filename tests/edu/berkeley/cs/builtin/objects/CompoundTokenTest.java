@@ -42,7 +42,12 @@ import java.io.StringReader;
  */
 public class CompoundTokenTest extends TestCase {
     public void testArray() throws Exception {
-        Interpreter.interpret("def Array @argument @edu.berkeley.cs.builtin.objects.CArray endef ; var x = (Array 10); x[1] = 89; print (x[1]);");
+        Interpreter.interpret("def Node @argument @argument {|data, next|\n" +
+                "    var ret = new Object\n" +
+                "    ret var data = data\n" +
+                "    ret var next = next\n" +
+                "    ret}\n" +
+                "var ret = Node 3 null");
     }
 }
 //def Array @argument @edu.berkeley.cs.builtin.objects.CArray endef ; var x = (Array 10); x[1] = 89; print (x[1]);

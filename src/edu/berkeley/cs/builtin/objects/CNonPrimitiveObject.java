@@ -43,7 +43,7 @@ public class CNonPrimitiveObject extends CObject {
     public CNonPrimitiveObject() {
         this.addNewRule();
         this.addSymbol(SymbolTable.getInstance().getId("var"));
-        this.addMeta(SymbolTable.getInstance().expr);
+        this.addMeta(SymbolTable.getInstance().token);
         this.addSymbol(SymbolTable.getInstance().getId("="));
         this.addMeta(SymbolTable.getInstance().expr);
         this.addAction(new NativeFunction("assignment"));

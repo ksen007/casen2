@@ -79,6 +79,8 @@ public class MatchVisitor implements TokenVisitor {
     }
 
     public Object visitNewLineToken(NewLineToken nt) {
+        if (rn!=null && rn.getNewLine() != null)
+            return rn.getNewLine();
         return null;
     }
 
