@@ -38,8 +38,8 @@ import java.io.IOException;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class CIntegerObjectTest extends TestCase {
-    public static void run(String s) throws IOException {
-        Interpreter.interpret(s);
+//    public static void Interpreter.interpret(String s) throws IOException {
+//        Interpreter.interpret(s);
 
 //        Lexer lexer = new Lexer(new StringReader(s));
 //        Scanner scnr = new BasicScanner(lexer);
@@ -52,7 +52,7 @@ public class CIntegerObjectTest extends TestCase {
 //        LS = new CNonPrimitiveObject();
 //        cf = new CallFrame(LS,scnr);
 //        cf.interpret();
-    }
+//    }
 
 //    public void testSimple() throws Exception {
 //
@@ -61,34 +61,34 @@ public class CIntegerObjectTest extends TestCase {
 
     public void testAdd() throws Exception {
 
-        run("print (LS x = 1156 + \n 5);");
+        Interpreter.interpret("print (var x = 1156 + \n 5);");
     }
 
     public void testAdd2() throws Exception {
-        run("print (LS x = 1156 + 1156 + 1156); assert x == 3468;");
+        Interpreter.interpret("print (var x = 1156 + 1156 + 1156); assert x == 3468;");
     }
 
     public void testSub1() throws Exception {
-        run("print (LS x = 5000 -  1156 - 1156); assert x== 2688; ");
+        Interpreter.interpret("print (var x = 5000 -  1156 - 1156); assert x== 2688; ");
     }
 
     public void testAddMul1() throws Exception {
-        run("print (LS x = 5000 - 2 * 1156); assert x== 2688; ");
+        Interpreter.interpret("print (var x = 5000 - 2 * 1156); assert x== 2688; ");
     }
 
     public void testAddDiv1() throws Exception {
-        run("print (LS x = 1156 - 1156 * 1156/1156); assert x== 0; ");
+        Interpreter.interpret("print (var x = 1156 - 1156 * 1156/1156); assert x== 0; ");
     }
 
     public void testVarAddDiv1() throws Exception {
-        run("LS y = 1156; LS x = y - y*y/y; print y; assert x==0; assert y==1156;");
+        Interpreter.interpret("var y = 1156; var x = y - y*y/y; print y; assert x==0; assert y==1156;");
     }
 
     public void testVarAddDiv2() throws Exception {
-        run("LS y = 1156; LS y = y = y + 10; print y; assert y==1166;");
+        Interpreter.interpret("var y = 1156; y = y = y + 10; print y; assert y==1166;");
     }
 
     public void testVarAddDiv3() throws Exception {
-        run("LS y = 1156; ; ; LS x = y - y*y/y; print y; assert x==0; assert y==1156;");
+        Interpreter.interpret("var y = 1156; ; ; var x = y - y*y/y; print y; assert x==0; assert y==1156;");
     }
 }

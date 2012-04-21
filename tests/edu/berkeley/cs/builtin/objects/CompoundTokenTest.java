@@ -1,5 +1,6 @@
 package edu.berkeley.cs.builtin.objects;
 
+import edu.berkeley.cs.Interpreter;
 import edu.berkeley.cs.lexer.BasicScanner;
 import edu.berkeley.cs.lexer.Lexer;
 import edu.berkeley.cs.parser.CallFrame;
@@ -40,9 +41,8 @@ import java.io.StringReader;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class CompoundTokenTest extends TestCase {
-    public void testDef6() throws Exception {
-        System.out.println("------------- testDef6 ----------------------");
-        CIntegerObjectTest.run("LS x = 2; print x");
+    public void testArray() throws Exception {
+        Interpreter.interpret("def Array @argument @edu.berkeley.cs.builtin.objects.CArray endef ; var x = (Array 10); x[1] = 89; print (x[1]);");
     }
-
 }
+//def Array @argument @edu.berkeley.cs.builtin.objects.CArray endef ; var x = (Array 10); x[1] = 89; print (x[1]);

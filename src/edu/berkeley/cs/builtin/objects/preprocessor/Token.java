@@ -43,6 +43,10 @@ public abstract class Token extends CObject {
         this.position = position;
     }
 
+    public SourcePosition getPosition() {
+        return position;
+    }
+
     public abstract Object accept(TokenVisitor v);
 
 

@@ -128,28 +128,28 @@ public class CallFrame {
                     parseRuleStack.push(ret);
                     return true;
                 }
-            }
 
-            if (currentRule.getRuleForNonTerminal() !=null  && t !=null) {
-                RuleNode rn = null;
-                parseRuleStack.pop();
-                parseRuleStack.push(currentRule.getRuleForNonTerminal());
-                if ((rn = lookAhead(this,t))!=null) {
-                    computationStack.push(LS);
-                    parseRuleStack.push(rn);
-                    tokenStack.push(t);
-                    scnr.pushBack(t);
-                    return true;
-                } else {
-                    if (t instanceof CompoundToken) {
-                        t = new CompoundToken((CompoundToken)t,this);
+                if (currentRule.getRuleForNonTerminal() !=null) {
+                    RuleNode rn = null;
+                    parseRuleStack.pop();
+                    parseRuleStack.push(currentRule.getRuleForNonTerminal());
+                    if ((rn = contextLookAhead(this,t))!=null) {
+                        computationStack.push(LS);
+                        parseRuleStack.push(rn);
+                        tokenStack.push(t);
+                        scnr.pushBack(t);
+                        return true;
+                    } else {
+                        if (t instanceof CompoundToken) {
+                            t = new CompoundToken((CompoundToken)t,this);
+                        }
+                        computationStack.push(t);
+                        flag = true;
                     }
-                    computationStack.push(t);
                 }
-                flag = true;
             }
 
-            if (currentRule.getRuleForAction() != null) {
+            if (!flag && currentRule.getRuleForAction() != null) {
                 scnr.pushBack(t);
                 parseRuleStack.pop();
                 tokenStack.pop();
@@ -188,18 +188,21 @@ public class CallFrame {
         } catch (Exception e) {
             throw new ParseException(t2,this,e);
         }
+        System.out.println(currentRule);
         throw new ParseException(t2,this);
     }
 
+    private static boolean isProgressPossible(RuleNode rn, Token t) {
+        return rn !=null
+                && ((t!=null && (t.accept(new MatchVisitor(rn))!=null
+                || rn.getRuleForNonTerminal()!=null))
+//                || rn.getToken()!=null))
+                || rn.getRuleForAction()!=null);
+    }
+
     private RuleNode shift(RuleNode reduce, RuleNode shift, Token reduceOperator, Token shiftOperator) {
-        boolean first = reduce!=null
-                && ((shiftOperator!=null && (shiftOperator.accept(new MatchVisitor(reduce))!=null
-                    || reduce.getRuleForNonTerminal()!=null))
-                    || reduce.getRuleForAction()!=null);
-        boolean second = shift!=null
-                && ((shiftOperator!=null && (shiftOperator.accept(new MatchVisitor(shift))!=null
-                    || shift.getRuleForNonTerminal()!=null))
-                    || shift.getRuleForAction()!=null);
+        boolean first = isProgressPossible(reduce,shiftOperator);
+        boolean second = isProgressPossible(shift,shiftOperator);
         if (!second) return null;
         if (!first) return shift;
         if (OperatorPrecedence.getInstance().isShift(reduceOperator,shiftOperator))
@@ -209,7 +212,7 @@ public class CallFrame {
     }
 
 
-    private RuleNode lookAhead(CallFrame cf, Token t) {
+    private RuleNode contextLookAhead(CallFrame cf, Token t) {
         CallFrame currentCf = cf;
         RuleNode ret;
         while(currentCf!=null) {
@@ -219,6 +222,15 @@ public class CallFrame {
             }
             currentCf = currentCf.SS;
         }
+
+//        currentCf = cf;
+//        while(currentCf!=null) {
+//            ret = currentCf.LS.getRuleNode();
+//            if (ret.getToken()!=null) {
+//                return ret;
+//            }
+//            currentCf = currentCf.SS;
+//        }
         return null;
     }
 

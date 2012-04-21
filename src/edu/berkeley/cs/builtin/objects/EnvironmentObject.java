@@ -1,12 +1,6 @@
 package edu.berkeley.cs.builtin.objects;
 
-import edu.berkeley.cs.builtin.functions.GetField;
 import edu.berkeley.cs.builtin.functions.NativeFunction;
-import edu.berkeley.cs.builtin.objects.preprocessor.BooleanToken;
-import edu.berkeley.cs.builtin.objects.preprocessor.CompoundToken;
-import edu.berkeley.cs.builtin.objects.preprocessor.MetaToken;
-import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
-import edu.berkeley.cs.parser.RuleNode;
 import edu.berkeley.cs.parser.SymbolTable;
 
 /**
@@ -46,10 +40,16 @@ public class EnvironmentObject extends CObject {
 
     private EnvironmentObject() {
         this.addNewRule();
-        this.addMeta(SymbolTable.getInstance().argument,true);
+        this.addSymbol(SymbolTable.getInstance().getId("var"));
+        this.addMeta(SymbolTable.getInstance().expr);
         this.addSymbol(SymbolTable.getInstance().getId("="));
-        this.addMeta(SymbolTable.getInstance().argument);
+        this.addMeta(SymbolTable.getInstance().expr);
         this.addAction(new NativeFunction("assignment"));
+
+//        this.addNewRule();
+//        this.addMeta(SymbolTable.getInstance().token);
+//        this.addAction(new NativeFunction("returnArgument"));
+
 
         this.addNewRule();
         this.addSymbol(SymbolTable.getInstance().getId("def"));
@@ -67,18 +67,18 @@ public class EnvironmentObject extends CObject {
 
         this.addNewRule();
         this.addSymbol(SymbolTable.getInstance().getId("("));
-        this.addMeta(SymbolTable.getInstance().argument);
+        this.addMeta(SymbolTable.getInstance().expr);
         this.addSymbol(SymbolTable.getInstance().getId(")"));
         this.addAction(new NativeFunction("returnArgument"));
 
         this.addNewRule();
         this.addSymbol(SymbolTable.getInstance().getId("load"));
-        this.addMeta(SymbolTable.getInstance().argument);
+        this.addMeta(SymbolTable.getInstance().expr);
         this.addAction(new NativeFunction("loadFile"));
 
         this.addNewRule();
         this.addSymbol(SymbolTable.getInstance().getId("print"));
-        this.addMeta(SymbolTable.getInstance().argument);
+        this.addMeta(SymbolTable.getInstance().expr);
         this.addAction(new NativeFunction("print"));
 
         this.addNewRule();
@@ -88,27 +88,27 @@ public class EnvironmentObject extends CObject {
 
         this.addNewRule();
         this.addSymbol(SymbolTable.getInstance().getId("assert"));
-        this.addMeta(SymbolTable.getInstance().argument);
+        this.addMeta(SymbolTable.getInstance().expr);
         this.addAction(new NativeFunction("assertEquality"));
 
         this.addNewRule();
         this.addSymbol(SymbolTable.getInstance().getId("if"));
-        this.addMeta(SymbolTable.getInstance().argument);
+        this.addMeta(SymbolTable.getInstance().expr);
         this.addSymbol(SymbolTable.getInstance().getId("then"));
-        this.addMeta(SymbolTable.getInstance().argument);
+        this.addMeta(SymbolTable.getInstance().expr);
         this.addSymbol(SymbolTable.getInstance().getId("else"));
-        this.addMeta(SymbolTable.getInstance().argument);
+        this.addMeta(SymbolTable.getInstance().expr);
         this.addAction(new NativeFunction("ifAction"));
 
         this.addNewRule();
         this.addSymbol(SymbolTable.getInstance().getId("while"));
-        this.addMeta(SymbolTable.getInstance().argument);
-        this.addMeta(SymbolTable.getInstance().argument);
+        this.addMeta(SymbolTable.getInstance().expr);
+        this.addMeta(SymbolTable.getInstance().expr);
         this.addAction(new NativeFunction("whileAction"));
 
         this.addNewRule();
         this.addSymbol(SymbolTable.getInstance().getId("once"));
-        this.addMeta(SymbolTable.getInstance().argument);
+        this.addMeta(SymbolTable.getInstance().expr);
         this.addAction(new NativeFunction("onceAction"));
 
 //        this.addNewRule();

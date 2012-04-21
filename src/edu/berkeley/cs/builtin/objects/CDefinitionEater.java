@@ -4,9 +4,6 @@ import edu.berkeley.cs.builtin.functions.*;
 import edu.berkeley.cs.builtin.objects.preprocessor.CompoundToken;
 import edu.berkeley.cs.builtin.objects.preprocessor.MetaToken;
 import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
-import edu.berkeley.cs.builtin.objects.preprocessor.Token;
-import edu.berkeley.cs.parser.ParseException;
-import edu.berkeley.cs.parser.RuleNode;
 import edu.berkeley.cs.parser.SymbolTable;
 
 /**
@@ -48,7 +45,7 @@ public class CDefinitionEater extends CObject {
 
     static {
         superClass.addNewRule();
-        superClass.addMeta(SymbolTable.getInstance().argument,true);
+        superClass.addMeta(SymbolTable.getInstance().expr,true);
         superClass.addAction(new NativeFunction("addToken"));
     }
 
@@ -85,7 +82,7 @@ public class CDefinitionEater extends CObject {
         }
         if (arg instanceof MetaToken) {
             MetaToken mt = (MetaToken) arg;
-            if (mt.argument!= SymbolTable.getInstance().argument) {
+            if (mt.argument!= SymbolTable.getInstance().expr) {// && mt.argument != SymbolTable.getInstance().token) {
                 return new JavaClassEater(self.parent,SymbolTable.getInstance().getSymbol(mt.argument));
             }
         }

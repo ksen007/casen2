@@ -2,9 +2,7 @@ package edu.berkeley.cs.builtin.objects;
 
 import edu.berkeley.cs.builtin.functions.Invokable;
 import edu.berkeley.cs.builtin.functions.NativeFunction;
-import edu.berkeley.cs.builtin.objects.preprocessor.MetaToken;
 import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
-import edu.berkeley.cs.parser.RuleNode;
 import edu.berkeley.cs.parser.SymbolTable;
 
 /**
@@ -48,7 +46,7 @@ public class JavaClassEater extends CObject {
     static {
         superClass.addNewRule();
         superClass.addSymbol(SymbolTable.getInstance().getId("."));
-        superClass.addMeta(SymbolTable.getInstance().argument);
+        superClass.addMeta(SymbolTable.getInstance().expr);
         superClass.addAction(new NativeFunction("addPackage"));
 
         superClass.addNewRule();

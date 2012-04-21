@@ -8,7 +8,6 @@ import edu.berkeley.cs.lexer.BasicScanner;
 import edu.berkeley.cs.lexer.Lexer;
 import edu.berkeley.cs.lexer.Scanner;
 import edu.berkeley.cs.parser.*;
-import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.io.*;
 import java.util.IdentityHashMap;
@@ -167,7 +166,7 @@ public class CObject {
         self.addNewRule();
         self.addSymbol(symbol.symbol);
         self.addSymbol(SymbolTable.getInstance().getId("="));
-        self.addMeta(SymbolTable.getInstance().argument);
+        self.addMeta(SymbolTable.getInstance().expr);
         self.addAction(new PutField(common));
 
         return value;

@@ -1,9 +1,6 @@
 package edu.berkeley.cs.builtin.objects;
 
 import edu.berkeley.cs.builtin.functions.*;
-import edu.berkeley.cs.builtin.objects.preprocessor.MetaToken;
-import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
-import edu.berkeley.cs.parser.RuleNode;
 import edu.berkeley.cs.parser.SymbolTable;
 
 
@@ -45,9 +42,10 @@ public class CNonPrimitiveObject extends CObject {
 
     public CNonPrimitiveObject() {
         this.addNewRule();
-        this.addMeta(SymbolTable.getInstance().argument,true);
+        this.addSymbol(SymbolTable.getInstance().getId("var"));
+        this.addMeta(SymbolTable.getInstance().expr);
         this.addSymbol(SymbolTable.getInstance().getId("="));
-        this.addMeta(SymbolTable.getInstance().argument);
+        this.addMeta(SymbolTable.getInstance().expr);
         this.addAction(new NativeFunction("assignment"));
 
         this.addNewRule();
@@ -56,12 +54,12 @@ public class CNonPrimitiveObject extends CObject {
 
         this.addNewRule();
         this.addSymbol(SymbolTable.getInstance().getId("=="));
-        this.addMeta(SymbolTable.getInstance().argument);
+        this.addMeta(SymbolTable.getInstance().expr);
         this.addAction(new NativeFunction("equality"));
 
         this.addNewRule();
         this.addSymbol(SymbolTable.getInstance().getId("!="));
-        this.addMeta(SymbolTable.getInstance().argument);
+        this.addMeta(SymbolTable.getInstance().expr);
         this.addAction(new NativeFunction("disequality"));
 
 //        this.addNewRule();

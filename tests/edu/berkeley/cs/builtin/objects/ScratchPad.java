@@ -1,5 +1,6 @@
 package edu.berkeley.cs.builtin.objects;
 
+import edu.berkeley.cs.Interpreter;
 import junit.framework.TestCase;
 
 /**
@@ -39,12 +40,12 @@ public class ScratchPad extends TestCase {
 
     public void testArray() throws Exception {
 
-        CIntegerObjectTest.run("def CArray @argument @edu.berkeley.cs.builtin.objects.CArray endef ; x = (CArray 10); x[1] = 89; print (x[1]); i =0; while {i < (x length) } { x[i] = i; i = (i+1);}; print (x[3]);");
+        Interpreter.interpret("def CArray @argument @edu.berkeley.cs.builtin.objects.CArray endef ; x = (CArray 10); x[1] = 89; print (x[1]); i =0; while {i < (x length) } { x[i] = i; i = (i+1);}; print (x[3]);");
     }
 
     public void testArrayMap() throws Exception {
 
-        CIntegerObjectTest.run("def CArray @argument @edu.berkeley.cs.builtin.objects.CArray endef ; x = (CArray 10); i =0; while {i < (x length) } { x[i] = i; i = (i+1);}; x map {|y| print y;};");
+        Interpreter.interpret("def CArray @argument @edu.berkeley.cs.builtin.objects.CArray endef ; x = (CArray 10); i =0; while {i < (x length) } { x[i] = i; i = (i+1);}; x map {|y| print y;};");
     }
 
 }

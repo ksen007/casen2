@@ -41,8 +41,8 @@ public class SymbolTable {
     private TreeMap<String,Integer> symbolTable = new TreeMap<String, Integer>();
     private ArrayList<String> symbols = new ArrayList<String>();
 
-    public int argument = getId("argument");
-    public int token = getId("token");
+    public int expr = getId("argument");
+//    public int token = getId("token");
 //    public int meta = getId("meta");
 //    public int literal = getId("literal");
 //    public int block = getId("block");

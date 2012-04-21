@@ -1,14 +1,10 @@
 package edu.berkeley.cs.parser;
 
 import edu.berkeley.cs.builtin.functions.Invokable;
-import edu.berkeley.cs.builtin.objects.*;
-import edu.berkeley.cs.builtin.objects.preprocessor.Token;
-import edu.berkeley.cs.lexer.*;
 import gnu.trove.iterator.TIntObjectIterator;
 import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.util.LinkedList;
-import java.util.Stack;
 
 /**
  * Copyright (c) 2006-2011,
@@ -47,6 +43,7 @@ public class RuleNode {
     //private TIntObjectHashMap<RuleNode> nextArgumentMap;
     private Action action;
     private RuleNode nonTerminal;
+//    private RuleNode token;
     private RuleNode newLine;
 
     public static boolean DEBUG = false;
@@ -112,6 +109,12 @@ public class RuleNode {
                 ret.add("@argument "+child);
             }
         }
+//        if (token!=null) {
+//            LinkedList<String> tmp = token.print();
+//            for(String child:tmp) {
+//                ret.add("@token "+child);
+//            }
+//        }
         if (action!=null) {
             ret.add(action.toString());
         }
@@ -125,32 +128,31 @@ public class RuleNode {
     }
 
     public RuleNode addMeta(RuleNode rootRules, int argument,boolean override) {
-        if (this==rootRules && argument==SymbolTable.getInstance().argument && !override) {
+        if (this==rootRules && argument==SymbolTable.getInstance().expr && !override) {
             throw new ParseException("First token of a def cannot be @argument.");
         }
-//        argCount++;
-        RuleNode ret;
-        if (argument==SymbolTable.getInstance().argument) {
-//            if (nextArgumentMap == null)
-//                nextArgumentMap = new TIntObjectHashMap<RuleNode>();
-//            ret = nextArgumentMap.get(argument);
-//            if (ret==null) {
-//                nextArgumentMap.put(argument,ret=new RuleNode(this,"@"+SymbolTable.getInstance().getSymbol(argument)));
-//            }
-//            return ret;
-//        } else {
+        if (argument==SymbolTable.getInstance().expr) {
             if (nonTerminal == null) {
                 nonTerminal = new RuleNode(this, "@argument");
             }
             return  this.nonTerminal;
         }
-        throw new ParseException("Bad Meta Token");
+//        if (argument==SymbolTable.getInstance().token) {
+//            if (token == null) {
+//                token = new RuleNode(this, "@token");
+//            }
+//            return  this.token;
+//        }
+        throw new ParseException("Bad Meta Token @"+SymbolTable.getInstance().getSymbol(argument));
     }
 
     public RuleNode addSymbol(int symbol) {
         RuleNode ret;
         if (nextSymbolMap == null) {
             nextSymbolMap = new TIntObjectHashMap<RuleNode>();
+        }
+        if (symbol==23) {
+            System.out.println("bad");
         }
         ret = nextSymbolMap.get(symbol);
         if (ret==null) {
@@ -196,4 +198,8 @@ public class RuleNode {
     public RuleNode getRuleForNonTerminal() {
         return nonTerminal;
     }
+
+//    public RuleNode getToken() {
+//        return token;
+//    }
 }

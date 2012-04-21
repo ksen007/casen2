@@ -1,10 +1,6 @@
 package edu.berkeley.cs.builtin.objects;
 
 import edu.berkeley.cs.builtin.functions.NativeFunction;
-import edu.berkeley.cs.builtin.objects.preprocessor.MetaToken;
-import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
-import edu.berkeley.cs.builtin.objects.preprocessor.Token;
-import edu.berkeley.cs.parser.RuleNode;
 import edu.berkeley.cs.parser.SymbolTable;
 
 /**
@@ -46,12 +42,12 @@ public class CStatementEater extends CObject {
         //rules = new RuleNode(null);
 
         this.addNewRule();
-        this.addMeta(SymbolTable.getInstance().argument,true);
+        this.addMeta(SymbolTable.getInstance().expr,true);
         this.addSymbol(SymbolTable.getInstance().getId(";"));
         this.addAction(new NativeFunction("returnSS"));
 
         this.addNewRule();
-        this.addMeta(SymbolTable.getInstance().argument,true);
+        this.addMeta(SymbolTable.getInstance().expr,true);
         this.addNewLine();
         this.addAction(new NativeFunction("returnSS"));
 

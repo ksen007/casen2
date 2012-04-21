@@ -2,12 +2,10 @@ package edu.berkeley.cs.builtin.objects.preprocessor;
 
 import edu.berkeley.cs.builtin.functions.*;
 import edu.berkeley.cs.builtin.objects.CObject;
-import edu.berkeley.cs.builtin.objects.EnvironmentObject;
 import edu.berkeley.cs.builtin.objects.Reference;
 import edu.berkeley.cs.lexer.BufferedScanner;
 import edu.berkeley.cs.lexer.Scanner;
 import edu.berkeley.cs.parser.CallFrame;
-import edu.berkeley.cs.parser.RuleNode;
 import edu.berkeley.cs.parser.SymbolTable;
 import edu.berkeley.cs.parser.TokenVisitor;
 
@@ -58,10 +56,11 @@ public class CompoundToken extends Token {
     }
 
     public CompoundToken(CompoundToken cloneMe,CallFrame SS) {
-        super(null);
+        super(cloneMe.getPosition());
         tokens = cloneMe.tokens;
         parameters = cloneMe.parameters;
         file = cloneMe.file;
+        setRule(cloneMe);
         this.SS = SS;
     }
 
@@ -78,7 +77,7 @@ public class CompoundToken extends Token {
         this.addNewRule();
         this.addSymbol(SymbolTable.getInstance().getId("("));
         for(int i=0; i<N; i++) {
-            this.addMeta(SymbolTable.getInstance().argument);
+            this.addMeta(SymbolTable.getInstance().expr);
             if (i<N-1)
                 this.addSymbol(SymbolTable.getInstance().getId(","));
         }
@@ -87,12 +86,12 @@ public class CompoundToken extends Token {
 
         this.addNewRule();
         this.addSymbol(SymbolTable.getInstance().getId("("));
-        this.addMeta(SymbolTable.getInstance().argument);
+        this.addMeta(SymbolTable.getInstance().expr);
         if (N > 0)
             this.addSymbol(SymbolTable.getInstance().getId(","));
 
         for(int i=0; i<N; i++) {
-            this.addMeta(SymbolTable.getInstance().argument);
+            this.addMeta(SymbolTable.getInstance().expr);
             if (i<N-1)
                 this.addSymbol(SymbolTable.getInstance().getId(","));
         }
@@ -123,7 +122,7 @@ public class CompoundToken extends Token {
             LS.addNewRule();
             LS.addSymbol(param.symbol);
             LS.addSymbol(SymbolTable.getInstance().getId("="));
-            LS.addMeta(SymbolTable.getInstance().argument);
+            LS.addMeta(SymbolTable.getInstance().expr);
             LS.addAction(new PutField(common));
         }
         return execute(LS);
