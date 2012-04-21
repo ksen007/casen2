@@ -53,7 +53,7 @@ public class CArray extends CObject implements Invokable {
         superClass.eval("def [ @argument ] @get endef");
         superClass.eval("def [ @argument ] = @argument @set endef");
         superClass.eval("def length @length endef");
-        superClass.eval("def map @block {|f| i = 0; while {i< (self length)} { f( self [ i ] ) ; i = i + 1;}; }");
+        superClass.eval("def map @argument {|f| i = 0; while {i< (self length)} { f( self [ i ] ) ; i = i + 1;}; }");
         superClass.eval("def == @argument @equality endef");
     }
 

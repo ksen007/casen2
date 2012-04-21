@@ -1,2 +1,2 @@
-load "fac.sn" (LS)
+(load "fac.sn") (LS)
 print (fac 5)

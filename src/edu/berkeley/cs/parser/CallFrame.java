@@ -128,6 +128,15 @@ public class CallFrame {
                     parseRuleStack.push(ret);
                     return true;
                 }
+                if (currentRule.getRuleForToken() !=null) {
+                    parseRuleStack.pop();
+                    parseRuleStack.push(currentRule.getRuleForToken());
+                    if (t instanceof CompoundToken) {
+                        t = new CompoundToken((CompoundToken)t,this);
+                    }
+                    computationStack.push(t);
+                    return true;
+                }
 
                 if (currentRule.getRuleForNonTerminal() !=null) {
                     RuleNode rn = null;
@@ -195,8 +204,8 @@ public class CallFrame {
     private static boolean isProgressPossible(RuleNode rn, Token t) {
         return rn !=null
                 && ((t!=null && (t.accept(new MatchVisitor(rn))!=null
-                || rn.getRuleForNonTerminal()!=null))
-//                || rn.getToken()!=null))
+                || rn.getRuleForNonTerminal()!=null
+                || rn.getRuleForToken()!=null))
                 || rn.getRuleForAction()!=null);
     }
 
@@ -223,14 +232,14 @@ public class CallFrame {
             currentCf = currentCf.SS;
         }
 
-//        currentCf = cf;
-//        while(currentCf!=null) {
-//            ret = currentCf.LS.getRuleNode();
-//            if (ret.getToken()!=null) {
-//                return ret;
-//            }
-//            currentCf = currentCf.SS;
-//        }
+        currentCf = cf;
+        while(currentCf!=null) {
+            ret = currentCf.LS.getRuleNode();
+            if (ret.getRuleForToken()!=null) {
+                return ret;
+            }
+            currentCf = currentCf.SS;
+        }
         return null;
     }
 

@@ -45,7 +45,7 @@ public class CDefinitionEater extends CObject {
 
     static {
         superClass.addNewRule();
-        superClass.addMeta(SymbolTable.getInstance().expr,true);
+        superClass.addMeta(SymbolTable.getInstance().token);
         superClass.addAction(new NativeFunction("addToken"));
     }
 
@@ -82,7 +82,7 @@ public class CDefinitionEater extends CObject {
         }
         if (arg instanceof MetaToken) {
             MetaToken mt = (MetaToken) arg;
-            if (mt.argument!= SymbolTable.getInstance().expr) {// && mt.argument != SymbolTable.getInstance().token) {
+            if (mt.argument!= SymbolTable.getInstance().expr && mt.argument != SymbolTable.getInstance().token) {
                 return new JavaClassEater(self.parent,SymbolTable.getInstance().getSymbol(mt.argument));
             }
         }

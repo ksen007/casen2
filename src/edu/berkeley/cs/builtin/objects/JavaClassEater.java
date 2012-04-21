@@ -46,7 +46,7 @@ public class JavaClassEater extends CObject {
     static {
         superClass.addNewRule();
         superClass.addSymbol(SymbolTable.getInstance().getId("."));
-        superClass.addMeta(SymbolTable.getInstance().expr);
+        superClass.addMeta(SymbolTable.getInstance().token);
         superClass.addAction(new NativeFunction("addPackage"));
 
         superClass.addNewRule();

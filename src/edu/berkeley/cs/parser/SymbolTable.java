@@ -42,7 +42,7 @@ public class SymbolTable {
     private ArrayList<String> symbols = new ArrayList<String>();
 
     public int expr = getId("argument");
-//    public int token = getId("token");
+    public int token = getId("token");
 //    public int meta = getId("meta");
 //    public int literal = getId("literal");
 //    public int block = getId("block");

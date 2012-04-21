@@ -43,7 +43,7 @@ public class RuleNode {
     //private TIntObjectHashMap<RuleNode> nextArgumentMap;
     private Action action;
     private RuleNode nonTerminal;
-//    private RuleNode token;
+    private RuleNode token;
     private RuleNode newLine;
 
     public static boolean DEBUG = false;
@@ -137,12 +137,12 @@ public class RuleNode {
             }
             return  this.nonTerminal;
         }
-//        if (argument==SymbolTable.getInstance().token) {
-//            if (token == null) {
-//                token = new RuleNode(this, "@token");
-//            }
-//            return  this.token;
-//        }
+        if (argument==SymbolTable.getInstance().token) {
+            if (token == null) {
+                token = new RuleNode(this, "@token");
+            }
+            return  this.token;
+        }
         throw new ParseException("Bad Meta Token @"+SymbolTable.getInstance().getSymbol(argument));
     }
 
@@ -150,9 +150,6 @@ public class RuleNode {
         RuleNode ret;
         if (nextSymbolMap == null) {
             nextSymbolMap = new TIntObjectHashMap<RuleNode>();
-        }
-        if (symbol==23) {
-            System.out.println("bad");
         }
         ret = nextSymbolMap.get(symbol);
         if (ret==null) {
@@ -199,7 +196,7 @@ public class RuleNode {
         return nonTerminal;
     }
 
-//    public RuleNode getToken() {
-//        return token;
-//    }
+    public RuleNode getRuleForToken() {
+        return token;
+    }
 }
