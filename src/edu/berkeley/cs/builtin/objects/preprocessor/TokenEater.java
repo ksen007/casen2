@@ -65,7 +65,7 @@ public class TokenEater extends CObject {
         thisClass.addAction(new NativeFunction("returnParentTokenEater"));
 
         thisClass.addNewRule();
-        thisClass.addMeta(SymbolTable.getInstance().expr,true);
+        thisClass.addMeta(SymbolTable.getInstance().token);
         thisClass.addAction(new NativeFunction("append"));
     }
 

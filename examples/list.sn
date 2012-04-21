@@ -10,7 +10,7 @@ def list @argument {|data|
     ret var val = Node data null
 
     ret def , @argument {|data|
-        self val = (Node data (self val))
+        self val = Node data (self val)
         self
     }
 

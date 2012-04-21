@@ -139,19 +139,21 @@ public class CallFrame {
                 }
 
                 if (currentRule.getRuleForNonTerminal() !=null) {
-                    RuleNode rn = null;
-                    parseRuleStack.pop();
-                    parseRuleStack.push(currentRule.getRuleForNonTerminal());
+                    RuleNode rn;
                     if ((rn = contextLookAhead(this,t))!=null) {
+                        parseRuleStack.pop();
+                        parseRuleStack.push(currentRule.getRuleForNonTerminal());
                         computationStack.push(LS);
                         parseRuleStack.push(rn);
                         tokenStack.push(t);
                         scnr.pushBack(t);
                         return true;
-                    } else {
+                    } else if (!(t instanceof NewLineToken)){
                         if (t instanceof CompoundToken) {
                             t = new CompoundToken((CompoundToken)t,this);
                         }
+                        parseRuleStack.pop();
+                        parseRuleStack.push(currentRule.getRuleForNonTerminal());
                         computationStack.push(t);
                         flag = true;
                     }

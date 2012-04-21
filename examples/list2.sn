@@ -4,15 +4,15 @@ def Node @argument @argument {|data, next|
 }
 
 def list @argument {|data|
-    var val = (Node data null)
+    var val = Node data null
     def , @argument {|data|
-        self val = (Node data (self val))
+        self val = Node data (self val)
         self
     }
     LS
 }
 
-var ret = (list 3, 4, 5, 6, 7)
+var ret = list 3, 4, 5, 6, 7
 
 print (ret val next next data)
 
