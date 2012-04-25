@@ -39,12 +39,12 @@ public class EnvironmentObject extends CObject {
     public static EnvironmentObject instance = new EnvironmentObject();
 
     private EnvironmentObject() {
-        this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().getId("var"));
-        this.addMeta(SymbolTable.getInstance().token);
-        this.addSymbol(SymbolTable.getInstance().getId("="));
-        this.addMeta(SymbolTable.getInstance().expr);
-        this.addAction(new NativeFunction("assignment"));
+//        this.addNewRule();
+//        this.addSymbol(SymbolTable.getInstance().getId("var"));
+//        this.addMeta(SymbolTable.getInstance().token);
+//        this.addSymbol(SymbolTable.getInstance().getId("="));
+//        this.addMeta(SymbolTable.getInstance().expr);
+//        this.addAction(new NativeFunction("assignment"));
 
 //        this.addNewRule();
 //        this.addMeta(SymbolTable.getInstance().token);

@@ -41,13 +41,8 @@ import java.io.StringReader;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class CompoundTokenTest extends TestCase {
-    public void testArray() throws Exception {
-        Interpreter.interpret("def Node @argument @argument {|data, next|\n" +
-                "    var ret = new Object\n" +
-                "    ret var data = data\n" +
-                "    ret var next = next\n" +
-                "    ret}\n" +
-                "var ret = Node 3 null");
+    public void testVarAddDiv2() throws Exception {
+        Interpreter.interpret("var y = 1156; print y; ");
     }
 }
 //def Array @argument @edu.berkeley.cs.builtin.objects.CArray endef ; var x = (Array 10); x[1] = 89; print (x[1]);

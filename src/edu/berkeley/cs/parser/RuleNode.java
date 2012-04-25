@@ -109,12 +109,12 @@ public class RuleNode {
                 ret.add("@argument "+child);
             }
         }
-//        if (token!=null) {
-//            LinkedList<String> tmp = token.print();
-//            for(String child:tmp) {
-//                ret.add("@token "+child);
-//            }
-//        }
+        if (token!=null) {
+            LinkedList<String> tmp = token.print();
+            for(String child:tmp) {
+                ret.add("@token "+child);
+            }
+        }
         if (action!=null) {
             ret.add(action.toString());
         }

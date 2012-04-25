@@ -38,26 +38,6 @@ import java.io.IOException;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class CIntegerObjectTest extends TestCase {
-//    public static void Interpreter.interpret(String s) throws IOException {
-//        Interpreter.interpret(s);
-
-//        Lexer lexer = new Lexer(new StringReader(s));
-//        Scanner scnr = new BasicScanner(lexer);
-//
-//        CObject LS = new TokenEater(null);
-//        CallFrame cf = new CallFrame(LS,LS,scnr);
-//        CompoundToken pgm = (CompoundToken)cf.interpret();
-//
-//        scnr = pgm.getScanner();
-//        LS = new CNonPrimitiveObject();
-//        cf = new CallFrame(LS,scnr);
-//        cf.interpret();
-//    }
-
-//    public void testSimple() throws Exception {
-//
-//        eval("1");
-//    }
 
     public void testAdd() throws Exception {
 

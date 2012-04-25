@@ -48,9 +48,9 @@ public class CNonPrimitiveObject extends CObject {
         this.addMeta(SymbolTable.getInstance().expr);
         this.addAction(new NativeFunction("assignment"));
 
-        this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().getId("def"));
-        this.addAction(new NativeFunction("newDefinitionEater"));
+//        this.addNewRule();
+//        this.addSymbol(SymbolTable.getInstance().getId("def"));
+//        this.addAction(new NativeFunction("newDefinitionEater"));
 
         this.addNewRule();
         this.addSymbol(SymbolTable.getInstance().getId("=="));
@@ -70,5 +70,14 @@ public class CNonPrimitiveObject extends CObject {
         this.addNewRule();
         this.addSymbol(SymbolTable.getInstance().getId("LS"));
         this.addAction(new GetField(new Reference(this)));
+    }
+
+    public void setSS(CObject SS) {
+        super.setSS(SS);
+        if (SS !=null) {
+            this.addNewRule();
+            this.addSymbol(SymbolTable.getInstance().getId("SS"));
+            this.addAction(new GetField(new Reference(SS)));
+        }
     }
 }

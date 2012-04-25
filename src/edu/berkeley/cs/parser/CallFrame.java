@@ -141,7 +141,7 @@ public class CallFrame {
 
                 if (currentRule.getRuleForNonTerminal() !=null) {
                     RuleNode rn;
-                    if ((rn = contextLookAhead(this,t))!=null) {
+                    if ((rn = contextLookAhead(LS,EnvironmentObject.instance,t))!=null) {
                         parseRuleStack.pop();
                         parseRuleStack.push(currentRule.getRuleForNonTerminal());
                         computationStack.push(LS);
@@ -184,7 +184,7 @@ public class CallFrame {
                 }
 
                 RuleNode rn;
-                if ((rn=shift(reduce,nt.getRuleNode(),tmp,t))!=null) {
+                if ((rn=shift(reduce,nt,tmp,t))!=null) {
                     parseRuleStack.push(rn);
                     tokenStack.push(t);
 
@@ -212,37 +212,85 @@ public class CallFrame {
                 || rn.getRuleForAction()!=null);
     }
 
-    private RuleNode shift(RuleNode reduce, RuleNode shift, Token reduceOperator, Token shiftOperator) {
+    private RuleNode shift(RuleNode reduce, CObject shift, Token reduceOperator, Token shiftOperator) {
         boolean first = isProgressPossible(reduce,shiftOperator);
-        boolean second = isProgressPossible(shift,shiftOperator);
+        RuleNode ret = null;
+        boolean second = (ret = contextLookAhead(shift,null,shiftOperator))!=null;
         if (!second) return null;
-        if (!first) return shift;
+        if (!first) return ret;
         if (OperatorPrecedence.getInstance().isShift(reduceOperator,shiftOperator))
-            return shift;
+            return ret;
         else
             return null;
     }
 
 
-    private RuleNode contextLookAhead(CallFrame cf, Token t) {
-        CObject currentCf = cf.LS;
+    private static RuleNode contextLookAhead(CObject LS, CObject extra, Token t) {
+        CObject current;
         RuleNode ret;
-        while(currentCf!=null) {
-            ret = currentCf.getRuleNode();
-            if (t.accept(new MatchVisitor(ret))!=null) {
-                return ret;
+
+        if (t!=null) {
+            current = LS;
+            while(current!=null) {
+                ret = current.getRuleNode();
+                if (t.accept(new MatchVisitor(ret))!=null) {
+                    return ret;
+                }
+                current = current.getSS();
             }
-            currentCf = currentCf.SS;
+            if (extra != null ) {
+                ret = extra.getRuleNode();
+                if (t.accept(new MatchVisitor(ret))!=null) {
+                    return ret;
+                }
+            }
+
+            current = LS;
+            while(current!=null) {
+                ret = current.getRuleNode();
+                if (ret.getRuleForToken()!=null) {
+                    return ret;
+                }
+                current = current.getSS();
+            }
+            if (extra != null ) {
+                ret = extra.getRuleNode();
+                if (ret.getRuleForToken()!=null) {
+                    return ret;
+                }
+            }
+
+            current = LS;
+            while(current!=null) {
+                ret = current.getRuleNode();
+                if (ret.getRuleForNonTerminal()!=null) {
+                    return ret;
+                }
+                current = current.getSS();
+            }
+            if (extra != null ) {
+                ret = extra.getRuleNode();
+                if (ret.getRuleForNonTerminal()!=null) {
+                    return ret;
+                }
+            }
         }
 
-        currentCf = cf.LS;
-        while(currentCf!=null) {
-            ret = currentCf.getRuleNode();
-            if (ret.getRuleForToken()!=null) {
+        current = LS;
+        while(current!=null) {
+            ret = current.getRuleNode();
+            if (ret.getRuleForAction()!=null) {
                 return ret;
             }
-            currentCf = currentCf.SS;
+            current = current.getSS();
         }
+        if (extra != null ) {
+            ret = extra.getRuleNode();
+            if (ret.getRuleForAction()!=null) {
+                return ret;
+            }
+        }
+
         return null;
     }
 

@@ -53,7 +53,7 @@ import java.util.TreeMap;
     */
 
 public class CObject {
-    public CObject SS;
+    private CObject SS;
 //    private CObject superC;  // for efficiency only
     private RuleNode rules;
 
@@ -63,6 +63,14 @@ public class CObject {
 
     public void setRule(CObject methods) {
         this.rules = methods.rules;
+    }
+
+    public CObject getSS() {
+        return SS;
+    }
+
+    public void setSS(CObject SS) {
+        this.SS = SS;
     }
 
 //    public void setSuperClass(CObject superClass) {
@@ -225,7 +233,9 @@ public class CObject {
 
 
     public CObject newObject() {
-        return new CNonPrimitiveObject();
+        CNonPrimitiveObject ret = new CNonPrimitiveObject();
+        ret.setSS(this);
+        return ret;
     }
 
     @Override

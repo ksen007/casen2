@@ -9,18 +9,20 @@ def list @argument {|data|
     var ret = new Object
     ret var val = Node data null
 
-    ret def , @argument {|data|
-        self val = Node data (self val)
-        self
-    }
+    {
+        def , @argument {|data|
+            self val = (Node data (self val))
+            self
+        }
+    }(ret)
 
-    ret def print {
+    {def print {
         var tmp = (self val)
         while {tmp != null} {
             print (tmp data)
             tmp = (tmp next)
         }
-    }
+    }} (ret)
     ret
 }
 
