@@ -53,7 +53,7 @@ public class UserDefinedFunction implements Invokable {
         LS.addSymbol(SymbolTable.getInstance().getId("self"));
         LS.addAction(new GetField(new Reference(args.removeFirst())));
 
-        return body.execute(LS,args);
+        return body.execute(LS,args,true);
     }
 
     @Override

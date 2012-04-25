@@ -45,23 +45,24 @@ import java.util.Stack;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class CallFrame {
-    public static CallFrame base = new CallFrame(EnvironmentObject.instance,null,null);
+//    public static CallFrame base = new CallFrame(EnvironmentObject.instance,null,null);
 
-    private CallFrame SS;
+//    private CallFrame SS;
+
     private Stack<RuleNode> parseRuleStack;
     private Stack<CObject> computationStack;
     private Stack<Token> tokenStack;
     private CObject LS;
     private Scanner scnr;
 
-    public CallFrame(CObject LS, Scanner scnr, CallFrame SS) {
+    public CallFrame(CObject LS, Scanner scnr) {
         init(LS,CStatementEater.instance,scnr);
-        this.SS = SS;
+//        this.LS.SS = SS;
     }
 
-    public CallFrame(CObject LS, CObject base, Scanner scnr, CallFrame SS) {
+    public CallFrame(CObject LS, CObject base, Scanner scnr) {
         init(LS,base,scnr);
-        this.SS = SS;
+//        this.LS.SS = SS;
     }
 
     public void init(CObject LS, CObject base, Scanner scnr) {
@@ -132,7 +133,7 @@ public class CallFrame {
                     parseRuleStack.pop();
                     parseRuleStack.push(currentRule.getRuleForToken());
                     if (t instanceof CompoundToken) {
-                        t = new CompoundToken((CompoundToken)t,this);
+                        t = new CompoundToken((CompoundToken)t,LS);
                     }
                     computationStack.push(t);
                     return true;
@@ -150,7 +151,7 @@ public class CallFrame {
                         return true;
                     } else if (!(t instanceof NewLineToken)){
                         if (t instanceof CompoundToken) {
-                            t = new CompoundToken((CompoundToken)t,this);
+                            t = new CompoundToken((CompoundToken)t,LS);
                         }
                         parseRuleStack.pop();
                         parseRuleStack.push(currentRule.getRuleForNonTerminal());
@@ -224,19 +225,19 @@ public class CallFrame {
 
 
     private RuleNode contextLookAhead(CallFrame cf, Token t) {
-        CallFrame currentCf = cf;
+        CObject currentCf = cf.LS;
         RuleNode ret;
         while(currentCf!=null) {
-            ret = currentCf.LS.getRuleNode();
+            ret = currentCf.getRuleNode();
             if (t.accept(new MatchVisitor(ret))!=null) {
                 return ret;
             }
             currentCf = currentCf.SS;
         }
 
-        currentCf = cf;
+        currentCf = cf.LS;
         while(currentCf!=null) {
-            ret = currentCf.LS.getRuleNode();
+            ret = currentCf.getRuleNode();
             if (ret.getRuleForToken()!=null) {
                 return ret;
             }

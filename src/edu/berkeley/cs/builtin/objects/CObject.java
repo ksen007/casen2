@@ -53,6 +53,7 @@ import java.util.TreeMap;
     */
 
 public class CObject {
+    public CObject SS;
 //    private CObject superC;  // for efficiency only
     private RuleNode rules;
 
@@ -76,16 +77,20 @@ public class CObject {
 //        return superC;
 //    }
 
+    private static CompoundToken parseIt(Reader in,String fname) throws IOException {
+        Lexer lexer = new Lexer(in);
+        Scanner scnr = new BasicScanner(lexer);
+
+        CObject LS = new TokenEater(null,fname);
+        CallFrame cf = new CallFrame(LS,LS,scnr);
+        CompoundToken pgm = (CompoundToken)((TokenEater)cf.interpret()).returnNewCompoundToken();
+        return pgm;
+    }
+
     public CObject eval(String s) {
         try {
-            Lexer lexer = new Lexer(new StringReader(s));
-            Scanner scnr = new BasicScanner(lexer);
-
-            CObject LS = new TokenEater(null,null);
-            CallFrame cf = new CallFrame(LS,LS,scnr,null);
-            CompoundToken pgm = (CompoundToken)((TokenEater)cf.interpret()).returnNewCompoundToken();
-
-            return pgm.execute(this);
+            CompoundToken pgm = parseIt(new StringReader(s),null);
+            return pgm.execute(this,true); //comeback
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e.getMessage());
@@ -96,18 +101,13 @@ public class CObject {
     public static String currentFile = null;
     public static IdentityHashMap<CompoundToken,CObject> staticObjects = new IdentityHashMap<CompoundToken, CObject>();
 
-    public CObject load(String file, boolean reload) {
+    public static CObject load(String file, boolean reload) {
         Reader in = null;
         CompoundToken pgm;
         try {
             if (reload || !codeCache.containsKey(file)) {
                 in = new BufferedReader(new FileReader(file));
-                Lexer lexer = new Lexer(in);
-                Scanner scnr = new BasicScanner(lexer);
-
-                CObject LS = new TokenEater(null,file);
-                CallFrame cf = new CallFrame(LS,LS,scnr,null);
-                pgm = (CompoundToken)((TokenEater)cf.interpret()).returnNewCompoundToken();
+                pgm = parseIt(in,file);
                 codeCache.put(file,pgm);
             } else {
                 pgm = codeCache.get(file);
@@ -192,8 +192,8 @@ public class CObject {
     public CObject whileAction(CObject S1, CObject S2) {
         CompoundToken s1 = (CompoundToken)S1;
         CompoundToken s2 = (CompoundToken)S2;
-        while(((BooleanToken)s1.execute(this)).value) {
-            s2.execute(this);
+        while(((BooleanToken)s1.execute(this,false)).value) {
+            s2.execute(this,false);
         }
         return this;
     }
@@ -204,7 +204,7 @@ public class CObject {
         CompoundToken s = (CompoundToken)S;
         CObject val;
         if ((val = CObject.staticObjects.get(s))==null) {
-            val = s.execute(this);
+            val = s.execute(this,false);
             CObject.staticObjects.put(s,val);
         }
         return val;
@@ -215,10 +215,10 @@ public class CObject {
         CompoundToken s1 = (CompoundToken)S1;
         CompoundToken s2 = (CompoundToken)S2;
         if (cond.value) {
-            s1.execute(this);
+            s1.execute(this,false);
             return this;
         } else {
-            s2.execute(this);
+            s2.execute(this,false);
             return this;
         }
     }

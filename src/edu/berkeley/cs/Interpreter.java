@@ -44,8 +44,7 @@ public class Interpreter {
     }
 
     public static void main(String[] args) {
-        CNonPrimitiveObject tmp = new CNonPrimitiveObject();
-        CompoundToken pgm = (CompoundToken)tmp.load(args[0], false);
-        pgm.execute(tmp);
+        CompoundToken pgm = (CompoundToken)CObject.load(args[0], false);
+        pgm.execute(new CNonPrimitiveObject(),true);
     }
 }

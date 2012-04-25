@@ -1,7 +1,10 @@
 package edu.berkeley.cs.builtin.objects.preprocessor;
 
+import com.sun.tools.example.debug.gui.Environment;
 import edu.berkeley.cs.builtin.functions.*;
+import edu.berkeley.cs.builtin.objects.CNonPrimitiveObject;
 import edu.berkeley.cs.builtin.objects.CObject;
+import edu.berkeley.cs.builtin.objects.EnvironmentObject;
 import edu.berkeley.cs.builtin.objects.Reference;
 import edu.berkeley.cs.lexer.BufferedScanner;
 import edu.berkeley.cs.lexer.Scanner;
@@ -49,13 +52,13 @@ public class CompoundToken extends Token {
     public ArrayList<SymbolToken> parameters;
     private String file;
 
-    private CallFrame SS;
+//    private CallFrame SS;
 
     public BufferedScanner getScanner() {
         return new BufferedScanner(tokens);
     }
 
-    public CompoundToken(CompoundToken cloneMe,CallFrame SS) {
+    public CompoundToken(CompoundToken cloneMe,CObject SS) {
         super(cloneMe.getPosition());
         tokens = cloneMe.tokens;
         parameters = cloneMe.parameters;
@@ -71,7 +74,7 @@ public class CompoundToken extends Token {
         tokens = ss.tokens;
         parameters = ss.parameters;
         this.file = file;
-        SS = CallFrame.base;
+        SS = EnvironmentObject.instance;
         int N = parameters.size();
 
         this.addNewRule();
@@ -99,19 +102,21 @@ public class CompoundToken extends Token {
         this.addAction(new DirectCallWith());
     }
 
-    public CObject execute(CObject LS) {
+    public CObject execute(CObject LS, boolean overrideSS) {
+        if (overrideSS)
+            LS.SS = SS;
         String tmp = CObject.currentFile;
         CObject.currentFile = file;
         try {
             Scanner scnr = getScanner();
-            CallFrame cf = new CallFrame(LS,scnr,SS);
+            CallFrame cf = new CallFrame(LS,scnr);
             return cf.interpret();
         } finally {
             CObject.currentFile = tmp;
         }
     }
 
-    public CObject execute(CObject LS, LinkedList<CObject> args) {
+    public CObject execute(CObject LS, LinkedList<CObject> args, boolean overrideSS) {
         for(SymbolToken param:parameters) {
             Reference common;
 
@@ -125,7 +130,7 @@ public class CompoundToken extends Token {
             LS.addMeta(SymbolTable.getInstance().expr);
             LS.addAction(new PutField(common));
         }
-        return execute(LS);
+        return execute(LS,overrideSS);
     }
 
 

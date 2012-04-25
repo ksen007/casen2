@@ -41,6 +41,6 @@ public class DirectCallWith implements Invokable {
     public CObject apply(LinkedList<CObject> args) {
         CompoundToken body = (CompoundToken)args.removeFirst();
         CObject LS = args.removeFirst();
-        return body.execute(LS,args);
+        return body.execute(LS,args,false); //comeback
     }
 }
