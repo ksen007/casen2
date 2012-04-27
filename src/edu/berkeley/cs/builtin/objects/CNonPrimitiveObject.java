@@ -37,89 +37,70 @@ import edu.berkeley.cs.parser.SymbolTable;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class CNonPrimitiveObject extends CObject {
-//    public static CObject superClass = new CObject();
 
-//    private static CNonPrimitiveObject superClass =  new CNonPrimitiveObject(true);
-//
-//    static {
-//        superClass.addNewRule();
-//        superClass.addSymbol(SymbolTable.getInstance().getId("var"));
-//        superClass.addMeta(SymbolTable.getInstance().token);
-//        superClass.addSymbol(SymbolTable.getInstance().getId("="));
-//        superClass.addMeta(SymbolTable.getInstance().expr);
-//        superClass.addAction(new NativeFunction("assignment"));
-//
-//        superClass.addNewRule();
-//        superClass.addSymbol(SymbolTable.getInstance().getId("def"));
-//        superClass.addAction(new NativeFunction("newDefinitionEater"));
-//
-//        superClass.addNewRule();
-//        superClass.addSymbol(SymbolTable.getInstance().getId("=="));
-//        superClass.addMeta(SymbolTable.getInstance().expr);
-//        superClass.addAction(new NativeFunction("equality"));
-//
-//        superClass.addNewRule();
-//        superClass.addSymbol(SymbolTable.getInstance().getId("!="));
-//        superClass.addMeta(SymbolTable.getInstance().expr);
-//        superClass.addAction(new NativeFunction("disequality"));
-//
-////        superClass.addNewRule();
-////        superClass.addSymbol(SymbolTable.getInstance().getId("load"));
-////        superClass.addMeta(SymbolTable.getInstance().argument);
-////        superClass.addAction(new NativeFunction("loadFile"));
-//
-//        superClass.addNewRule();
-//        superClass.addSymbol(SymbolTable.getInstance().getId("LS"));
-//        superClass.addAction(new GetField(new Reference(superClass)));
-//
-//    }
+    private static CNonPrimitiveObject superClass =  new CNonPrimitiveObject(true);
+
+    static {
+        superClass.addNewRule();
+        superClass.addSymbol(SymbolTable.getInstance().getId("var"));
+        superClass.addMeta(SymbolTable.getInstance().token);
+        superClass.addSymbol(SymbolTable.getInstance().getId("="));
+        superClass.addMeta(SymbolTable.getInstance().expr);
+        superClass.addAction(new NativeFunction("assignment"));
+
+        superClass.addNewRule();
+        superClass.addSymbol(SymbolTable.getInstance().getId("def"));
+        superClass.addAction(new NativeFunction("newDefinitionEater"));
+
+        superClass.addNewRule();
+        superClass.addSymbol(SymbolTable.getInstance().getId("=="));
+        superClass.addMeta(SymbolTable.getInstance().expr);
+        superClass.addAction(new NativeFunction("equality"));
+
+        superClass.addNewRule();
+        superClass.addSymbol(SymbolTable.getInstance().getId("!="));
+        superClass.addMeta(SymbolTable.getInstance().expr);
+        superClass.addAction(new NativeFunction("disequality"));
+
+        superClass.addNewRule();
+        superClass.addSymbol(SymbolTable.getInstance().getId("LS"));
+        superClass.addAction(new GetField(new Reference(superClass)));
+
+    }
 
     private CNonPrimitiveObject(boolean fake) {
 
     }
 
     public CNonPrimitiveObject() {
-//        this.addNewRule();
-//        this.addSymbol(SymbolTable.getInstance().getId("LS"));
-//        this.addAction(new GetField(new Reference(this)));
-//        setParent(superClass,true);
-        this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().getId("var"));
-        this.addMeta(SymbolTable.getInstance().token);
-        this.addSymbol(SymbolTable.getInstance().getId("="));
-        this.addMeta(SymbolTable.getInstance().expr);
-        this.addAction(new NativeFunction("assignment"));
-
-        this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().getId("def"));
-        this.addAction(new NativeFunction("newDefinitionEater"));
-
-        this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().getId("=="));
-        this.addMeta(SymbolTable.getInstance().expr);
-        this.addAction(new NativeFunction("equality"));
-
-        this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().getId("!="));
-        this.addMeta(SymbolTable.getInstance().expr);
-        this.addAction(new NativeFunction("disequality"));
-
-//        this.addNewRule();
-//        this.addSymbol(SymbolTable.getInstance().getId("load"));
-//        this.addMeta(SymbolTable.getInstance().argument);
-//        this.addAction(new NativeFunction("loadFile"));
-
         this.addNewRule();
         this.addSymbol(SymbolTable.getInstance().getId("LS"));
         this.addAction(new GetField(new Reference(this)));
+        setParent(superClass,true);
+//        this.addNewRule();
+//        this.addSymbol(SymbolTable.getInstance().getId("var"));
+//        this.addMeta(SymbolTable.getInstance().token);
+//        this.addSymbol(SymbolTable.getInstance().getId("="));
+//        this.addMeta(SymbolTable.getInstance().expr);
+//        this.addAction(new NativeFunction("assignment"));
+//
+//        this.addNewRule();
+//        this.addSymbol(SymbolTable.getInstance().getId("def"));
+//        this.addAction(new NativeFunction("newDefinitionEater"));
+//
+//        this.addNewRule();
+//        this.addSymbol(SymbolTable.getInstance().getId("=="));
+//        this.addMeta(SymbolTable.getInstance().expr);
+//        this.addAction(new NativeFunction("equality"));
+//
+//        this.addNewRule();
+//        this.addSymbol(SymbolTable.getInstance().getId("!="));
+//        this.addMeta(SymbolTable.getInstance().expr);
+//        this.addAction(new NativeFunction("disequality"));
+//
+//        this.addNewRule();
+//        this.addSymbol(SymbolTable.getInstance().getId("LS"));
+//        this.addAction(new GetField(new Reference(this)));
     }
 
-//    public void setParent(CObject SS,boolean isProto) {
-//        super.setParent(SS,isProto);
-//        if (SS !=null) {
-//            this.addNewRule();
-//            this.addSymbol(SymbolTable.getInstance().getId("SS"));
-//            this.addAction(new GetField(new Reference(SS)));
-//        }
-//    }
 }

@@ -39,31 +39,16 @@ public class EnvironmentObject extends CObject {
     public static EnvironmentObject instance = new EnvironmentObject();
 
     private EnvironmentObject() {
-//        this.addNewRule();
-//        this.addSymbol(SymbolTable.getInstance().getId("var"));
-//        this.addMeta(SymbolTable.getInstance().token);
-//        this.addSymbol(SymbolTable.getInstance().getId("="));
-//        this.addMeta(SymbolTable.getInstance().expr);
-//        this.addAction(new NativeFunction("assignment"));
+        this.addNewRule();
+        this.addSymbol(SymbolTable.getInstance().getId("var"));
+        this.addMeta(SymbolTable.getInstance().token);
+        this.addSymbol(SymbolTable.getInstance().getId("="));
+        this.addMeta(SymbolTable.getInstance().expr);
+        this.addAction(new NativeFunction("assignment"));
 
-//        this.addNewRule();
-//        this.addMeta(SymbolTable.getInstance().token);
-//        this.addAction(new NativeFunction("returnArgument"));
-
-
-//        this.addNewRule();
-//        this.addSymbol(SymbolTable.getInstance().getId("def"));
-//        this.addAction(new NativeFunction("newDefinitionEater"));
-
-//        this.addNewRule();
-//        this.addSymbol(SymbolTable.getInstance().getId("=="));
-//        this.addMeta(SymbolTable.getInstance().argument);
-//        this.addAction(new NativeFunction("equality"));
-//
-//        this.addNewRule();
-//        this.addSymbol(SymbolTable.getInstance().getId("!="));
-//        this.addMeta(SymbolTable.getInstance().argument);
-//        this.addAction(new NativeFunction("disequality"));
+        this.addNewRule();
+        this.addSymbol(SymbolTable.getInstance().getId("def"));
+        this.addAction(new NativeFunction("newDefinitionEater"));
 
         this.addNewRule();
         this.addSymbol(SymbolTable.getInstance().getId("("));
@@ -112,9 +97,8 @@ public class EnvironmentObject extends CObject {
         this.addAction(new NativeFunction("onceAction"));
 
 //        this.addNewRule();
-//        this.addSymbol(SymbolTable.getInstance().getId("LS"));
-//        this.addAction(new GetField(new Reference(this)));
-
+//        this.addMeta(SymbolTable.getInstance().token);
+//        this.addAction(new NativeFunction("returnArgument"));
     }
 
 }
