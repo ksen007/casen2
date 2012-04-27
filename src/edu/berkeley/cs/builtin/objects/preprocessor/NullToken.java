@@ -46,7 +46,7 @@ public class NullToken extends Token {
 
     private static NullToken NULL;
 
-    private static CObject superClass =  new CObject();
+    private static CObject superClass =  new CNonPrimitiveObject();
     static {
         superClass.eval("def == @argument @eq  endef");
         superClass.eval("def != @argument @ne  endef");
@@ -63,7 +63,7 @@ public class NullToken extends Token {
 
     public NullToken(SourcePosition position) {
         super(position);
-        setRule(superClass);
+        setParent(superClass,true);
     }
 
     @Override

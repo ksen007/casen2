@@ -51,9 +51,9 @@ public class EnvironmentObject extends CObject {
 //        this.addAction(new NativeFunction("returnArgument"));
 
 
-        this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().getId("def"));
-        this.addAction(new NativeFunction("newDefinitionEater"));
+//        this.addNewRule();
+//        this.addSymbol(SymbolTable.getInstance().getId("def"));
+//        this.addAction(new NativeFunction("newDefinitionEater"));
 
 //        this.addNewRule();
 //        this.addSymbol(SymbolTable.getInstance().getId("=="));

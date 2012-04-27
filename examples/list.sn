@@ -5,6 +5,10 @@ def Node @argument @argument {|data, next|
     ret
 }
 
+def newObject {
+LS
+}
+
 def list @argument {|data|
     var ret = new Object
     ret var val = Node data null
@@ -16,7 +20,7 @@ def list @argument {|data|
         }
     }(ret)
 
-    {def print {
+    {def pr {
         var tmp = (self val)
         while {tmp != null} {
             print (tmp data)
@@ -29,6 +33,6 @@ def list @argument {|data|
 var ret = list 8, 9, 10, 11, 12
 print (ret val data)
 print "-----------------"
-ret print
+ret pr
 
 var ret = Node 3 null

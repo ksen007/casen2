@@ -54,6 +54,8 @@ import java.util.TreeMap;
 
 public class CObject {
     private CObject SS;
+    private Reference prototype;
+
 //    private CObject superC;  // for efficiency only
     private RuleNode rules;
 
@@ -65,12 +67,34 @@ public class CObject {
         this.rules = methods.rules;
     }
 
-    public CObject getSS() {
-        return SS;
+    public CObject getParent(boolean isPrototype) {
+        if (isPrototype)
+            return prototype==null?null:prototype.value;
+        else
+            return SS;
     }
 
-    public void setSS(CObject SS) {
-        this.SS = SS;
+    public void setParent(CObject obj,boolean isPrototype) {
+        if (isPrototype) {
+            this.prototype = new Reference(obj);
+            if (obj !=null) {
+                this.addNewRule();
+                this.addSymbol(SymbolTable.getInstance().getId("prototype"));
+                this.addAction(new GetField(prototype));
+
+                this.addNewRule();
+                this.addSymbol(SymbolTable.getInstance().getId("prototype"));
+                this.addSymbol(SymbolTable.getInstance().getId("="));
+                this.addAction(new PutField(prototype));
+            }
+        } else {
+            this.SS = obj;
+            if (obj !=null) {
+                this.addNewRule();
+                this.addSymbol(SymbolTable.getInstance().getId("SS"));
+                this.addAction(new GetField(new Reference(obj)));
+            }
+        }
     }
 
 //    public void setSuperClass(CObject superClass) {
@@ -234,7 +258,7 @@ public class CObject {
 
     public CObject newObject() {
         CNonPrimitiveObject ret = new CNonPrimitiveObject();
-        ret.setSS(this);
+        ret.setParent(this,false);
         return ret;
     }
 

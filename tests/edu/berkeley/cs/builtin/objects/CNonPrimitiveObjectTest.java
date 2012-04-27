@@ -79,12 +79,7 @@ public class CNonPrimitiveObjectTest extends TestCase {
     }
 
     public void testSemiColon1() throws Exception {
-        try {
-            Interpreter.interpret("print x;");
-            assertFalse("x is uninitialized",true);
-        } catch (ParseException e) {
-            System.out.println("test is fine because x is uninitialized \n"+e);
-        }
+        Interpreter.interpret("print x;");
     }
 
     public void testSemiColon3() throws Exception {

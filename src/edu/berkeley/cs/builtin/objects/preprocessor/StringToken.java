@@ -40,7 +40,7 @@ import edu.berkeley.cs.parser.TokenVisitor;
 public class StringToken extends Token {
 
     public String value;
-    private static CObject superClass =  new CObject();
+    private static CObject superClass =  new CNonPrimitiveObject();
 
     static {
         superClass.eval("def + @argument @add endef");
@@ -51,7 +51,7 @@ public class StringToken extends Token {
     public StringToken(SourcePosition position, String s) {
         super(position);
         this.value = s;
-        setRule(superClass);
+        setParent(superClass,true);
     }
 
     public CObject add(CObject operand2) {

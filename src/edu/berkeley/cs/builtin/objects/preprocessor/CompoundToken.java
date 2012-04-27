@@ -64,7 +64,7 @@ public class CompoundToken extends Token {
         parameters = cloneMe.parameters;
         file = cloneMe.file;
         setRule(cloneMe);
-        this.setSS(SS);
+        this.setParent(SS,false);
     }
 
     public CompoundToken(TokenEater ss,String file) {
@@ -103,7 +103,7 @@ public class CompoundToken extends Token {
 
     public CObject execute(CObject LS, boolean overrideSS) {
         if (overrideSS)
-            LS.setSS(getSS());
+            LS.setParent(getParent(false),false);
         String tmp = CObject.currentFile;
         CObject.currentFile = file;
         try {
@@ -164,8 +164,8 @@ public class CompoundToken extends Token {
         return this == o;
     }
 
-    public void setSS(CObject SS) {
-        super.setSS(SS);
+    public void setParent(CObject SS, boolean isProto) {
+        super.setParent(SS,isProto);
         if (SS !=null) {
             this.addNewRule();
             this.addSymbol(SymbolTable.getInstance().getId("SS"));
