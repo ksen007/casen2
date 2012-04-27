@@ -1,9 +1,7 @@
-package edu.berkeley.cs.builtin.objects;
+package edu.berkeley.cs;
 
 import edu.berkeley.cs.Interpreter;
 import junit.framework.TestCase;
-
-import java.io.IOException;
 
 /**
  * Copyright (c) 2006-2011,
@@ -37,38 +35,18 @@ import java.io.IOException;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class CIntegerObjectTest extends TestCase {
+public class ScratchPad extends TestCase {
 
-    public void testAdd() throws Exception {
 
-        Interpreter.interpret("print (var x = 1156 + \n 5);");
+    public void testArray() throws Exception {
+
+        Interpreter.interpret("def CArray @argument @edu.berkeley.cs.builtin.objects.CArray endef ; var x = (CArray 10); x[1] = 89; print (x[1]); var i =0; while {i < (x length) } { x[i] = i; i = (i+1);}; print (x[3]);");
     }
 
-    public void testAdd2() throws Exception {
-        Interpreter.interpret("print (var x = 1156 + 1156 + 1156); assert x == 3468;");
+    public void testArrayMap() throws Exception {
+
+        Interpreter.interpret("def CArray @argument @edu.berkeley.cs.builtin.objects.CArray endef ; var x = (CArray 10); var i = 0; while {i < (x length) } { x[i] = i; i = (i+1);}; x map {|y| print y;};");
     }
 
-    public void testSub1() throws Exception {
-        Interpreter.interpret("print (var x = 5000 -  1156 - 1156); assert x== 2688; ");
-    }
-
-    public void testAddMul1() throws Exception {
-        Interpreter.interpret("print (var x = 5000 - 2 * 1156); assert x== 2688; ");
-    }
-
-    public void testAddDiv1() throws Exception {
-        Interpreter.interpret("print (var x = 1156 - 1156 * 1156/1156); assert x== 0; ");
-    }
-
-    public void testVarAddDiv1() throws Exception {
-        Interpreter.interpret("var y = 1156; var x = y - y*y/y; print y; assert x==0; assert y==1156;");
-    }
-
-    public void testVarAddDiv2() throws Exception {
-        Interpreter.interpret("var y = 1156; y = y = y + 10; print y; assert y==1166;");
-    }
-
-    public void testVarAddDiv3() throws Exception {
-        Interpreter.interpret("var y = 1156; ; ; var x = y - y*y/y; print y; assert x==0; assert y==1156;");
-    }
 }
+

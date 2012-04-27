@@ -1,4 +1,4 @@
-package edu.berkeley.cs.builtin.objects;
+package edu.berkeley.cs;
 
 import edu.berkeley.cs.Interpreter;
 import edu.berkeley.cs.lexer.*;
@@ -211,4 +211,5 @@ public class CNonPrimitiveObjectTest extends TestCase {
         }
 
     }
+
 }

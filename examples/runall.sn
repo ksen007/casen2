@@ -1,0 +1,6 @@
+(load "test1.sn")()
+(load "test2.sn")()
+(load "test3.sn")()
+(load "test4.sn")()
+(load "list.sn")()
+(load "list2.sn")()

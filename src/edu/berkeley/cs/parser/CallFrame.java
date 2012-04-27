@@ -57,12 +57,10 @@ public class CallFrame {
 
     public CallFrame(CObject LS, Scanner scnr) {
         init(LS,CStatementEater.instance,scnr);
-//        this.LS.SS = SS;
     }
 
     public CallFrame(CObject LS, CObject base, Scanner scnr) {
         init(LS,base,scnr);
-//        this.LS.SS = SS;
     }
 
     public void init(CObject LS, CObject base, Scanner scnr) {
