@@ -212,4 +212,7 @@ public class CNonPrimitiveObjectTest extends TestCase {
 
     }
 
+    public void testProto1() throws Exception {
+        Interpreter.interpret("var o1 = new Object; o1 var x = 2; var o2 = new Object; o1 prototype = o2");
+    }
 }

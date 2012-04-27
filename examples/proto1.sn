@@ -1,0 +1,14 @@
+
+
+var o1 = new Object
+o1 var x = 2
+o1 var y = 3
+
+var o2 = new Object
+o2 var x = 4
+o2 prototype = o1
+
+
+print (o1 x)
+print (o2 x)
+print (o2 y)

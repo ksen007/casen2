@@ -85,6 +85,7 @@ public class CObject {
                 this.addNewRule();
                 this.addSymbol(SymbolTable.getInstance().getId("prototype"));
                 this.addSymbol(SymbolTable.getInstance().getId("="));
+                this.addMeta(SymbolTable.getInstance().expr);
                 this.addAction(new PutField(prototype));
             }
         } else {
