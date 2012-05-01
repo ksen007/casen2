@@ -175,8 +175,13 @@ public class CObject {
 
 
     public CObject loadFile(CObject file) {
-        File f = new File(currentFile);
-        f = new File(f.getParent(),((StringToken)file).value);
+        File f;
+        if (currentFile != null) {
+            f = new File(currentFile);
+            f = new File(f.getParent(),((StringToken)file).value);
+        } else {
+            f = new File(((StringToken)file).value);
+        }
         return load(f.getAbsolutePath(),false);
     }
 

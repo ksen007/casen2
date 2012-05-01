@@ -77,30 +77,6 @@ public class CNonPrimitiveObject extends CObject {
         this.addSymbol(SymbolTable.getInstance().getId("LS"));
         this.addAction(new GetField(new Reference(this)));
         setParent(superClass,true);
-//        this.addNewRule();
-//        this.addSymbol(SymbolTable.getInstance().getId("var"));
-//        this.addMeta(SymbolTable.getInstance().token);
-//        this.addSymbol(SymbolTable.getInstance().getId("="));
-//        this.addMeta(SymbolTable.getInstance().expr);
-//        this.addAction(new NativeFunction("assignment"));
-//
-//        this.addNewRule();
-//        this.addSymbol(SymbolTable.getInstance().getId("def"));
-//        this.addAction(new NativeFunction("newDefinitionEater"));
-//
-//        this.addNewRule();
-//        this.addSymbol(SymbolTable.getInstance().getId("=="));
-//        this.addMeta(SymbolTable.getInstance().expr);
-//        this.addAction(new NativeFunction("equality"));
-//
-//        this.addNewRule();
-//        this.addSymbol(SymbolTable.getInstance().getId("!="));
-//        this.addMeta(SymbolTable.getInstance().expr);
-//        this.addAction(new NativeFunction("disequality"));
-//
-//        this.addNewRule();
-//        this.addSymbol(SymbolTable.getInstance().getId("LS"));
-//        this.addAction(new GetField(new Reference(this)));
     }
 
 }
