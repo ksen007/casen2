@@ -3,6 +3,7 @@ package edu.berkeley.cs.builtin.objects;
 import edu.berkeley.cs.builtin.functions.*;
 import edu.berkeley.cs.builtin.objects.preprocessor.CompoundToken;
 import edu.berkeley.cs.builtin.objects.preprocessor.MetaToken;
+import edu.berkeley.cs.builtin.objects.preprocessor.NullToken;
 import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
 import edu.berkeley.cs.parser.SymbolTable;
 
@@ -78,7 +79,7 @@ public class CDefinitionEater extends CObject {
 
         if (arg instanceof CompoundToken) {
             self.parent.addAction(new UserDefinedFunction((CompoundToken) arg));
-            return self.parent;
+            return NullToken.NULL();
         }
         if (arg instanceof MetaToken) {
             MetaToken mt = (MetaToken) arg;

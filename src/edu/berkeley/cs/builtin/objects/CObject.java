@@ -55,9 +55,37 @@ import java.util.TreeMap;
 public class CObject {
     private CObject SS;
     private Reference prototype;
-
-//    private CObject superC;  // for efficiency only
     private RuleNode rules;
+
+    private int flags;
+    final private static int RETURN_FLAG = 1;
+    final private static int EXCEPTION_FLAG = 2;
+
+
+    public void setException() {
+        flags = flags | EXCEPTION_FLAG;
+    }
+
+    public void clearException() {
+        flags = flags & (~EXCEPTION_FLAG);
+    }
+
+    public boolean isException() {
+        return (flags & EXCEPTION_FLAG) > 0;
+    }
+
+    public void setReturn() {
+        flags = flags | RETURN_FLAG;
+    }
+
+    public void clearReturn() {
+        flags = flags & (~RETURN_FLAG);
+    }
+
+    public boolean isReturn() {
+        return (flags & RETURN_FLAG) > 0;
+    }
+
 
     public CObject() {
         rules = new RuleNode(null);
@@ -98,17 +126,9 @@ public class CObject {
         }
     }
 
-//    public void setSuperClass(CObject superClass) {
-//        this.superC = superClass;
-//    }
-
     public RuleNode getRuleNode() {
         return rules;
     }
-
-//    public CObject getSuperClass() {
-//        return superC;
-//    }
 
     private static CompoundToken parseIt(Reader in,String fname) throws IOException {
         Lexer lexer = new Lexer(in);
@@ -207,7 +227,7 @@ public class CObject {
         self.addMeta(SymbolTable.getInstance().expr);
         self.addAction(new PutField(common));
 
-        return value;
+        return NullToken.NULL();
 
     }
 
@@ -220,7 +240,7 @@ public class CObject {
     public CObject assertEquality(CObject first) {
         if (!((BooleanToken)first).value)
             throw new RuntimeException("assert failed");
-        return first;
+        return NullToken.NULL();
     }
 
     public CObject returnArgument(CObject arg) {
@@ -230,10 +250,18 @@ public class CObject {
     public CObject whileAction(CObject S1, CObject S2) {
         CompoundToken s1 = (CompoundToken)S1;
         CompoundToken s2 = (CompoundToken)S2;
-        while(((BooleanToken)s1.execute(this,false)).value) {
-            s2.execute(this,false);
+        CObject ret;
+        ret = s1.execute(this,false);
+        if (ret.isException()) return ret;
+
+        while(((BooleanToken)ret).value) {
+            ret = s2.execute(this,false);
+            if (ret.isException()) return ret;
+
+            ret = s1.execute(this,false);
+            if (ret.isException()) return ret;
         }
-        return this;
+        return NullToken.NULL();
     }
 
 
@@ -243,6 +271,7 @@ public class CObject {
         CObject val;
         if ((val = CObject.staticObjects.get(s))==null) {
             val = s.execute(this,false);
+            if (val.isException()) return val;
             CObject.staticObjects.put(s,val);
         }
         return val;
@@ -253,11 +282,13 @@ public class CObject {
         CompoundToken s1 = (CompoundToken)S1;
         CompoundToken s2 = (CompoundToken)S2;
         if (cond.value) {
-            s1.execute(this,false);
-            return this;
+            CObject ret = s1.execute(this,false);
+            if (ret.isException()) return ret;
+            return NullToken.NULL();
         } else {
-            s2.execute(this,false);
-            return this;
+            CObject ret = s2.execute(this,false);
+            if (ret.isException()) return ret;
+            return NullToken.NULL();
         }
     }
 
@@ -266,6 +297,41 @@ public class CObject {
         CNonPrimitiveObject ret = new CNonPrimitiveObject();
         ret.setParent(this,false);
         return ret;
+    }
+
+    public CObject cReturn(CObject val) {
+        val.setReturn();
+        return val;
+    }
+
+    public CObject cException(CObject val) {
+        val.setException();
+        return val;
+    }
+
+    public CObject tryCatch(CObject tryAction, CObject var, CObject catchAction) {
+        SymbolToken symbol = (SymbolToken) var;
+        CompoundToken s1 = (CompoundToken)tryAction;
+        CompoundToken s2 = (CompoundToken)catchAction;
+        CObject ret = s1.execute(this,false);
+        if (ret.isException()) {
+            ret.clearException();
+            Reference common = new Reference(ret);
+
+            this.addNewRule();
+            this.addSymbol(symbol.symbol);
+            this.addAction(new GetField(common));
+
+            this.addNewRule();
+            this.addSymbol(symbol.symbol);
+            this.addSymbol(SymbolTable.getInstance().getId("="));
+            this.addMeta(SymbolTable.getInstance().expr);
+            this.addAction(new PutField(common));
+
+            ret = s2.execute(this,false);
+            if (ret.isException()) return ret;
+        }
+        return NullToken.NULL();
     }
 
     @Override

@@ -86,6 +86,14 @@ public class EnvironmentObject extends CObject {
         this.addAction(new NativeFunction("ifAction"));
 
         this.addNewRule();
+        this.addSymbol(SymbolTable.getInstance().getId("try"));
+        this.addMeta(SymbolTable.getInstance().expr);
+        this.addSymbol(SymbolTable.getInstance().getId("catch"));
+        this.addMeta(SymbolTable.getInstance().token);
+        this.addMeta(SymbolTable.getInstance().expr);
+        this.addAction(new NativeFunction("tryCatch"));
+
+        this.addNewRule();
         this.addSymbol(SymbolTable.getInstance().getId("while"));
         this.addMeta(SymbolTable.getInstance().expr);
         this.addMeta(SymbolTable.getInstance().expr);
@@ -95,6 +103,17 @@ public class EnvironmentObject extends CObject {
         this.addSymbol(SymbolTable.getInstance().getId("once"));
         this.addMeta(SymbolTable.getInstance().expr);
         this.addAction(new NativeFunction("onceAction"));
+
+        this.addNewRule();
+        this.addSymbol(SymbolTable.getInstance().getId("throw"));
+        this.addMeta(SymbolTable.getInstance().expr);
+        this.addAction(new NativeFunction("cException"));
+
+        this.addNewRule();
+        this.addSymbol(SymbolTable.getInstance().getId("return"));
+        this.addMeta(SymbolTable.getInstance().expr);
+        this.addAction(new NativeFunction("cReturn"));
+
 
 //        this.addNewRule();
 //        this.addMeta(SymbolTable.getInstance().token);

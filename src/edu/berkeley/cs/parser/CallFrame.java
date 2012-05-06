@@ -88,29 +88,16 @@ public class CallFrame {
         while(!parseRuleStack.isEmpty()
                 && !(parseRuleStack.size()==1 && scnr.isEnd() && computationStack.get(0) instanceof CStatementEater)) {
             interpretAux();
+            CObject top = computationStack.peek();
+            if (top.isReturn()) {
+                top.clearReturn();
+                return top;
+            }
+            if (top.isException()) {
+                return top;
+            }
         }
         return computationStack.peek();
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("LS:\n");
-        sb.append(LS.getRuleNode());
-        sb.append("Computation Stack:\n");
-        for (CObject next : computationStack) {
-            sb.append("*** ");
-            sb.append(next);
-            sb.append("\n");
-        }
-
-        sb.append("Rule Stack:\n");
-        for (RuleNode next : parseRuleStack) {
-            sb.append("*** ");
-            sb.append(next);
-        }
-
-        return sb.toString();
     }
 
     public boolean interpretAux() {
@@ -291,5 +278,27 @@ public class CallFrame {
 
         return null;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("LS:\n");
+        sb.append(LS.getRuleNode());
+        sb.append("Computation Stack:\n");
+        for (CObject next : computationStack) {
+            sb.append("*** ");
+            sb.append(next);
+            sb.append("\n");
+        }
+
+        sb.append("Rule Stack:\n");
+        for (RuleNode next : parseRuleStack) {
+            sb.append("*** ");
+            sb.append(next);
+        }
+
+        return sb.toString();
+    }
+
 
 }

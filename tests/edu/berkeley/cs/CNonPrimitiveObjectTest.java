@@ -41,10 +41,10 @@ import java.io.StringReader;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class CNonPrimitiveObjectTest extends TestCase {
-    public void testAssignmentLeftAssociativity() throws Exception {
-        System.out.println("------------- testAssignmentLeftAssociativity ----------------------");
-        Interpreter.interpret("var x = (var y = 1156); assert x == y;");
-    }
+//    public void testAssignmentLeftAssociativity() throws Exception {
+//        System.out.println("------------- testAssignmentLeftAssociativity ----------------------");
+//        Interpreter.interpret("var x = (var y = 1156); assert x == y;");
+//    }
 
     public void testAssert0() throws Exception {
         Interpreter.interpret("assert 1156 == 1156;");
@@ -83,7 +83,7 @@ public class CNonPrimitiveObjectTest extends TestCase {
     }
 
     public void testSemiColon3() throws Exception {
-        Interpreter.interpret("print (var x = 1156);");
+        Interpreter.interpret("(var x = 1156); print (x = 1157);");
     }
 
     public void testSemiColon4() throws Exception {
@@ -99,7 +99,7 @@ public class CNonPrimitiveObjectTest extends TestCase {
     }
 
     public void testDef2() throws Exception {
-        Interpreter.interpret("def foo { print 9999 } foo; foo");
+        Interpreter.interpret("def foo { print 9999 }; foo; foo");
     }
 
     public void testDef3() throws Exception {
@@ -147,7 +147,7 @@ public class CNonPrimitiveObjectTest extends TestCase {
 
     public void testIf2() throws Exception {
         System.out.println("------------- testIf1 ----------------------");
-        Interpreter.interpret("def fac @argument {|n| if n > 1 then {var ret = n * (self fac (n-1)) } else { var ret = 1} ret}; print (fac 10) ");
+        Interpreter.interpret("def fac @argument {|n| if n > 1 then {var ret = n * (self fac (n-1)) } else { var ret = 1}; ret}; print (fac 10) ");
         //System.out.println(cf);
     }
 
@@ -206,7 +206,7 @@ public class CNonPrimitiveObjectTest extends TestCase {
         try {
             Interpreter.interpret("var x = null; assert (x != null)");
             assertFalse("x is null",true);
-        } catch (ParseException e) {
+        } catch (RuntimeException e) {
             System.out.println("test is fine because x is null \n");
         }
 
@@ -214,5 +214,15 @@ public class CNonPrimitiveObjectTest extends TestCase {
 
     public void testProto1() throws Exception {
         Interpreter.interpret("var o1 = new Object; o1 var x = 2; var o2 = new Object; o1 prototype = o2");
+    }
+
+    public void testReturn1() throws Exception {
+        Interpreter.interpret("def foo { return 4; print \"Hello\";}; print foo;");
+    }
+
+    public void testReturn2() throws Exception {
+        System.out.println("------------- testIf1 ----------------------");
+        Interpreter.interpret("def fac @argument {|n| if n > 1 then {var ret = n * (self fac (n-1))} else { var ret = 1}; return ret;}; print (fac 10) ");
+        //System.out.println(cf);
     }
 }

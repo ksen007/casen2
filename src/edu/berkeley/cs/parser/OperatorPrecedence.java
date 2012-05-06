@@ -50,7 +50,7 @@ public class OperatorPrecedence {
     private OperatorPrecedence() {
         precedenceTable.put(SymbolTable.getInstance().getId(","),90);
 
-        precedenceTable.put(SymbolTable.getInstance().getId("="),105);
+        precedenceTable.put(SymbolTable.getInstance().getId("="),-105);
 
         precedenceTable.put(SymbolTable.getInstance().getId("&&"),120);
         precedenceTable.put(SymbolTable.getInstance().getId("||"),130);

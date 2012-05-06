@@ -41,23 +41,23 @@ public class CIntegerObjectTest extends TestCase {
 
     public void testAdd() throws Exception {
 
-        Interpreter.interpret("print (var x = 1156 + \n 5);");
+        Interpreter.interpret("(var x = 1156 + \n 5); print x;");
     }
 
     public void testAdd2() throws Exception {
-        Interpreter.interpret("print (var x = 1156 + 1156 + 1156); assert x == 3468;");
+        Interpreter.interpret("(var x = 1156 + 1156 + 1156); print x; assert x == 3468;");
     }
 
     public void testSub1() throws Exception {
-        Interpreter.interpret("print (var x = 5000 -  1156 - 1156); assert x== 2688; ");
+        Interpreter.interpret("(var x = 5000 -  1156 - 1156); print x; assert x== 2688; ");
     }
 
     public void testAddMul1() throws Exception {
-        Interpreter.interpret("print (var x = 5000 - 2 * 1156); assert x== 2688; ");
+        Interpreter.interpret("(var x = 5000 - 2 * 1156); print x; assert x== 2688; ");
     }
 
     public void testAddDiv1() throws Exception {
-        Interpreter.interpret("print (var x = 1156 - 1156 * 1156/1156); assert x== 0; ");
+        Interpreter.interpret("(var x = 1156 - 1156 * 1156/1156); print x; assert x== 0; ");
     }
 
     public void testVarAddDiv1() throws Exception {
