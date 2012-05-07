@@ -80,19 +80,22 @@ public class OperatorPrecedence {
         precedenceTable.put(SymbolTable.getInstance().getId("!"),215);
 
         precedenceTable.put(SymbolTable.getInstance().getId("."),220);
-
-//        precedenceTable.put(SymbolTable.getInstance().getId(";"),1);
-//        precedenceTable.put(SymbolTable.getInstance().getId("\n"),1);
     }
 
-    public boolean isShift(Token reduceOp, Token shiftOp) {
-        if (reduceOp instanceof SymbolToken && shiftOp instanceof SymbolToken) {
-            int sym1 = precedenceTable.get(((SymbolToken)reduceOp).symbol);
+    public boolean isShift(int exprPrecedence, Token shiftOp) {
+        if (shiftOp instanceof SymbolToken) {
             int sym2 = precedenceTable.get(((SymbolToken)shiftOp).symbol);
-            if (sym2 > sym1 || (sym1 == sym2 && sym2 % 2 == 1)) {
+            if (sym2 > exprPrecedence || (exprPrecedence == sym2 && sym2 % 2 == 1)) {
                 return true;
             }
         }
         return false;
+    }
+
+    public Integer getPrecedence(Token t) {
+        if (t instanceof SymbolToken) {
+            return precedenceTable.get(((SymbolToken)t).symbol);
+        }
+        return 0;
     }
 }

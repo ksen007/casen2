@@ -21,7 +21,7 @@ def list @argument {|data|
         var tmp = (self val)
         while {tmp != null} {
             print (tmp data)
-            tmp = (tmp next)
+            tmp = tmp next
         }
     }} (ret)
     ret}

@@ -67,14 +67,24 @@ public class CDefinitionEater extends CObject {
         }
         if (arg instanceof MetaToken) {
             MetaToken mt = (MetaToken) arg;
-            if (mt.argument!= SymbolTable.getInstance().expr && mt.argument != SymbolTable.getInstance().token) {
+            if (mt.argument!= SymbolTable.getInstance().expr
+                    && mt.argument != SymbolTable.getInstance().nl
+                    && mt.argument != SymbolTable.getInstance().eof
+                    && mt.argument != SymbolTable.getInstance().token) {
                 return new JavaClassEater(self.parent,SymbolTable.getInstance().getSymbol(mt.argument));
             }
         }
         if(arg instanceof SymbolToken) {
             self.parent.addSymbol(((SymbolToken) arg).symbol);
-        } else         if(arg instanceof MetaToken) {
-            self.parent.addMeta(((MetaToken)arg).argument);
+        } else if(arg instanceof MetaToken) {
+            int argument = ((MetaToken)arg).argument;
+            if (argument == SymbolTable.getInstance().nl) {
+                self.parent.addSymbol(SymbolTable.getInstance().getId("\n"));
+            } else if (argument == SymbolTable.getInstance().eof) {
+                self.parent.addSymbol(SymbolToken.end.symbol);
+            } else {
+                self.parent.addMeta(argument);
+            }
         } else {
             throw new RuntimeException("Token must be Symbol or Argument "+arg);
         }

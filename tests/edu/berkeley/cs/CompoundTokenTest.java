@@ -42,30 +42,7 @@ import java.io.StringReader;
  */
 public class CompoundTokenTest extends TestCase {
     public void testVarAddDiv2() throws Exception {
-        Interpreter.interpret("def Node @argument @argument {|data, next|\n" +
-                "    LS\n" +
-                "}\n" +
-                "\n" +
-                "def list @argument {|data|\n" +
-                "    var val = (Node data null)\n" +
-                "    def , @argument {|data|\n" +
-                "        val = Node data val\n" +
-                "        self\n" +
-                "    }\n" +
-                "    def pr {\n" +
-                "        var tmp = val\n" +
-                "        while {tmp != null} {\n" +
-                "            print (tmp data)\n" +
-                "            tmp = (tmp next)\n" +
-                "        }\n" +
-                "    }\n" +
-                "    LS\n" +
-                "}\n" +
-                "\n" +
-                "var ret = (list 3, 4, 5, 6, 7)\n" +
-                "\n" +
-                "print (ret val next next data)\n" +
-                "ret pr");
+        Interpreter.interpret("var x = 1156; print x");
     }
 }
 //def Array @argument @edu.berkeley.cs.builtin.objects.CArray endef ; var x = (Array 10); x[1] = 89; print (x[1]);

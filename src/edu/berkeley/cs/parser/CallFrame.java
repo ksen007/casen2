@@ -1,8 +1,6 @@
 package edu.berkeley.cs.parser;
 
 import edu.berkeley.cs.builtin.objects.CObject;
-import edu.berkeley.cs.builtin.objects.CStatementEater;
-import edu.berkeley.cs.builtin.objects.EnvironmentObject;
 import edu.berkeley.cs.builtin.objects.preprocessor.CompoundToken;
 import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
 import edu.berkeley.cs.builtin.objects.preprocessor.Token;
@@ -45,7 +43,7 @@ import java.util.Stack;
 public class CallFrame {
     private Stack<RuleNode> parseRuleStack;
     private Stack<CObject> computationStack;
-    private Stack<Token> tokenStack;
+    private Stack<Integer> tokenStack;
     private CObject LS;
     private Scanner scnr;
     private CObject environment;
@@ -63,14 +61,14 @@ public class CallFrame {
         this.scnr = scnr;
         parseRuleStack = new Stack<RuleNode>();
         computationStack = new Stack<CObject>();
-        tokenStack = new Stack<Token>();
+        tokenStack = new Stack<Integer>();
 
         if (scnr!=null){
             computationStack.push(base);
             parseRuleStack.push(base.getRuleNode());
 
             t = scnr.nextToken();
-            tokenStack.push(t);
+            tokenStack.push(OperatorPrecedence.getInstance().getPrecedence(t));
             scnr.pushBack(t);
         }
 
@@ -109,6 +107,10 @@ public class CallFrame {
             if (ret!=null) {
                 parseRuleStack.pop();
                 parseRuleStack.push(ret);
+                if (((SymbolToken)t).symbol == SymbolTable.getInstance().getId("=")) {
+                    tokenStack.pop();
+                    tokenStack.push(OperatorPrecedence.getInstance().getPrecedence(t));
+                }
                 return true;
             }
             if (currentRule.getRuleForToken() !=null && !isNewLine(t)) {
@@ -123,12 +125,12 @@ public class CallFrame {
 
             if (currentRule.getRuleForNonTerminal() !=null && !isNewLine(t)) {
                 RuleNode rn;
-                if ((rn = contextLookAhead(LS,EnvironmentObject.instance,t,false))!=null) {
+                if ((rn = contextLookAhead(LS,environment,t,false))!=null) {
                     parseRuleStack.pop();
                     parseRuleStack.push(currentRule.getRuleForNonTerminal());
                     computationStack.push(LS);
                     parseRuleStack.push(rn);
-                    tokenStack.push(t);
+                    tokenStack.push(OperatorPrecedence.getInstance().getPrecedence(t));
                     scnr.pushBack(t);
                     return true;
                 }
@@ -144,10 +146,10 @@ public class CallFrame {
                 CObject nt = computationStack.peek();
                 t = scnr.nextToken();
                 RuleNode reduce;
-                Token tmp;
+                int tmp;
                 if (parseRuleStack.isEmpty()) {
                     reduce = null;
-                    tmp = null;
+                    tmp = 0;
                 } else {
                     reduce = parseRuleStack.peek();
                     tmp = tokenStack.peek();
@@ -156,8 +158,7 @@ public class CallFrame {
                 RuleNode rn;
                 if ((rn=shift(reduce,nt,tmp,t))!=null) {
                     parseRuleStack.push(rn);
-                    tokenStack.push(t);
-
+                    tokenStack.push(OperatorPrecedence.getInstance().getPrecedence(t));
                 }
                 scnr.pushBack(t);
                 return true;
@@ -182,13 +183,13 @@ public class CallFrame {
                 || rn.getRuleForAction()!=null);
     }
 
-    private RuleNode shift(RuleNode reduce, CObject shift, Token reduceOperator, Token shiftOperator) {
+    private RuleNode shift(RuleNode reduce, CObject shift, int exprPrecedence, Token shiftOperator) {
         boolean first = isProgressPossible(reduce,shiftOperator);
         RuleNode ret;
         boolean second = (ret = contextLookAhead(shift,null,shiftOperator,true))!=null;
         if (!second) return null;
         if (!first) return ret;
-        if (OperatorPrecedence.getInstance().isShift(reduceOperator,shiftOperator))
+        if (OperatorPrecedence.getInstance().isShift(exprPrecedence,shiftOperator))
             return ret;
         else
             return null;

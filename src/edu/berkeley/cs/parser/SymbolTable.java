@@ -45,6 +45,8 @@ public class SymbolTable {
 
     public int expr = getId("argument");
     public int token = getId("token");
+    public int nl = getId("nl");
+    public int eof = getId("eof");
 //    public int meta = getId("meta");
 //    public int literal = getId("literal");
 //    public int block = getId("block");
