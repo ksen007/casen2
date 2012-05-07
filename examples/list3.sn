@@ -1,0 +1,29 @@
+def Node @argument @argument {|data, next|
+    var ret = new Object
+    ret var data = data
+    ret var next = next
+    ret}
+
+def list @argument {|data|
+    var ret = new Object
+    ret var val = Node data null
+
+    ret def , @argument {|data|
+            self val = (Node data (self val))
+            self}
+
+    ret def pr {
+        var tmp = (self val)
+        while {tmp != null} {
+            print (tmp data)
+            tmp = tmp next
+        }
+    }
+    ret}
+
+var ret = list 8, 9, 10, 11, 12
+print "-------- list 3 ---------"
+ret pr
+print "-------- end ---------"
+
+var ret = Node 3 null

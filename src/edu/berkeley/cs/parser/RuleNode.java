@@ -40,10 +40,11 @@ import java.util.LinkedList;
  */
 public class RuleNode {
     private TIntObjectHashMap<RuleNode> nextSymbolMap;
-    //private TIntObjectHashMap<RuleNode> nextArgumentMap;
     private Action action;
     private RuleNode nonTerminal;
     private RuleNode token;
+
+    private Integer optionalPrecedence;
 
     public static boolean DEBUG = false;
 
@@ -157,6 +158,11 @@ public class RuleNode {
         return ret;
     }
 
+    public RuleNode addPrecedence(int prec) {
+        optionalPrecedence = prec;
+        return this;
+    }
+
     public RuleNode addAction(Invokable func, int argCount) {
         action = new Action(argCount,func);
         return null;
@@ -188,5 +194,9 @@ public class RuleNode {
 
     public RuleNode getRuleForToken() {
         return token;
+    }
+
+    public Integer getOptionalPrecedence() {
+        return optionalPrecedence;
     }
 }

@@ -375,6 +375,10 @@ public class CObject {
         curr = curr.addAction(func,argCount);
     }
 
+    public void addPrecedence(int prec) {
+        curr = curr.addPrecedence(prec);
+    }
+
 //    public RuleNode getSuperRuleNode() {
 //        if (superC == null) return null;
 //        return superC.getRuleNode();

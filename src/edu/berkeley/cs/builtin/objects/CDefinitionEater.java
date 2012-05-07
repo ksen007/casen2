@@ -1,10 +1,7 @@
 package edu.berkeley.cs.builtin.objects;
 
 import edu.berkeley.cs.builtin.functions.*;
-import edu.berkeley.cs.builtin.objects.preprocessor.CompoundToken;
-import edu.berkeley.cs.builtin.objects.preprocessor.MetaToken;
-import edu.berkeley.cs.builtin.objects.preprocessor.NullToken;
-import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
+import edu.berkeley.cs.builtin.objects.preprocessor.*;
 import edu.berkeley.cs.parser.SymbolTable;
 
 /**
@@ -85,6 +82,8 @@ public class CDefinitionEater extends CObject {
             } else {
                 self.parent.addMeta(argument);
             }
+        } else if (arg instanceof LongToken) {
+            self.parent.addPrecedence((int)((LongToken)arg).value);
         } else {
             throw new RuntimeException("Token must be Symbol or Argument "+arg);
         }

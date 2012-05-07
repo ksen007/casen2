@@ -50,10 +50,10 @@ public class CallFrame {
 
 
     public CallFrame(CObject LS, CObject base, CObject environment, Scanner scnr) {
-        init(LS,base,environment,scnr);
-    }
-
-    public void init(CObject LS, CObject base, CObject environment, Scanner scnr) {
+//        init(LS,base,environment,scnr);
+//    }
+//
+//    public void init(CObject LS, CObject base, CObject environment, Scanner scnr) {
         Token t;
 
         this.environment = environment;
@@ -123,11 +123,19 @@ public class CallFrame {
                 return true;
             }
 
-            if (currentRule.getRuleForNonTerminal() !=null && !isNewLine(t)) {
+            RuleNode toBePushed;
+            if ((toBePushed = currentRule.getRuleForNonTerminal()) !=null && !isNewLine(t)) {
                 RuleNode rn;
                 if ((rn = contextLookAhead(LS,environment,t,false))!=null) {
                     parseRuleStack.pop();
-                    parseRuleStack.push(currentRule.getRuleForNonTerminal());
+
+                    Integer prec = toBePushed.getOptionalPrecedence();
+                    if (prec !=null) {
+                        tokenStack.pop();
+                        tokenStack.push(prec);
+                    }
+
+                    parseRuleStack.push(toBePushed);
                     computationStack.push(LS);
                     parseRuleStack.push(rn);
                     tokenStack.push(OperatorPrecedence.getInstance().getPrecedence(t));
