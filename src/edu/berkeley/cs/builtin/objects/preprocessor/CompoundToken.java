@@ -2,10 +2,7 @@ package edu.berkeley.cs.builtin.objects.preprocessor;
 
 import com.sun.tools.example.debug.gui.Environment;
 import edu.berkeley.cs.builtin.functions.*;
-import edu.berkeley.cs.builtin.objects.CNonPrimitiveObject;
-import edu.berkeley.cs.builtin.objects.CObject;
-import edu.berkeley.cs.builtin.objects.EnvironmentObject;
-import edu.berkeley.cs.builtin.objects.Reference;
+import edu.berkeley.cs.builtin.objects.*;
 import edu.berkeley.cs.lexer.BufferedScanner;
 import edu.berkeley.cs.lexer.Scanner;
 import edu.berkeley.cs.parser.CallFrame;
@@ -107,7 +104,7 @@ public class CompoundToken extends Token {
         CObject.currentFile = file;
         try {
             Scanner scnr = getScanner();
-            CallFrame cf = new CallFrame(LS,scnr);
+            CallFrame cf = new CallFrame(LS, CStatementEater.instance,EnvironmentObject.instance,scnr);
             return cf.interpret();
         } finally {
             CObject.currentFile = tmp;

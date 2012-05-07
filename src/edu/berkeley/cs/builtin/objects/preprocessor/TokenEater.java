@@ -107,8 +107,9 @@ public class TokenEater extends CObject {
     }
 
     public CObject returnTokenEater() {
-        setReturn();
-        return this;
+        CObject ret= new CompoundToken(this,file);
+        ret.setReturn();
+        return ret;
     }
 
 
@@ -117,9 +118,9 @@ public class TokenEater extends CObject {
         return parent;
     }
 
-    public CObject returnNewCompoundToken() {
-        return new CompoundToken(this,file);
-    }
+//    public CObject returnNewCompoundToken() {
+//        return new CompoundToken(this,file);
+//    }
 
     public void appendParameters(ArrayList<SymbolToken> parameters) {
         this.parameters.addAll(parameters);

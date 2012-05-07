@@ -7,7 +7,6 @@ import edu.berkeley.cs.builtin.objects.preprocessor.CompoundToken;
 import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
 import edu.berkeley.cs.builtin.objects.preprocessor.Token;
 import edu.berkeley.cs.lexer.Scanner;
-import org.junit.Rule;
 
 import java.util.Stack;
 
@@ -49,18 +48,17 @@ public class CallFrame {
     private Stack<Token> tokenStack;
     private CObject LS;
     private Scanner scnr;
+    private CObject environment;
 
-    public CallFrame(CObject LS, Scanner scnr) {
-        init(LS,CStatementEater.instance,scnr);
+
+    public CallFrame(CObject LS, CObject base, CObject environment, Scanner scnr) {
+        init(LS,base,environment,scnr);
     }
 
-    public CallFrame(CObject LS, CObject base, Scanner scnr) {
-        init(LS,base,scnr);
-    }
-
-    public void init(CObject LS, CObject base, Scanner scnr) {
+    public void init(CObject LS, CObject base, CObject environment, Scanner scnr) {
         Token t;
 
+        this.environment = environment;
         this.LS = LS;
         this.scnr = scnr;
         parseRuleStack = new Stack<RuleNode>();
@@ -87,8 +85,6 @@ public class CallFrame {
 
     public CObject interpret() {
         if (RuleNode.DEBUG) System.out.println("Interpretation start.");
-//        while(!parseRuleStack.isEmpty()
-//                && !(parseRuleStack.size()==1 && scnr.isEnd() && computationStack.get(0) instanceof CStatementEater)) {
         while(true) {
             interpretAux();
             CObject top = computationStack.peek();
@@ -109,34 +105,32 @@ public class CallFrame {
         Token t2 = t;
 
         try {
-            if (t!=null) {
-                RuleNode ret = (RuleNode)t.accept(new MatchVisitor(currentRule));
-                if (ret!=null) {
-                    parseRuleStack.pop();
-                    parseRuleStack.push(ret);
-                    return true;
+            RuleNode ret = (RuleNode)t.accept(new MatchVisitor(currentRule));
+            if (ret!=null) {
+                parseRuleStack.pop();
+                parseRuleStack.push(ret);
+                return true;
+            }
+            if (currentRule.getRuleForToken() !=null && !isNewLine(t)) {
+                parseRuleStack.pop();
+                parseRuleStack.push(currentRule.getRuleForToken());
+                if (t instanceof CompoundToken) {
+                    t = new CompoundToken((CompoundToken)t,LS);
                 }
-                if (currentRule.getRuleForToken() !=null && !isNewLine(t)) {
-                    parseRuleStack.pop();
-                    parseRuleStack.push(currentRule.getRuleForToken());
-                    if (t instanceof CompoundToken) {
-                        t = new CompoundToken((CompoundToken)t,LS);
-                    }
-                    computationStack.push(t);
-                    return true;
-                }
+                computationStack.push(t);
+                return true;
+            }
 
-                if (currentRule.getRuleForNonTerminal() !=null && !isNewLine(t)) {
-                    RuleNode rn;
-                    if ((rn = contextLookAhead(LS,EnvironmentObject.instance,t,false))!=null) {
-                        parseRuleStack.pop();
-                        parseRuleStack.push(currentRule.getRuleForNonTerminal());
-                        computationStack.push(LS);
-                        parseRuleStack.push(rn);
-                        tokenStack.push(t);
-                        scnr.pushBack(t);
-                        return true;
-                    }
+            if (currentRule.getRuleForNonTerminal() !=null && !isNewLine(t)) {
+                RuleNode rn;
+                if ((rn = contextLookAhead(LS,EnvironmentObject.instance,t,false))!=null) {
+                    parseRuleStack.pop();
+                    parseRuleStack.push(currentRule.getRuleForNonTerminal());
+                    computationStack.push(LS);
+                    parseRuleStack.push(rn);
+                    tokenStack.push(t);
+                    scnr.pushBack(t);
+                    return true;
                 }
             }
 
@@ -182,15 +176,15 @@ public class CallFrame {
 
     private static boolean isProgressPossible(RuleNode rn, Token t) {
         return rn !=null
-                && ((t!=null && (t.accept(new MatchVisitor(rn))!=null
+                && (t.accept(new MatchVisitor(rn))!=null
                 || rn.getRuleForNonTerminal()!=null
-                || rn.getRuleForToken()!=null))
+                || rn.getRuleForToken()!=null
                 || rn.getRuleForAction()!=null);
     }
 
     private RuleNode shift(RuleNode reduce, CObject shift, Token reduceOperator, Token shiftOperator) {
         boolean first = isProgressPossible(reduce,shiftOperator);
-        RuleNode ret = null;
+        RuleNode ret;
         boolean second = (ret = contextLookAhead(shift,null,shiftOperator,true))!=null;
         if (!second) return null;
         if (!first) return ret;
@@ -205,50 +199,48 @@ public class CallFrame {
         CObject current;
         RuleNode ret;
 
-        if (t!=null) {
-            current = LS;
-            while(current!=null) {
-                ret = current.getRuleNode();
-                if (t.accept(new MatchVisitor(ret))!=null) {
-                    return ret;
-                }
-                current = current.getParent(isProto);
+        current = LS;
+        while(current!=null) {
+            ret = current.getRuleNode();
+            if (t.accept(new MatchVisitor(ret))!=null) {
+                return ret;
             }
-            if (extra != null ) {
-                ret = extra.getRuleNode();
-                if (t.accept(new MatchVisitor(ret))!=null) {
-                    return ret;
-                }
+            current = current.getParent(isProto);
+        }
+        if (extra != null ) {
+            ret = extra.getRuleNode();
+            if (t.accept(new MatchVisitor(ret))!=null) {
+                return ret;
             }
+        }
 
-            current = LS;
-            while(current!=null) {
-                ret = current.getRuleNode();
-                if (ret.getRuleForToken()!=null) {
-                    return ret;
-                }
-                current = current.getParent(isProto);
+        current = LS;
+        while(current!=null) {
+            ret = current.getRuleNode();
+            if (ret.getRuleForToken()!=null) {
+                return ret;
             }
-            if (extra != null ) {
-                ret = extra.getRuleNode();
-                if (ret.getRuleForToken()!=null) {
-                    return ret;
-                }
+            current = current.getParent(isProto);
+        }
+        if (extra != null ) {
+            ret = extra.getRuleNode();
+            if (ret.getRuleForToken()!=null) {
+                return ret;
             }
+        }
 
-            current = LS;
-            while(current!=null) {
-                ret = current.getRuleNode();
-                if (ret.getRuleForNonTerminal()!=null) {
-                    return ret;
-                }
-                current = current.getParent(isProto);
+        current = LS;
+        while(current!=null) {
+            ret = current.getRuleNode();
+            if (ret.getRuleForNonTerminal()!=null) {
+                return ret;
             }
-            if (extra != null ) {
-                ret = extra.getRuleNode();
-                if (ret.getRuleForNonTerminal()!=null) {
-                    return ret;
-                }
+            current = current.getParent(isProto);
+        }
+        if (extra != null ) {
+            ret = extra.getRuleNode();
+            if (ret.getRuleForNonTerminal()!=null) {
+                return ret;
             }
         }
 

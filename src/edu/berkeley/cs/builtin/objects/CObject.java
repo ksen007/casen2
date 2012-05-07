@@ -135,8 +135,8 @@ public class CObject {
         Scanner scnr = new BasicScanner(lexer);
 
         CObject LS = new TokenEater(null,fname);
-        CallFrame cf = new CallFrame(LS,LS,scnr);
-        CompoundToken pgm = (CompoundToken)((TokenEater)cf.interpret()).returnNewCompoundToken();
+        CallFrame cf = new CallFrame(LS,LS,null,scnr);
+        CompoundToken pgm = (CompoundToken)cf.interpret();
         return pgm;
     }
 
