@@ -56,22 +56,6 @@ public class CDefinitionEater extends CObject {
         this.parent = parent;
         parent.addNewRule();
         setRule(superClass);
-
-//        setRule(methods);
-//        rules = methods.getRuleNode();
-        //rules = new RuleNode(null);
-//        this.addNewRule();
-//        this.addMeta(SymbolTable.getInstance().symbol);
-//        this.addAction(new NativeFunction("addToken"));
-//
-//        this.addNewRule();
-//        this.addMeta(SymbolTable.getInstance().meta);
-//        this.addAction(new NativeFunction("addToken"));
-//
-//        this.addNewRule();
-//        this.addMeta(SymbolTable.getInstance().block);
-//        this.addAction(new NativeFunction("addToken"));
-
     }
 
     public CObject addToken(CObject arg) {

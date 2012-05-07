@@ -1,10 +1,5 @@
 package edu.berkeley.cs.builtin.objects;
 
-import edu.berkeley.cs.builtin.functions.Invokable;
-import edu.berkeley.cs.builtin.objects.preprocessor.LongToken;
-
-import java.util.LinkedList;
-
 /**
  * Copyright (c) 2006-2011,
  * Koushik Sen    <ksen@cs.berkeley.edu>
@@ -37,33 +32,14 @@ import java.util.LinkedList;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class CArray extends CObject implements Invokable {
-    public CArray() {    }
+public class StandardArrayProto {
+    public static CNonPrimitiveObject instance =  new CNonPrimitiveObject();
 
-    public CObject apply(LinkedList<CObject> args) {
-        args.removeFirst();
-        LongToken size = (LongToken)args.removeFirst();
-        return new CArray(size.value);
-    }
-
-
-
-    private CObject[] arr;
-
-    public CArray(long size) {
-        arr = new CObject[(int)size];
-        setParent(StandardArrayProto.instance,true);
-    }
-
-    public CObject get(CObject index) {
-        return arr[(int)(((LongToken)index).value)];
-    }
-
-    public CObject set(CObject index, CObject value) {
-        return arr[(int)(((LongToken)index).value)] = value;
-    }
-
-    public CObject length() {
-        return new LongToken(null,(long)arr.length);
+    static {
+        instance.eval("def [ @argument ] @get endef");
+        instance.eval("def [ @argument ] = @argument @set endef");
+        instance.eval("def length @length endef");
+        instance.eval("def map @argument {|f| var i = 0; while {i< (self length)} { f( self [ i ] ) ; i = i + 1;}; }");
+        instance.eval("def == @argument @equality endef");
     }
 }
