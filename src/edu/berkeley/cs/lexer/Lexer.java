@@ -133,13 +133,7 @@ public class Lexer {
         switch (character) {
             case END_OF_FILE: {
                 close();
-                return null;
-            }
-            case '\n': {
-                SourcePosition pos = new SourcePosition(lineNo, columnNo);
-                match((char)character);
-                return new NewLineToken(pos);
-
+                return SymbolToken.end;
             }
             case '(':
             case ')':
@@ -148,6 +142,7 @@ public class Lexer {
             case '[':
             case ']':
             case ';':
+            case '\n':
             {
                 return createToken((char)character);
             }

@@ -1,6 +1,7 @@
 package edu.berkeley.cs.builtin.objects;
 
 import edu.berkeley.cs.builtin.functions.NativeFunction;
+import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
 import edu.berkeley.cs.parser.SymbolTable;
 
 /**
@@ -48,16 +49,26 @@ public class CStatementEater extends CObject {
 
         this.addNewRule();
         this.addMeta(SymbolTable.getInstance().expr,true);
-        this.addNewLine();
+        this.addSymbol(SymbolTable.getInstance().getId("\n"));
         this.addAction(new NativeFunction("returnSS"));
+
+        this.addNewRule();
+        this.addMeta(SymbolTable.getInstance().expr,true);
+        this.addSymbol(SymbolToken.end.symbol);
+        this.addAction(new NativeFunction("signalReturn"));
 
         this.addNewRule();
         this.addSymbol(SymbolTable.getInstance().getId(";"));
         this.addAction(new NativeFunction("returnSS"));
 
         this.addNewRule();
-        this.addNewLine();
+        this.addSymbol(SymbolTable.getInstance().getId("\n"));
         this.addAction(new NativeFunction("returnSS"));
+
+        this.addNewRule();
+        this.addSymbol(SymbolToken.end.symbol);
+        this.addAction(new NativeFunction("signalReturn"));
+
     }
 
     public CObject returnSS() {
@@ -68,4 +79,13 @@ public class CStatementEater extends CObject {
         return this;
     }
 
+    public CObject signalReturn() {
+        setReturn();
+        return this;
+    }
+
+    public CObject signalReturn(CObject arg) {
+        arg.setReturn();
+        return arg;
+    }
 }

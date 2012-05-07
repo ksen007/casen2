@@ -3,7 +3,6 @@ package edu.berkeley.cs.parser;
 import edu.berkeley.cs.builtin.objects.CObject;
 import edu.berkeley.cs.builtin.objects.CStatementEater;
 import edu.berkeley.cs.builtin.objects.EnvironmentObject;
-import edu.berkeley.cs.builtin.objects.NewLineToken;
 import edu.berkeley.cs.builtin.objects.preprocessor.CompoundToken;
 import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
 import edu.berkeley.cs.builtin.objects.preprocessor.Token;
@@ -45,10 +44,6 @@ import java.util.Stack;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class CallFrame {
-//    public static CallFrame base = new CallFrame(EnvironmentObject.instance,null,null);
-
-//    private CallFrame SS;
-
     private Stack<RuleNode> parseRuleStack;
     private Stack<CObject> computationStack;
     private Stack<Token> tokenStack;
@@ -83,10 +78,18 @@ public class CallFrame {
 
     }
 
+    private static boolean isNewLine(Token t) {
+        if (t instanceof SymbolToken) {
+            return ((SymbolToken)t).symbol == SymbolTable.getInstance().getId("\n");
+        }
+        return false;
+    }
+
     public CObject interpret() {
         if (RuleNode.DEBUG) System.out.println("Interpretation start.");
-        while(!parseRuleStack.isEmpty()
-                && !(parseRuleStack.size()==1 && scnr.isEnd() && computationStack.get(0) instanceof CStatementEater)) {
+//        while(!parseRuleStack.isEmpty()
+//                && !(parseRuleStack.size()==1 && scnr.isEnd() && computationStack.get(0) instanceof CStatementEater)) {
+        while(true) {
             interpretAux();
             CObject top = computationStack.peek();
             if (top.isReturn()) {
@@ -97,14 +100,13 @@ public class CallFrame {
                 return top;
             }
         }
-        return computationStack.peek();
+//        return computationStack.peek();
     }
 
     public boolean interpretAux() {
         Token t = scnr.nextToken();
         RuleNode currentRule = parseRuleStack.peek();
         Token t2 = t;
-        boolean flag = false;
 
         try {
             if (t!=null) {
@@ -114,7 +116,7 @@ public class CallFrame {
                     parseRuleStack.push(ret);
                     return true;
                 }
-                if (currentRule.getRuleForToken() !=null) {
+                if (currentRule.getRuleForToken() !=null && !isNewLine(t)) {
                     parseRuleStack.pop();
                     parseRuleStack.push(currentRule.getRuleForToken());
                     if (t instanceof CompoundToken) {
@@ -124,7 +126,7 @@ public class CallFrame {
                     return true;
                 }
 
-                if (currentRule.getRuleForNonTerminal() !=null) {
+                if (currentRule.getRuleForNonTerminal() !=null && !isNewLine(t)) {
                     RuleNode rn;
                     if ((rn = contextLookAhead(LS,EnvironmentObject.instance,t,false))!=null) {
                         parseRuleStack.pop();
@@ -134,27 +136,16 @@ public class CallFrame {
                         tokenStack.push(t);
                         scnr.pushBack(t);
                         return true;
-                    } else if (!(t instanceof NewLineToken)){
-                        if (t instanceof CompoundToken) {
-                            t = new CompoundToken((CompoundToken)t,LS);
-                        }
-                        parseRuleStack.pop();
-                        parseRuleStack.push(currentRule.getRuleForNonTerminal());
-                        computationStack.push(t);
-                        flag = true;
                     }
                 }
             }
 
-            if (!flag && currentRule.getRuleForAction() != null) {
+            if (currentRule.getRuleForAction() != null) {
                 scnr.pushBack(t);
                 parseRuleStack.pop();
                 tokenStack.pop();
                 currentRule.getRuleForAction().apply(computationStack);
-                flag = true;
-            }
 
-            if (flag) {
                 // now greedily apply the computation stack top object to the rest fo the stream if possible
                 CObject nt = computationStack.peek();
                 t = scnr.nextToken();
@@ -177,7 +168,7 @@ public class CallFrame {
                 scnr.pushBack(t);
                 return true;
             }
-            if (t instanceof NewLineToken) {
+            if (isNewLine(t)) {
                 return true;
             }
         } catch (ParseException e) {

@@ -1,9 +1,5 @@
 package edu.berkeley.cs.builtin.objects;
 
-import edu.berkeley.cs.builtin.objects.preprocessor.Token;
-import edu.berkeley.cs.lexer.SourcePosition;
-import edu.berkeley.cs.parser.TokenVisitor;
-
 /**
  * Copyright (c) 2006-2011,
  * Koushik Sen    <ksen@cs.berkeley.edu>
@@ -36,24 +32,13 @@ import edu.berkeley.cs.parser.TokenVisitor;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class NewLineToken extends Token {
+public class StandardBooleanProto {
+    final public static CNonPrimitiveObject instance =  new CNonPrimitiveObject();
 
-    public NewLineToken(SourcePosition position) {
-        super(position);
-    }
-
-    public Object accept(TokenVisitor v) {
-        return v.visitNewLineToken(this);
-    }
-
-
-    @Override
-    public String toString() {
-        return "\n";
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return o instanceof NewLineToken;
+    static {
+        instance.eval("def && @argument @and endef");
+        instance.eval("def || @argument @or endef");
+        instance.eval("def == @argument @eq endef");
+        instance.eval("def != @argument @ne endef");
     }
 }

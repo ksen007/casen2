@@ -1,6 +1,7 @@
 package edu.berkeley.cs.lexer;
 
 
+import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
 import edu.berkeley.cs.builtin.objects.preprocessor.Token;
 
 /**
@@ -42,7 +43,7 @@ public abstract class Scanner {
     public boolean isEnd() {
         Token t = nextToken();
         pushBack(t);
-        return t==null;
+        return t == SymbolToken.end;
     }
 
 }

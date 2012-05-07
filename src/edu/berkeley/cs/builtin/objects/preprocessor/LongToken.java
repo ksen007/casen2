@@ -3,6 +3,8 @@ package edu.berkeley.cs.builtin.objects.preprocessor;
 
 import edu.berkeley.cs.builtin.objects.CNonPrimitiveObject;
 import edu.berkeley.cs.builtin.objects.CObject;
+import edu.berkeley.cs.builtin.objects.StandardBooleanProto;
+import edu.berkeley.cs.builtin.objects.StandardLongProto;
 import edu.berkeley.cs.lexer.SourcePosition;
 import edu.berkeley.cs.parser.TokenVisitor;
 
@@ -39,28 +41,12 @@ import edu.berkeley.cs.parser.TokenVisitor;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class LongToken extends Token {
-
     public long value;
-    private static CObject superClass =  new CNonPrimitiveObject();
-
-    static {
-        superClass.eval("def + @argument @add endef");
-        superClass.eval("def - @argument @subtract endef");
-        superClass.eval("def * @argument @multiply endef");
-        superClass.eval("def / @argument @divide endef");
-        superClass.eval("def % @argument @mod endef");
-        superClass.eval("def < @argument @lt endef");
-        superClass.eval("def > @argument @gt endef");
-        superClass.eval("def <= @argument @le endef");
-        superClass.eval("def >= @argument @ge endef");
-        superClass.eval("def == @argument @eq endef");
-        superClass.eval("def != @argument @ne endef");
-    }
 
     public LongToken(SourcePosition position, long l) {
         super(position);
         this.value = l;
-        setParent(superClass,true);
+        setParent(StandardLongProto.instance,true);
     }
 
     public CObject add(CObject operand2) {
@@ -108,7 +94,7 @@ public class LongToken extends Token {
     }
 
     public Object accept(TokenVisitor v) {
-        return v.visitLiteralToken(this);
+        return v.visitLongToken(this);
     }
 
     @Override

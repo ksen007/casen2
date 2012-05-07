@@ -67,6 +67,14 @@ public class TokenEater extends CObject {
         thisClass.addNewRule();
         thisClass.addMeta(SymbolTable.getInstance().token);
         thisClass.addAction(new NativeFunction("append"));
+
+        thisClass.addNewRule();
+        thisClass.addSymbol(SymbolTable.getInstance().getId("\n"));
+        thisClass.addAction(new NativeFunction("appendNewLine"));
+
+        thisClass.addNewRule();
+        thisClass.addSymbol(SymbolToken.end.symbol);
+        thisClass.addAction(new NativeFunction("returnTokenEater"));
     }
 
     public TokenEater(TokenEater ss, String file) {
@@ -90,6 +98,16 @@ public class TokenEater extends CObject {
 
     public CObject append(CObject token) {
         tokens.add((Token)token);
+        return this;
+    }
+
+    public CObject appendNewLine() {
+        tokens.add(new SymbolToken(null,SymbolTable.getInstance().getId("\n")));
+        return this;
+    }
+
+    public CObject returnTokenEater() {
+        setReturn();
         return this;
     }
 

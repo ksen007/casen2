@@ -44,7 +44,6 @@ public class RuleNode {
     private Action action;
     private RuleNode nonTerminal;
     private RuleNode token;
-    private RuleNode newLine;
 
     public static boolean DEBUG = false;
 
@@ -158,11 +157,6 @@ public class RuleNode {
         return ret;
     }
 
-    public RuleNode addNewLine() {
-        newLine = new RuleNode(this,"\\n");
-        return newLine;
-    }
-
     public RuleNode addAction(Invokable func, int argCount) {
         action = new Action(argCount,func);
         return null;
@@ -183,10 +177,6 @@ public class RuleNode {
 //        }
 //        return null;
 //    }
-
-    public RuleNode getNewLine() {
-        return newLine;
-    }
 
     public Action getRuleForAction() {
         return action;

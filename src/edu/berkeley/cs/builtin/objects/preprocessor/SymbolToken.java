@@ -37,6 +37,8 @@ import edu.berkeley.cs.parser.TokenVisitor;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class SymbolToken extends Token {
+    final public static SymbolToken end = new SymbolToken(null,-1);
+
     public int symbol;
 
     public SymbolToken(SourcePosition position, int symbol) {
@@ -51,7 +53,7 @@ public class SymbolToken extends Token {
 
     @Override
     public String toString() {
-        return SymbolTable.getInstance().getSymbol(symbol);
+        return "`"+SymbolTable.getInstance().getSymbol(symbol);
     }
 
     @Override

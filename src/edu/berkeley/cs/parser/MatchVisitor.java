@@ -50,7 +50,7 @@ public class MatchVisitor implements TokenVisitor {
         return null;
     }
 
-    public Object visitLiteralToken(LongToken lt) {
+    public Object visitLongToken(LongToken lt) {
         return null;
     }
 
@@ -77,13 +77,6 @@ public class MatchVisitor implements TokenVisitor {
     public Object visitCompoundToken(CompoundToken ct) {
         return null;
     }
-
-    public Object visitNewLineToken(NewLineToken nt) {
-        if (rn!=null && rn.getNewLine() != null)
-            return rn.getNewLine();
-        return null;
-    }
-
 
 }
 

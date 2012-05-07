@@ -1,5 +1,7 @@
 package edu.berkeley.cs.parser;
 
+import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
+
 import java.util.ArrayList;
 import java.util.TreeMap;
 
@@ -75,6 +77,7 @@ public class SymbolTable {
     }
 
     public String getSymbol(int id) {
+        if (id== SymbolToken.end.symbol) return "EOF";
         return symbols.get(id);
     }
 

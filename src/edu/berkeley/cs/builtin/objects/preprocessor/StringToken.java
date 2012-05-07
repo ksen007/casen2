@@ -2,6 +2,8 @@ package edu.berkeley.cs.builtin.objects.preprocessor;
 
 import edu.berkeley.cs.builtin.objects.CNonPrimitiveObject;
 import edu.berkeley.cs.builtin.objects.CObject;
+import edu.berkeley.cs.builtin.objects.StandardBooleanProto;
+import edu.berkeley.cs.builtin.objects.StandardStringProto;
 import edu.berkeley.cs.lexer.SourcePosition;
 import edu.berkeley.cs.parser.TokenVisitor;
 
@@ -38,20 +40,12 @@ import edu.berkeley.cs.parser.TokenVisitor;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class StringToken extends Token {
-
     public String value;
-    private static CObject superClass =  new CNonPrimitiveObject();
-
-    static {
-        superClass.eval("def + @argument @add endef");
-        superClass.eval("def == @argument @eq endef");
-        superClass.eval("def != @argument @ne endef");
-    }
 
     public StringToken(SourcePosition position, String s) {
         super(position);
         this.value = s;
-        setParent(superClass,true);
+        setParent(StandardStringProto.instance,true);
     }
 
     public CObject add(CObject operand2) {

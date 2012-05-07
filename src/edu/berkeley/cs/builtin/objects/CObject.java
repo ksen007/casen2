@@ -247,6 +247,11 @@ public class CObject {
         return arg;
     }
 
+    public CObject interpretPrimitive(CObject arg) {
+        return arg;
+//        return (CObject)(((Token)arg).accept(new StandardTokenInterpreterVisitor(this)));
+    }
+
     public CObject whileAction(CObject S1, CObject S2) {
         CompoundToken s1 = (CompoundToken)S1;
         CompoundToken s2 = (CompoundToken)S2;
@@ -364,10 +369,6 @@ public class CObject {
 
     public void addSymbol(int symbol) {
         curr = curr.addSymbol(symbol);
-    }
-
-    public void addNewLine() {
-        curr = curr.addNewLine();
     }
 
     public void addAction(Invokable func) {

@@ -1,7 +1,4 @@
-package edu.berkeley.cs.parser;
-
-import edu.berkeley.cs.builtin.objects.*;
-import edu.berkeley.cs.builtin.objects.preprocessor.*;
+package edu.berkeley.cs.builtin.objects;
 
 /**
  * Copyright (c) 2006-2011,
@@ -35,13 +32,20 @@ import edu.berkeley.cs.builtin.objects.preprocessor.*;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public interface TokenVisitor {
-    public Object visitLongToken(LongToken lt);
-    public Object visitSymbolToken(SymbolToken st);
-    public Object visitMetaToken(MetaToken mt);
-    public Object visitCompoundToken(CompoundToken ct);
-    public Object visitBooleanToken(BooleanToken bt);
-    public Object visitDoubleToken(DoubleToken dt);
-    public Object visitStringToken(StringToken lt);
-    public Object visitNullToken(NullToken nlt);
+public class StandardDoubleProto {
+    final public static CNonPrimitiveObject instance =  new CNonPrimitiveObject();
+
+    static {
+        instance.eval("def + @argument @add endef");
+        instance.eval("def - @argument @subtract endef");
+        instance.eval("def * @argument @multiply endef");
+        instance.eval("def / @argument @divide endef");
+        instance.eval("def % @argument @mod endef");
+        instance.eval("def < @argument @lt endef");
+        instance.eval("def > @argument @gt endef");
+        instance.eval("def <= @argument @le endef");
+        instance.eval("def >= @argument @ge endef");
+        instance.eval("def == @argument @eq endef");
+        instance.eval("def != @argument @ne endef");
+    }
 }

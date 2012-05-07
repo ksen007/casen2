@@ -60,9 +60,12 @@ public class NativeFunction implements Invokable {
             //e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             return (CObject)method.invoke(self,args.toArray());
         } catch (NoSuchMethodException e) {
+            System.err.println("No such method "+self+" "+methodName);
             throw new RuntimeException(e.getCause());
 //            throw new RuntimeException(e.getMessage());
         } catch (InvocationTargetException e) {
+            System.err.println("Error in method "+self+" "+methodName);
+
             if (e.getCause() instanceof ParseException)
                 throw (ParseException)e.getCause();
             else {

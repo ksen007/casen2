@@ -2,6 +2,7 @@ package edu.berkeley.cs.builtin.objects.preprocessor;
 
 import edu.berkeley.cs.builtin.objects.CNonPrimitiveObject;
 import edu.berkeley.cs.builtin.objects.CObject;
+import edu.berkeley.cs.builtin.objects.StandardBooleanProto;
 import edu.berkeley.cs.lexer.SourcePosition;
 import edu.berkeley.cs.parser.TokenVisitor;
 
@@ -53,22 +54,13 @@ public class BooleanToken extends Token {
     private static BooleanToken TRUE;
     private static BooleanToken FALSE;
 
-    private static CObject superClass =  new CNonPrimitiveObject();
-
-    static {
-        superClass.eval("def && @argument @and endef");
-        superClass.eval("def || @argument @or endef");
-        superClass.eval("def == @argument @eq endef");
-        superClass.eval("def != @argument @ne endef");
-    }
 
     public boolean value;
 
     public BooleanToken(SourcePosition position, boolean value) {
         super(position);
         this.value = value;
-
-        setParent(superClass,true);
+        setParent(StandardBooleanProto.instance,true);
     }
 
     public CObject and(CObject operand2) {

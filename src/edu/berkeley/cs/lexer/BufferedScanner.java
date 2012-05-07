@@ -1,5 +1,6 @@
 package edu.berkeley.cs.lexer;
 
+import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
 import edu.berkeley.cs.builtin.objects.preprocessor.Token;
 
 import java.util.ArrayList;
@@ -69,7 +70,7 @@ public class BufferedScanner extends Scanner {
             return tokens.get(iter-1);
         }
         iter++;
-        return null;
+        return SymbolToken.end;
     }
 
     public void pushBack(Token t) {

@@ -1,7 +1,4 @@
-package edu.berkeley.cs.parser;
-
-import edu.berkeley.cs.builtin.objects.*;
-import edu.berkeley.cs.builtin.objects.preprocessor.*;
+package edu.berkeley.cs.builtin.objects;
 
 /**
  * Copyright (c) 2006-2011,
@@ -35,13 +32,10 @@ import edu.berkeley.cs.builtin.objects.preprocessor.*;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public interface TokenVisitor {
-    public Object visitLongToken(LongToken lt);
-    public Object visitSymbolToken(SymbolToken st);
-    public Object visitMetaToken(MetaToken mt);
-    public Object visitCompoundToken(CompoundToken ct);
-    public Object visitBooleanToken(BooleanToken bt);
-    public Object visitDoubleToken(DoubleToken dt);
-    public Object visitStringToken(StringToken lt);
-    public Object visitNullToken(NullToken nlt);
+public class StandardNullProto {
+    final public static CNonPrimitiveObject instance =  new CNonPrimitiveObject();
+    static {
+        instance.eval("def == @argument @eq  endef");
+        instance.eval("def != @argument @ne  endef");
+    }
 }

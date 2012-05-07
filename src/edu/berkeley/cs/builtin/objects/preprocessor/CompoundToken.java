@@ -70,7 +70,6 @@ public class CompoundToken extends Token {
     public CompoundToken(TokenEater ss,String file) {
         super(null);
 
-        //rules = new RuleNode(null);
         tokens = ss.tokens;
         parameters = ss.parameters;
         this.file = file;
@@ -164,12 +163,13 @@ public class CompoundToken extends Token {
         return this == o;
     }
 
-    public void setParent(CObject SS, boolean isProto) {
-        super.setParent(SS,isProto);
-        if (SS !=null) {
-            this.addNewRule();
-            this.addSymbol(SymbolTable.getInstance().getId("SS"));
-            this.addAction(new GetField(new Reference(SS)));
-        }
-    }
+//    // @todo: see if this can be eliminated
+//    public void setParent(CObject SS, boolean isProto) {
+//        super.setParent(SS,isProto);
+//        if (SS !=null) {
+//            this.addNewRule();
+//            this.addSymbol(SymbolTable.getInstance().getId("SS"));
+//            this.addAction(new GetField(new Reference(SS)));
+//        }
+//    }
 }

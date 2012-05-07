@@ -4,6 +4,5 @@ def fac @argument {|n|
     } else {
         var ret = 1
     }
-    ret
-}
+    ret}
 
