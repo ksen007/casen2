@@ -103,7 +103,7 @@ public class CallFrame {
         Token t2 = t;
 
         try {
-            RuleNode ret = (RuleNode)t.accept(new MatchVisitor(currentRule));
+            RuleNode ret = currentRule.consumeSymbol(t);
             if (ret!=null) {
                 parseRuleStack.pop();
                 parseRuleStack.push(ret);
@@ -185,7 +185,7 @@ public class CallFrame {
 
     private static boolean isProgressPossible(RuleNode rn, Token t) {
         return rn !=null
-                && (t.accept(new MatchVisitor(rn))!=null
+                && (rn.consumeSymbol(t)!=null
                 || rn.getRuleForNonTerminal()!=null
                 || rn.getRuleForToken()!=null
                 || rn.getRuleForAction()!=null);
@@ -211,14 +211,14 @@ public class CallFrame {
         current = LS;
         while(current!=null) {
             ret = current.getRuleNode();
-            if (t.accept(new MatchVisitor(ret))!=null) {
+            if (ret!=null && ret.consumeSymbol(t)!=null) {
                 return ret;
             }
             current = current.getParent(isProto);
         }
         if (extra != null ) {
             ret = extra.getRuleNode();
-            if (t.accept(new MatchVisitor(ret))!=null) {
+            if (ret!=null && ret.consumeSymbol(t)!=null) {
                 return ret;
             }
         }

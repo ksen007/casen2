@@ -48,3 +48,10 @@ public class Interpreter {
         pgm.execute(new CNonPrimitiveObject(),true);
     }
 }
+
+//@todo: handle internal exceptions and translate them into caseN exceptions
+//@todo: handle return from blocks
+//@todo: provide support for reflection
+//@todo: coroutine
+//@todo: eliminate NativeFunction
+

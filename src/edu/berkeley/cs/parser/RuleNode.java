@@ -1,6 +1,8 @@
 package edu.berkeley.cs.parser;
 
 import edu.berkeley.cs.builtin.functions.Invokable;
+import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
+import edu.berkeley.cs.builtin.objects.preprocessor.Token;
 import gnu.trove.iterator.TIntObjectIterator;
 import gnu.trove.map.hash.TIntObjectHashMap;
 
@@ -199,4 +201,17 @@ public class RuleNode {
     public Integer getOptionalPrecedence() {
         return optionalPrecedence;
     }
+
+    public RuleNode consumeSymbol(Token t) {
+        RuleNode ret;
+        if (t instanceof SymbolToken) {
+            SymbolToken st = (SymbolToken)t;
+            if ((ret = getRuleForSymbol(st.symbol))!=null){
+                return ret;
+            }
+        }
+        return null;
+    }
+
+
 }
