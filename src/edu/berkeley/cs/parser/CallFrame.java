@@ -74,9 +74,9 @@ public class CallFrame {
 
     }
 
-    private static boolean isNewLine(Token t) {
+    private static boolean matchesToken(Token t, String sym) {
         if (t instanceof SymbolToken) {
-            return ((SymbolToken)t).symbol == SymbolTable.getInstance().getId("\n");
+            return ((SymbolToken)t).symbol == SymbolTable.getInstance().getId(sym);
         }
         return false;
     }
@@ -107,15 +107,16 @@ public class CallFrame {
             if (ret!=null) {
                 parseRuleStack.pop();
                 parseRuleStack.push(ret);
-                if (((SymbolToken)t).symbol == SymbolTable.getInstance().getId("=")) {
+                if (matchesToken(t,"=")) {
                     tokenStack.pop();
                     tokenStack.push(OperatorPrecedence.getInstance().getPrecedence(t));
                 }
                 return true;
             }
-            if (currentRule.getRuleForToken() !=null && !isNewLine(t)) {
+            RuleNode toBePushed;
+            if ((toBePushed = currentRule.getRuleForToken()) !=null && !matchesToken(t,"\n")) {
                 parseRuleStack.pop();
-                parseRuleStack.push(currentRule.getRuleForToken());
+                parseRuleStack.push(toBePushed);
                 if (t instanceof CompoundToken) {
                     t = new CompoundToken((CompoundToken)t,LS);
                 }
@@ -123,19 +124,18 @@ public class CallFrame {
                 return true;
             }
 
-            RuleNode toBePushed;
-            if ((toBePushed = currentRule.getRuleForNonTerminal()) !=null && !isNewLine(t)) {
+            if ((toBePushed = currentRule.getRuleForNonTerminal()) !=null && !matchesToken(t,"\n")) {
                 RuleNode rn;
                 if ((rn = contextLookAhead(LS,environment,t,false))!=null) {
                     parseRuleStack.pop();
-
+                    parseRuleStack.push(toBePushed);
+                    
                     Integer prec = toBePushed.getOptionalPrecedence();
                     if (prec !=null) {
                         tokenStack.pop();
                         tokenStack.push(prec);
                     }
 
-                    parseRuleStack.push(toBePushed);
                     computationStack.push(LS);
                     parseRuleStack.push(rn);
                     tokenStack.push(OperatorPrecedence.getInstance().getPrecedence(t));
@@ -171,7 +171,7 @@ public class CallFrame {
                 scnr.pushBack(t);
                 return true;
             }
-            if (isNewLine(t)) {
+            if (matchesToken(t,"\n")) {
                 return true;
             }
         } catch (ParseException e) {
