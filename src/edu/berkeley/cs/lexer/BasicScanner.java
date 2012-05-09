@@ -59,7 +59,7 @@ public class BasicScanner extends Scanner{
     }
 
     public static void main(String[] args) throws IOException {
-        Lexer lexer = new Lexer(new FileReader("test1"));
+        Lexer lexer = new StandardLexer(new FileReader("test1"));
         BasicScanner scanner = new BasicScanner(lexer);
         Token token;
         while((token = scanner.nextToken())!=null) {

@@ -1,9 +1,9 @@
 package edu.berkeley.cs.builtin.objects.preprocessor;
 
-import com.sun.tools.example.debug.gui.Environment;
 import edu.berkeley.cs.builtin.functions.*;
 import edu.berkeley.cs.builtin.objects.*;
-import edu.berkeley.cs.lexer.BufferedScanner;
+import edu.berkeley.cs.lexer.BasicScanner;
+import edu.berkeley.cs.lexer.BufferedLexer;
 import edu.berkeley.cs.lexer.Scanner;
 import edu.berkeley.cs.parser.CallFrame;
 import edu.berkeley.cs.parser.SymbolTable;
@@ -51,8 +51,9 @@ public class CompoundToken extends Token {
 
 //    private CallFrame SS;
 
-    public BufferedScanner getScanner() {
-        return new BufferedScanner(tokens);
+    public Scanner getScanner() {
+        return new BasicScanner(new BufferedLexer(tokens));
+//        return new BufferedScanner(tokens);
     }
 
     public CompoundToken(CompoundToken cloneMe,CObject SS) {

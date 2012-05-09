@@ -1,10 +1,10 @@
-package edu.berkeley.cs.lexer;
+package edu.berkeley.cs.builtin.functions;
 
+import edu.berkeley.cs.builtin.objects.CObject;
 import edu.berkeley.cs.builtin.objects.preprocessor.Token;
-import junit.framework.TestCase;
+import edu.berkeley.cs.lexer.Scanner;
 
-import java.io.FileReader;
-import java.io.StringReader;
+import java.util.LinkedList;
 
 /**
  * Copyright (c) 2006-2011,
@@ -38,24 +38,16 @@ import java.io.StringReader;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class BasicScannerTest extends TestCase {
-    public void testLex1() throws Exception {
-        Lexer lexer = new StandardLexer(new FileReader("test1"));
-        BasicScanner scanner = new BasicScanner(lexer);
-        Token token;
-        while((token = scanner.nextToken())!=null) {
-            System.out.println(token);
-        }
+public class PushResultToScanner implements Invokable {
+    Scanner scnr;
 
+    public PushResultToScanner(Scanner scnr) {
+        this.scnr = scnr;
     }
 
-    public void testString() throws Exception {
-        Lexer lexer = new StandardLexer(new StringReader("y = x + y; def foo @LS {};"));
-        BasicScanner scanner = new BasicScanner(lexer);
-        Token token;
-        while((token = scanner.nextToken())!=null) {
-            System.out.println(token);
-        }
-
+    public CObject apply(LinkedList<CObject> args) {
+        CObject ret = args.removeFirst();
+        scnr.pushBack((Token)args.removeFirst());
+        return ret;
     }
 }

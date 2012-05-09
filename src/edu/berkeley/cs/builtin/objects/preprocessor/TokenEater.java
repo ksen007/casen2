@@ -2,7 +2,6 @@ package edu.berkeley.cs.builtin.objects.preprocessor;
 
 import edu.berkeley.cs.builtin.functions.NativeFunction;
 import edu.berkeley.cs.builtin.objects.*;
-import edu.berkeley.cs.lexer.BufferedScanner;
 import edu.berkeley.cs.parser.SymbolTable;
 
 import java.util.ArrayList;
@@ -45,10 +44,10 @@ public class TokenEater extends CObject {
     public TokenEater parent;
     private String file;
 
-    public BufferedScanner getScanner() {
-        return new BufferedScanner(tokens);
-    }
-
+//    public BufferedScanner getScanner() {
+//        return new BufferedScanner(tokens);
+//    }
+//
     public static CObject thisClass = new CObject();
     static {
         thisClass.addNewRule();

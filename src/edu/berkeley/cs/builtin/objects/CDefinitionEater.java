@@ -85,7 +85,7 @@ public class CDefinitionEater extends CObject {
         } else if (arg instanceof LongToken) {
             self.parent.addPrecedence((int)((LongToken)arg).value);
         } else {
-            throw new RuntimeException("Token must be Symbol or Argument "+arg);
+            throw new RuntimeException("Token must be @token, @expr, @nl, or @eof "+arg);
         }
 //        SS.parent.addToken((Token)arg);
         return self;

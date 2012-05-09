@@ -1,9 +1,10 @@
-package edu.berkeley.cs.lexer;
+package edu.berkeley.cs.builtin.objects.preprocessor;
 
-import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
-import edu.berkeley.cs.builtin.objects.preprocessor.Token;
-
-import java.util.ArrayList;
+import edu.berkeley.cs.builtin.functions.NativeFunction;
+import edu.berkeley.cs.builtin.functions.PushResultToScanner;
+import edu.berkeley.cs.builtin.objects.CObject;
+import edu.berkeley.cs.lexer.Scanner;
+import edu.berkeley.cs.parser.SymbolTable;
 
 /**
  * Copyright (c) 2006-2011,
@@ -37,47 +38,14 @@ import java.util.ArrayList;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class BufferedScanner extends Scanner {
-    private ArrayList<Token> tokens;
-    private int iter;
+public class ExptToTokenObject extends CObject {
 
+    public ExptToTokenObject(Scanner scnr) {
+        this.addNewRule();
+        this.addSymbol(SymbolTable.getInstance().getId("("));
+        this.addMeta(SymbolTable.getInstance().expr);
+        this.addSymbol(SymbolTable.getInstance().getId(")"));
 
-    public ArrayList<Token> getTokens() {
-        return tokens;
-    }
-
-    public void reset() {
-        iter = 0;
-    }
-
-    public BufferedScanner() {
-        tokens = new ArrayList<Token>(100);
-        iter = 0;
-    }
-
-    public BufferedScanner(ArrayList<Token> tokens) {
-        this.tokens = tokens;
-        iter = 0;
-    }
-
-    public void addToken(Token t) {
-        tokens.add(t);
-    }
-
-    public Token nextToken() {
-        if (iter < tokens.size()) {
-            iter++;
-            return tokens.get(iter-1);
-        }
-        iter++;
-        return SymbolToken.end;
-    }
-
-    public void pushBack(Token t) {
-        iter--;
-    }
-
-    public boolean isEmpty() {
-        return iter >= tokens.size();
+        this.addAction(new PushResultToScanner(scnr));
     }
 }

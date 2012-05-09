@@ -40,10 +40,4 @@ public abstract class Scanner {
     abstract public Token nextToken();
     abstract public void pushBack(Token t);
 
-    public boolean isEnd() {
-        Token t = nextToken();
-        pushBack(t);
-        return t == SymbolToken.end;
-    }
-
 }

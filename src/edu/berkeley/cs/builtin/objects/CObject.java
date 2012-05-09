@@ -6,6 +6,7 @@ import edu.berkeley.cs.builtin.functions.PutField;
 import edu.berkeley.cs.builtin.objects.preprocessor.*;
 import edu.berkeley.cs.lexer.BasicScanner;
 import edu.berkeley.cs.lexer.Lexer;
+import edu.berkeley.cs.lexer.StandardLexer;
 import edu.berkeley.cs.lexer.Scanner;
 import edu.berkeley.cs.parser.*;
 
@@ -131,7 +132,7 @@ public class CObject {
     }
 
     private static CompoundToken parseIt(Reader in,String fname) throws IOException {
-        Lexer lexer = new Lexer(in);
+        Lexer lexer = new StandardLexer(in);
         Scanner scnr = new BasicScanner(lexer);
 
         CObject LS = new TokenEater(null,fname);

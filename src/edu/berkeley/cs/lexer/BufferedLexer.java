@@ -1,10 +1,9 @@
 package edu.berkeley.cs.lexer;
 
+import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
 import edu.berkeley.cs.builtin.objects.preprocessor.Token;
-import junit.framework.TestCase;
 
-import java.io.FileReader;
-import java.io.StringReader;
+import java.util.ArrayList;
 
 /**
  * Copyright (c) 2006-2011,
@@ -38,24 +37,22 @@ import java.io.StringReader;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class BasicScannerTest extends TestCase {
-    public void testLex1() throws Exception {
-        Lexer lexer = new StandardLexer(new FileReader("test1"));
-        BasicScanner scanner = new BasicScanner(lexer);
-        Token token;
-        while((token = scanner.nextToken())!=null) {
-            System.out.println(token);
-        }
+public class BufferedLexer implements Lexer {
+    private ArrayList<Token> tokens;
+    private int iter;
 
+
+    public BufferedLexer(ArrayList<Token> tokens) {
+        this.tokens = tokens;
+        iter = 0;
     }
 
-    public void testString() throws Exception {
-        Lexer lexer = new StandardLexer(new StringReader("y = x + y; def foo @LS {};"));
-        BasicScanner scanner = new BasicScanner(lexer);
-        Token token;
-        while((token = scanner.nextToken())!=null) {
-            System.out.println(token);
+    public Token getNextToken() {
+        if (iter < tokens.size()) {
+            iter++;
+            return tokens.get(iter-1);
         }
-
+        iter++;
+        return SymbolToken.end;  //@todo: fails if I return null.  Fix this!
     }
 }
