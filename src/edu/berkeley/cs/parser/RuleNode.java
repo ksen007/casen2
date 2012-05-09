@@ -202,7 +202,7 @@ public class RuleNode {
         return optionalPrecedence;
     }
 
-    public RuleNode consumeSymbol(Token t) {
+    public RuleNode matchSymbol(Token t) {
         RuleNode ret;
         if (t instanceof SymbolToken) {
             SymbolToken st = (SymbolToken)t;

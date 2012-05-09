@@ -66,6 +66,21 @@ public class EnvironmentObject extends CObject {
         this.addAction(new NativeFunction("loadFile"));
 
         this.addNewRule();
+        this.addSymbol(SymbolTable.getInstance().getId("tokenToExpr"));
+        this.addMeta(SymbolTable.getInstance().token);
+        this.addAction(new NativeFunction("returnToken"));
+
+        this.addNewRule();
+        this.addSymbol(SymbolTable.getInstance().getId("-"));
+        this.addMeta(SymbolTable.getInstance().expr);
+        this.addAction(new NativeFunction("unaryMinus"));
+
+        this.addNewRule();
+        this.addSymbol(SymbolTable.getInstance().getId("!"));
+        this.addMeta(SymbolTable.getInstance().expr);
+        this.addAction(new NativeFunction("unaryNot"));
+
+        this.addNewRule();
         this.addSymbol(SymbolTable.getInstance().getId("print"));
         this.addMeta(SymbolTable.getInstance().expr);
         this.addAction(new NativeFunction("print"));

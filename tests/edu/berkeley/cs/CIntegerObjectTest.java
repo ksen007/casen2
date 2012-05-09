@@ -71,4 +71,9 @@ public class CIntegerObjectTest extends TestCase {
     public void testVarAddDiv3() throws Exception {
         Interpreter.interpret("var y = 1156; ; ; var x = y - y*y/y; print y; assert x==0; assert y==1156;");
     }
+
+    public void testUnary() throws Exception {
+        Interpreter.interpret("var y = 1156; var x = 10; y = - y + -x ; assert y == -1166; print y;");
+    }
+
 }

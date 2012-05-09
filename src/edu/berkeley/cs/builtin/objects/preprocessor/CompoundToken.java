@@ -160,13 +160,4 @@ public class CompoundToken extends Token {
         return this == o;
     }
 
-//    // @todo: see if this can be eliminated
-//    public void setParent(CObject SS, boolean isProto) {
-//        super.setParent(SS,isProto);
-//        if (SS !=null) {
-//            this.addNewRule();
-//            this.addSymbol(SymbolTable.getInstance().getId("SS"));
-//            this.addAction(new GetField(new Reference(SS)));
-//        }
-//    }
 }

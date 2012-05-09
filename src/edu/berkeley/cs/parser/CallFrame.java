@@ -50,10 +50,6 @@ public class CallFrame {
 
 
     public CallFrame(CObject LS, CObject base, CObject environment, Scanner scnr) {
-//        init(LS,base,environment,scnr);
-//    }
-//
-//    public void init(CObject LS, CObject base, CObject environment, Scanner scnr) {
         Token t;
 
         this.environment = environment;
@@ -97,95 +93,133 @@ public class CallFrame {
 //        return computationStack.peek();
     }
 
-    public boolean interpretAux() {
-        Token t = scnr.nextToken();
-        RuleNode currentRule = parseRuleStack.peek();
-        Token t2 = t;
-
-        try {
-            RuleNode ret = currentRule.consumeSymbol(t);
-            if (ret!=null) {
-                parseRuleStack.pop();
-                parseRuleStack.push(ret);
-                if (matchesToken(t,"=")) {
-                    tokenStack.pop();
-                    tokenStack.push(OperatorPrecedence.getInstance().getPrecedence(t));
-                }
-                return true;
+    private boolean consumeSymbol(RuleNode currentRule, Token t) {
+        RuleNode ret = currentRule.matchSymbol(t);
+        if (ret!=null) {
+            parseRuleStack.pop();
+            parseRuleStack.push(ret);
+            if (matchesToken(t,"=")) {
+                tokenStack.pop();
+                tokenStack.push(OperatorPrecedence.getInstance().getPrecedence(t));
             }
-            RuleNode toBePushed;
-            if ((toBePushed = currentRule.getRuleForToken()) !=null && !matchesToken(t,"\n")) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean consumeToken(RuleNode currentRule, Token t) {
+        RuleNode toBePushed;
+        if ((toBePushed = currentRule.getRuleForToken()) !=null) {
+
+            if (t instanceof CompoundToken) {
+                t = new CompoundToken((CompoundToken)t,LS);
+            }
+            if (matchesToken(t,"exprToToken")) {
+                t = scnr.nextToken();
+                if (consumeExpr(toBePushed,t)) return true;
+                scnr.pushBack(t);
+            } else {
                 parseRuleStack.pop();
                 parseRuleStack.push(toBePushed);
-                if (t instanceof CompoundToken) {
-                    t = new CompoundToken((CompoundToken)t,LS);
-                }
                 computationStack.push(t);
                 return true;
             }
+        }
+        return false;
+    }
 
-            if ((toBePushed = currentRule.getRuleForNonTerminal()) !=null && !matchesToken(t,"\n")) {
-                RuleNode rn;
-                if ((rn = contextLookAhead(LS,environment,t,false))!=null) {
-                    parseRuleStack.pop();
-                    parseRuleStack.push(toBePushed);
-                    
-                    Integer prec = toBePushed.getOptionalPrecedence();
-                    if (prec !=null) {
-                        tokenStack.pop();
-                        tokenStack.push(prec);
-                    }
+    private boolean consumeExpr(RuleNode toBePushed, Token t) {
+        RuleNode rn;
 
-                    computationStack.push(LS);
-                    parseRuleStack.push(rn);
-                    tokenStack.push(OperatorPrecedence.getInstance().getPrecedence(t));
-                    scnr.pushBack(t);
-                    return true;
-                }
-            }
+        if ((rn = contextLookAhead(LS,environment,t,false))!=null) {
+            parseRuleStack.pop();
+            parseRuleStack.push(toBePushed);
 
-            if (currentRule.getRuleForAction() != null) {
-                scnr.pushBack(t);
-                parseRuleStack.pop();
+            Integer prec = toBePushed.getOptionalPrecedence();
+            if (prec !=null) {
                 tokenStack.pop();
-                currentRule.getRuleForAction().apply(computationStack);
-
-                // now greedily apply the computation stack top object to the rest fo the stream if possible
-                CObject nt = computationStack.peek();
-                t = scnr.nextToken();
-                RuleNode reduce;
-                int tmp;
-                if (parseRuleStack.isEmpty()) {
-                    reduce = null;
-                    tmp = 0;
-                } else {
-                    reduce = parseRuleStack.peek();
-                    tmp = tokenStack.peek();
-                }
-
-                RuleNode rn;
-                if ((rn=shift(reduce,nt,tmp,t))!=null) {
-                    parseRuleStack.push(rn);
-                    tokenStack.push(OperatorPrecedence.getInstance().getPrecedence(t));
-                }
-                scnr.pushBack(t);
-                return true;
+                tokenStack.push(prec);
             }
+
+            computationStack.push(LS);
+            parseRuleStack.push(rn);
+            tokenStack.push(OperatorPrecedence.getInstance().getPrecedence(t));
+            scnr.pushBack(t);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean consumeAction(RuleNode currentRule, Token t) {
+        if (currentRule.getRuleForAction() != null) {
+            doAction(currentRule,t);
+
+            if (computationStack.peek().isException()) return true;
+
+            tryShifting();
+            return true;
+        }
+        return false;
+    }
+
+    private void doAction(RuleNode currentRule, Token t) {
+        scnr.pushBack(t);
+        parseRuleStack.pop();
+        tokenStack.pop();
+        currentRule.getRuleForAction().apply(computationStack);
+    }
+
+    private void tryShifting() {
+        CObject nt = computationStack.peek();
+        Token t = scnr.nextToken();
+        RuleNode reduce;
+        int tmp;
+        if (parseRuleStack.isEmpty()) {
+            reduce = null;
+            tmp = 0;
+        } else {
+            reduce = parseRuleStack.peek();
+            tmp = tokenStack.peek();
+        }
+
+        RuleNode rn;
+        if ((rn=shift(reduce,nt,tmp,t))!=null) {
+            parseRuleStack.push(rn);
+            tokenStack.push(OperatorPrecedence.getInstance().getPrecedence(t));
+        }
+        scnr.pushBack(t);
+    }
+
+    public boolean interpretAux() {
+        Token t = scnr.nextToken();
+        RuleNode currentRule = parseRuleStack.peek();
+
+        try {
+            if (consumeSymbol(currentRule,t)) return true;
+            if (!matchesToken(t,"\n")) {
+                if (consumeToken(currentRule,t)) return true;
+                RuleNode toBePushed;
+                if ((toBePushed = currentRule.getRuleForNonTerminal()) !=null) {
+                    if (consumeExpr(toBePushed,t)) return true;
+                }
+            }
+            if (consumeAction(currentRule,t)) return true;
+
             if (matchesToken(t,"\n")) {
                 return true;
             }
         } catch (ParseException e) {
-            throw new ParseException(t2,this,e);
+            throw new ParseException(t,this,e);
         } catch (Exception e) {
-            throw new ParseException(t2,this,e);
+            throw new ParseException(t,this,e);
         }
-        System.out.println(currentRule);
-        throw new ParseException(t2,this);
+//        System.out.println(currentRule);
+        throw new ParseException(t,this);
     }
 
     private static boolean isProgressPossible(RuleNode rn, Token t) {
         return rn !=null
-                && (rn.consumeSymbol(t)!=null
+                && (rn.matchSymbol(t)!=null
                 || rn.getRuleForNonTerminal()!=null
                 || rn.getRuleForToken()!=null
                 || rn.getRuleForAction()!=null);
@@ -211,14 +245,14 @@ public class CallFrame {
         current = LS;
         while(current!=null) {
             ret = current.getRuleNode();
-            if (ret!=null && ret.consumeSymbol(t)!=null) {
+            if (ret!=null && ret.matchSymbol(t)!=null) {
                 return ret;
             }
             current = current.getParent(isProto);
         }
         if (extra != null ) {
             ret = extra.getRuleNode();
-            if (ret!=null && ret.consumeSymbol(t)!=null) {
+            if (ret!=null && ret.matchSymbol(t)!=null) {
                 return ret;
             }
         }

@@ -42,7 +42,7 @@ import java.io.StringReader;
  */
 public class CompoundTokenTest extends TestCase {
     public void testVarAddDiv2() throws Exception {
-        Interpreter.interpret("var x = 1156; print x");
+        Interpreter.interpret("var y = tokenToExpr x; def exprToToken y {14}; print x; assert x == 14;");
     }
 }
 //def Array @argument @edu.berkeley.cs.builtin.objects.CArray endef ; var x = (Array 10); x[1] = 89; print (x[1]);

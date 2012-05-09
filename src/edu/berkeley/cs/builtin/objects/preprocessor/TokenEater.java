@@ -52,6 +52,10 @@ public class TokenEater extends CObject {
     public static CObject thisClass = new CObject();
     static {
         thisClass.addNewRule();
+        thisClass.addSymbol(SymbolTable.getInstance().getId("exprToToken"));
+        thisClass.addAction(new NativeFunction("appendExprToToken"));
+
+        thisClass.addNewRule();
         thisClass.addSymbol(SymbolTable.getInstance().getId("{"));
         thisClass.addAction(new NativeFunction("createNewTokenEater"));
 
@@ -100,6 +104,12 @@ public class TokenEater extends CObject {
         tokens.add((Token)token);
         return this;
     }
+
+    public CObject appendExprToToken() {
+        tokens.add(new SymbolToken(null,SymbolTable.getInstance().getId("exprToToken")));
+        return this;
+    }
+
 
     public CObject appendNewLine() {
         tokens.add(new SymbolToken(null,SymbolTable.getInstance().getId("\n")));

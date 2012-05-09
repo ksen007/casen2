@@ -297,6 +297,20 @@ public class CObject {
         }
     }
 
+    public CObject unaryNot(CObject operand2) {
+        return ((BooleanToken)operand2).value? BooleanToken.FALSE(): BooleanToken.TRUE();
+    }
+
+    public CObject unaryMinus(CObject operand2) {
+        if (operand2 instanceof LongToken)
+            return new LongToken(null,-((LongToken)operand2).value);
+        return new DoubleToken(null,-((DoubleToken)operand2).value);
+
+    }
+
+    public CObject returnToken(CObject tok) {
+        return tok;
+    }
 
     public CObject newObject() {
         CNonPrimitiveObject ret = new CNonPrimitiveObject();

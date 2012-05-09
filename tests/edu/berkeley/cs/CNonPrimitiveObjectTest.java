@@ -225,4 +225,13 @@ public class CNonPrimitiveObjectTest extends TestCase {
         Interpreter.interpret("def fac @argument {|n| if n > 1 then {var ret = n * (self fac (n-1))} else { var ret = 1}; return ret;}; print (fac 10) ");
         //System.out.println(cf);
     }
+
+    public void testTokenToExpr() throws Exception {
+        Interpreter.interpret("var x = 10; var y = tokenToExpr x; print y;");
+    }
+
+    public void testExprToToken() throws Exception {
+        Interpreter.interpret("var y = tokenToExpr x; def exprToToken y {14}; print x; assert x == 14;");
+    }
+
 }
