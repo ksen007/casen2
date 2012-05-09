@@ -1,10 +1,8 @@
 package edu.berkeley.cs.parser;
 
+import edu.berkeley.cs.builtin.functions.PushResultToScanner;
 import edu.berkeley.cs.builtin.objects.CObject;
-import edu.berkeley.cs.builtin.objects.preprocessor.CompoundToken;
-import edu.berkeley.cs.builtin.objects.preprocessor.StringToken;
-import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
-import edu.berkeley.cs.builtin.objects.preprocessor.Token;
+import edu.berkeley.cs.builtin.objects.preprocessor.*;
 import edu.berkeley.cs.lexer.Scanner;
 
 import java.util.Stack;
@@ -115,16 +113,16 @@ public class CallFrame {
             if (t instanceof CompoundToken) {
                 t = new CompoundToken((CompoundToken)t,LS);
             }
-            if (matchesToken(t,"exprToToken")) {
-                t = scnr.nextToken();
-                if (consumeExpr(toBePushed,t)) return true;
-                scnr.pushBack(t);
-            } else {
+//            if (matchesToken(t,"exprToToken")) {
+//                t = scnr.nextToken();
+//                if (consumeExpr(toBePushed,t)) return true;
+//                scnr.pushBack(t);
+//            } else {
                 parseRuleStack.pop();
                 parseRuleStack.push(toBePushed);
                 computationStack.push(t);
                 return true;
-            }
+//            }
         }
         return false;
     }
@@ -136,12 +134,12 @@ public class CallFrame {
             parseRuleStack.pop();
             parseRuleStack.push(toBePushed);
 
-            Integer prec = toBePushed.getOptionalPrecedence();
-            if (prec !=null) {
-                tokenStack.pop();
-                tokenStack.push(prec);
-            }
-
+//            Integer prec = toBePushed.getOptionalPrecedence();
+//            if (prec !=null) {
+//                tokenStack.pop();
+//                tokenStack.push(prec);
+//            }
+//
             computationStack.push(LS);
             parseRuleStack.push(rn);
             tokenStack.push(OperatorPrecedence.getInstance().getPrecedence(t));
@@ -157,7 +155,7 @@ public class CallFrame {
 
             if (computationStack.peek().isException()) return true;
 
-            tryShifting();
+            tryShifting(currentRule);
             return true;
         }
         return false;
@@ -170,7 +168,7 @@ public class CallFrame {
         currentRule.getRuleForAction().apply(computationStack);
     }
 
-    private void tryShifting() {
+    private void tryShifting(RuleNode currentRule) {
         CObject nt = computationStack.peek();
         Token t = scnr.nextToken();
         RuleNode reduce;
@@ -184,7 +182,7 @@ public class CallFrame {
         }
 
         RuleNode rn;
-        if ((rn=shift(reduce,nt,tmp,t))!=null) {
+        if ((rn=shift(reduce,nt,tmp,t,currentRule.getOptionalPrecedence()))!=null) {
             parseRuleStack.push(rn);
             tokenStack.push(OperatorPrecedence.getInstance().getPrecedence(t));
         }
@@ -196,27 +194,33 @@ public class CallFrame {
         RuleNode currentRule = parseRuleStack.peek();
 
         try {
-        if (consumeSymbol(currentRule,t)) return true;
-        if (!matchesToken(t,"\n")) {
-            if (consumeToken(currentRule,t)) return true;
-            RuleNode toBePushed;
-            if ((toBePushed = currentRule.getRuleForNonTerminal()) !=null) {
-                if (consumeExpr(toBePushed,t)) return true;
+            if (consumeSymbol(currentRule,t)) return true;
+            if (matchesToken(t,"exprToToken") && !currentRule.isActionOnly()) {
+                parseRuleStack.push((new ExptToTokenObject(scnr)).getRuleNode());
+                tokenStack.push(OperatorPrecedence.getInstance().getPrecedence(t));
+                return true;
             }
-        }
-        if (consumeAction(currentRule,t)) return true;
 
-        if (matchesToken(t,"\n")) {
-            return true;
-        }
+            if (!matchesToken(t,"\n")) {
+                if (consumeToken(currentRule,t)) return true;
+                RuleNode toBePushed;
+                if ((toBePushed = currentRule.getRuleForNonTerminal()) !=null) {
+                    if (consumeExpr(toBePushed,t)) return true;
+                }
+            }
+            if (consumeAction(currentRule,t)) return true;
+
+            if (matchesToken(t,"\n")) {
+                return true;
+            }
         } catch (Exception e) {
-            StringToken ret = new StringToken(null,"Failed to consume "+t+" with "+this+ " because "+e);
+            StringToken ret = new StringToken(null,"Failed to consume "+t+" at "+t.locationString()+" with "+this+ " because "+e);
             ret.setException();
             computationStack.push(ret);
             return true;
         }
 //        System.out.println(currentRule);
-        StringToken ret = new StringToken(null,"Failed to consume "+t+" with "+this);
+        StringToken ret = new StringToken(null,"Failed to consume "+t+" at "+t.locationString()+" with "+this);
         ret.setException();
         computationStack.push(ret);
         return true;
@@ -230,16 +234,24 @@ public class CallFrame {
                 || rn.getRuleForAction()!=null);
     }
 
-    private RuleNode shift(RuleNode reduce, CObject shift, int exprPrecedence, Token shiftOperator) {
+    private RuleNode shift(RuleNode reduce, CObject shift, int exprPrecedence, Token shiftOperator, Integer childPrecedence) {
         boolean first = isProgressPossible(reduce,shiftOperator);
         RuleNode ret;
         boolean second = (ret = contextLookAhead(shift,null,shiftOperator,true))!=null;
         if (!second) return null;
         if (!first) return ret;
-        if (OperatorPrecedence.getInstance().isShift(exprPrecedence,shiftOperator))
-            return ret;
-        else
-            return null;
+        if (childPrecedence != null) {
+            if (OperatorPrecedence.getInstance().isShift(exprPrecedence,childPrecedence)) {
+                return ret;
+            } else {
+                return null;
+            }
+        } else {
+            if (OperatorPrecedence.getInstance().isShift(exprPrecedence,shiftOperator))
+                return ret;
+            else
+                return null;
+        }
     }
 
 

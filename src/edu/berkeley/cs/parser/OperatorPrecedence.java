@@ -85,9 +85,14 @@ public class OperatorPrecedence {
     public boolean isShift(int exprPrecedence, Token shiftOp) {
         if (shiftOp instanceof SymbolToken) {
             int sym2 = precedenceTable.get(((SymbolToken)shiftOp).symbol);
-            if (sym2 > exprPrecedence || (exprPrecedence == sym2 && sym2 % 2 == 1)) {
-                return true;
-            }
+            return isShift(exprPrecedence,sym2);
+        }
+        return false;
+    }
+
+    public boolean isShift(int exprPrecedence, int sym2) {
+        if (sym2 > exprPrecedence || (exprPrecedence == sym2 && sym2 % 2 == 1)) {
+            return true;
         }
         return false;
     }

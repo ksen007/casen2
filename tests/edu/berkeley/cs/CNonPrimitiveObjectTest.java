@@ -229,7 +229,7 @@ public class CNonPrimitiveObjectTest extends TestCase {
     }
 
     public void testExprToToken() throws Exception {
-        Interpreter.interpret("var y = tokenToExpr x; def exprToToken y {14}; print x; assert x == 14;");
+        Interpreter.interpret("var y = tokenToExpr x; def exprToToken (y) {14}; print x; assert x == 14;");
     }
 
 }

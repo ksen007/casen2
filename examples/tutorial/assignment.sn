@@ -4,6 +4,14 @@ def // {
     return ret
 }
 
+def /* 1000 {
+    var ret = new Object
+    ret def @token 1000 {|x| self}
+    ret def @nl 1000 { self }
+    ret def */ 1000 { null}
+    return ret
+}
+
 // I defined the comment operator // so that I can write comments
 
 var x = 100
@@ -31,6 +39,8 @@ ret var b = 3
 print ((ret a) + (ret b))
 // access fields a and b of ret
 // no need to use . operator as in Java, Python, Javascript
+// 5
+
 
 var foo = {|x, y| return (x + y) }
 print (foo (3,4))

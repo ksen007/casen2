@@ -52,7 +52,6 @@ public class Interpreter {
     }
 }
 
-//@todo: generalize exprToToken
 //@todo: @argument -> @expr
 //@todo: remove var
 //@todo: make space have higher precedence

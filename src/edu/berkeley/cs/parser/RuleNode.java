@@ -214,4 +214,7 @@ public class RuleNode {
     }
 
 
+    public boolean isActionOnly() {
+        return (nextSymbolMap==null && nonTerminal==null && token == null && action != null);
+    }
 }
