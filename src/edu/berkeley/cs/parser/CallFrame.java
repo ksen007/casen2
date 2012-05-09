@@ -2,6 +2,7 @@ package edu.berkeley.cs.parser;
 
 import edu.berkeley.cs.builtin.objects.CObject;
 import edu.berkeley.cs.builtin.objects.preprocessor.CompoundToken;
+import edu.berkeley.cs.builtin.objects.preprocessor.StringToken;
 import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
 import edu.berkeley.cs.builtin.objects.preprocessor.Token;
 import edu.berkeley.cs.lexer.Scanner;
@@ -131,7 +132,7 @@ public class CallFrame {
     private boolean consumeExpr(RuleNode toBePushed, Token t) {
         RuleNode rn;
 
-        if ((rn = contextLookAhead(LS,environment,t,false))!=null) {
+        if ((rn = contextLookAhead(LS, environment, t, false))!=null) {
             parseRuleStack.pop();
             parseRuleStack.push(toBePushed);
 
@@ -195,26 +196,30 @@ public class CallFrame {
         RuleNode currentRule = parseRuleStack.peek();
 
         try {
-            if (consumeSymbol(currentRule,t)) return true;
-            if (!matchesToken(t,"\n")) {
-                if (consumeToken(currentRule,t)) return true;
-                RuleNode toBePushed;
-                if ((toBePushed = currentRule.getRuleForNonTerminal()) !=null) {
-                    if (consumeExpr(toBePushed,t)) return true;
-                }
+        if (consumeSymbol(currentRule,t)) return true;
+        if (!matchesToken(t,"\n")) {
+            if (consumeToken(currentRule,t)) return true;
+            RuleNode toBePushed;
+            if ((toBePushed = currentRule.getRuleForNonTerminal()) !=null) {
+                if (consumeExpr(toBePushed,t)) return true;
             }
-            if (consumeAction(currentRule,t)) return true;
+        }
+        if (consumeAction(currentRule,t)) return true;
 
-            if (matchesToken(t,"\n")) {
-                return true;
-            }
-        } catch (ParseException e) {
-            throw new ParseException(t,this,e);
+        if (matchesToken(t,"\n")) {
+            return true;
+        }
         } catch (Exception e) {
-            throw new ParseException(t,this,e);
+            StringToken ret = new StringToken(null,"Failed to consume "+t+" with "+this+ " because "+e);
+            ret.setException();
+            computationStack.push(ret);
+            return true;
         }
 //        System.out.println(currentRule);
-        throw new ParseException(t,this);
+        StringToken ret = new StringToken(null,"Failed to consume "+t+" with "+this);
+        ret.setException();
+        computationStack.push(ret);
+        return true;
     }
 
     private static boolean isProgressPossible(RuleNode rn, Token t) {

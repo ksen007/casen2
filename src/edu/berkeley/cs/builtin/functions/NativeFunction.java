@@ -3,6 +3,9 @@ package edu.berkeley.cs.builtin.functions;
 import edu.berkeley.cs.builtin.objects.CObject;
 import edu.berkeley.cs.parser.ParseException;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.LinkedList;
@@ -46,6 +49,13 @@ public class NativeFunction implements Invokable {
         this.methodName = methodName;
     }
 
+    public static String getStackTrace(Throwable aThrowable) {
+        final Writer result = new StringWriter();
+        final PrintWriter printWriter = new PrintWriter(result);
+        aThrowable.printStackTrace(printWriter);
+        return result.toString();
+    }
+
     public CObject apply(LinkedList<CObject> args) {
         CObject self = args.removeFirst();
         Class[] types = new Class[args.size()];
@@ -54,26 +64,15 @@ public class NativeFunction implements Invokable {
 
         }
         Method method;
-//        try {
         try {
             method = self.getClass().getMethod(methodName, types);
-            //e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             return (CObject)method.invoke(self,args.toArray());
         } catch (NoSuchMethodException e) {
-            System.err.println("No such method "+self+" "+methodName);
-            throw new RuntimeException(e.getCause());
-//            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException("No such native method "+self+" "+methodName+" because "+getStackTrace(e.getCause()));
         } catch (InvocationTargetException e) {
-            System.err.println("Error in method "+self+" "+methodName);
-
-            if (e.getCause() instanceof ParseException)
-                throw (ParseException)e.getCause();
-            else {
-//                e.getCause().printStackTrace();
-                throw new RuntimeException(e.getCause());
-            }
+            throw new RuntimeException("Exception in native method "+self+" "+methodName+" because "+getStackTrace(e.getCause()));
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(e.getCause());
+            throw new RuntimeException("Illegal access in native method "+self+" "+methodName+" because "+getStackTrace(e));
         }
     }
 

@@ -156,7 +156,7 @@ public class CNonPrimitiveObjectTest extends TestCase {
         try {
             Interpreter.interpret("def fac @argument {|n| if n > 1 then {ret = n * (self fac (n-1)) } else { ret = m} ret}; print (fac 2) ");
             assertFalse("m is uninitialized",true);
-        } catch (ParseException e) {
+        } catch (Exception e) {
             System.out.println("test is fine because m is uninitialized \n"+e);
         }
         //System.out.println(cf);
@@ -192,8 +192,6 @@ public class CNonPrimitiveObjectTest extends TestCase {
 
     public void testWhile() throws Exception {
         Interpreter.interpret("var i=0; while {i<10}{i = i + 1; print i; }; ");
-
-//        CIntegerObjectTest.eval("i = 2; i = (i + 1); i = (i+1); print i ");
     }
 
     public void testNull() throws Exception {

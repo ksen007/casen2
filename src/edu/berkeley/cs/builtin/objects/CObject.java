@@ -143,7 +143,11 @@ public class CObject {
     public CObject eval(String s) {
         try {
             CompoundToken pgm = parseIt(new StringReader(s),null);
-            return pgm.execute(this,true); //comeback
+            CObject ret = pgm.execute(this,true);
+            if (ret.isException()) {
+                throw new RuntimeException("Eval:\n"+ret);
+            }
+            return ret;
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e.getMessage());
