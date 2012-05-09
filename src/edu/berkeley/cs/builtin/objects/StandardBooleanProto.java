@@ -36,9 +36,9 @@ public class StandardBooleanProto {
     final public static CNonPrimitiveObject instance =  new CNonPrimitiveObject();
 
     static {
-        instance.eval("def && @argument @and endef");
-        instance.eval("def || @argument @or endef");
-        instance.eval("def == @argument @eq endef");
-        instance.eval("def != @argument @ne endef");
+        instance.eval("def && @expr @and endef");
+        instance.eval("def || @expr @or endef");
+        instance.eval("def == @expr @eq endef");
+        instance.eval("def != @expr @ne endef");
     }
 }

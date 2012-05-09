@@ -1,10 +1,10 @@
 
-def Node @argument @argument {|data, next|
+def Node @expr @expr {|data, next|
     LS}
 
-def list @argument {|data|
+def list @expr {|data|
     var val = Node data null
-    def , @argument {|data|
+    def , @expr {|data|
         val = Node data val
         self}
     def pr {

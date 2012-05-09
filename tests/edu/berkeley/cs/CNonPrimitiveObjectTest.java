@@ -125,12 +125,12 @@ public class CNonPrimitiveObjectTest extends TestCase {
 
     public void testDef7() throws Exception {
         System.out.println("------------- testDef7 ----------------------");
-        Interpreter.interpret("def foo @argument {|a| var x = 1; var y = (a + 5); LS }; var t = (foo 10); assert ((t x) == 1); assert ((t y) == 15);");
+        Interpreter.interpret("def foo @expr {|a| var x = 1; var y = (a + 5); LS }; var t = (foo 10); assert ((t x) == 1); assert ((t y) == 15);");
     }
 
     public void testDef8() throws Exception {
         System.out.println("------------- testDef8 ----------------------");
-        Interpreter.interpret("def foo @argument {|a| print a  }; var t = (foo 10); assert (t == 10)");
+        Interpreter.interpret("def foo @expr {|a| print a  }; var t = (foo 10); assert (t == 10)");
     }
 
     public void testDef9() throws Exception {
@@ -147,14 +147,14 @@ public class CNonPrimitiveObjectTest extends TestCase {
 
     public void testIf2() throws Exception {
         System.out.println("------------- testIf1 ----------------------");
-        Interpreter.interpret("def fac @argument {|n| if n > 1 then {var ret = n * (self fac (n-1)) } else { var ret = 1}; ret}; print (fac 10) ");
+        Interpreter.interpret("def fac @expr {|n| if n > 1 then {var ret = n * (self fac (n-1)) } else { var ret = 1}; ret}; print (fac 10) ");
         //System.out.println(cf);
     }
 
     public void testIf4() throws Exception {
         System.out.println("------------- testIf4 ----------------------");
         try {
-            Interpreter.interpret("def fac @argument {|n| if n > 1 then {ret = n * (self fac (n-1)) } else { ret = m} ret}; print (fac 2) ");
+            Interpreter.interpret("def fac @expr {|n| if n > 1 then {ret = n * (self fac (n-1)) } else { ret = m} ret}; print (fac 2) ");
             assertFalse("m is uninitialized",true);
         } catch (Exception e) {
             System.out.println("test is fine because m is uninitialized \n"+e);
@@ -164,7 +164,7 @@ public class CNonPrimitiveObjectTest extends TestCase {
 
     public void testIf3() throws Exception {
         System.out.println("------------- testIf1 ----------------------");
-        Interpreter.interpret("def do @argument unless @argument {|b, cond| if cond then { print 1} else { b ( self ) } }; var x = 6; do {print x} unless false ");
+        Interpreter.interpret("def do @expr unless @expr {|b, cond| if cond then { print 1} else { b ( self ) } }; var x = 6; do {print x} unless false ");
         //System.out.println(cf);
     }
 
@@ -187,7 +187,7 @@ public class CNonPrimitiveObjectTest extends TestCase {
     }
 
     public void testArray() throws Exception {
-        Interpreter.interpret("def CArray @argument @edu.berkeley.cs.builtin.objects.CArray endef ; var x = (CArray 10); x[1] = 89; print (x[1]);");
+        Interpreter.interpret("def CArray @expr @edu.berkeley.cs.builtin.objects.CArray endef ; var x = (CArray 10); x[1] = 89; print (x[1]);");
     }
 
     public void testWhile() throws Exception {
@@ -220,7 +220,7 @@ public class CNonPrimitiveObjectTest extends TestCase {
 
     public void testReturn2() throws Exception {
         System.out.println("------------- testIf1 ----------------------");
-        Interpreter.interpret("def fac @argument {|n| if n > 1 then {var ret = n * (self fac (n-1))} else { var ret = 1}; return ret;}; print (fac 10) ");
+        Interpreter.interpret("def fac @expr {|n| if n > 1 then {var ret = n * (self fac (n-1))} else { var ret = 1}; return ret;}; print (fac 10) ");
         //System.out.println(cf);
     }
 

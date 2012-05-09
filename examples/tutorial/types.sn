@@ -122,15 +122,15 @@ print (tokenToExpr abc123)
 // ///////////////////////////////////////
 // meta token type
 // any identifier preceded by @
-// @token, @argument, @nl, @eof are reserved
+// @token, @expr, @nl, @eof are reserved
 print @hello
 // @hello
 print @token
 // @token
 print @x
 // @x
-print @argument
-// @argument
+print @expr
+// @expr
 print @eof
 // @eof
 

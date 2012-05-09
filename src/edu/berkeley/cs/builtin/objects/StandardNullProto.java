@@ -35,7 +35,7 @@ package edu.berkeley.cs.builtin.objects;
 public class StandardNullProto {
     final public static CNonPrimitiveObject instance =  new CNonPrimitiveObject();
     static {
-        instance.eval("def == @argument @eq  endef");
-        instance.eval("def != @argument @ne  endef");
+        instance.eval("def == @expr @eq  endef");
+        instance.eval("def != @expr @ne  endef");
     }
 }

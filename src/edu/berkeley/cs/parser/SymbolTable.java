@@ -43,7 +43,7 @@ public class SymbolTable {
     private TreeMap<String,Integer> symbolTable = new TreeMap<String, Integer>();
     private ArrayList<String> symbols = new ArrayList<String>();
 
-    public int expr = getId("argument");
+    public int expr = getId("expr");
     public int token = getId("token");
     public int nl = getId("nl");
     public int eof = getId("eof");

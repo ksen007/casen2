@@ -108,7 +108,7 @@ public class RuleNode {
         if (nonTerminal!=null) {
             LinkedList<String> tmp = nonTerminal.print();
             for(String child:tmp) {
-                ret.add("@argument "+child);
+                ret.add("@expr "+child);
             }
         }
         if (token!=null) {
@@ -125,27 +125,27 @@ public class RuleNode {
     }
 
 
-    public RuleNode addMeta(RuleNode rootRules,int argument) {
-        return addMeta(rootRules,argument,false);
+    public RuleNode addMeta(RuleNode rootRules,int metaSymbol) {
+        return addMeta(rootRules,metaSymbol,false);
     }
 
-    public RuleNode addMeta(RuleNode rootRules, int argument,boolean override) {
-        if (this==rootRules && argument==SymbolTable.getInstance().expr && !override) {
-            throw new ParseException("First token of a def cannot be @argument.");
+    public RuleNode addMeta(RuleNode rootRules, int metaSymbol,boolean override) {
+        if (this==rootRules && metaSymbol==SymbolTable.getInstance().expr && !override) {
+            throw new ParseException("First token of a def cannot be @expr.");
         }
-        if (argument==SymbolTable.getInstance().expr) {
+        if (metaSymbol==SymbolTable.getInstance().expr) {
             if (nonTerminal == null) {
-                nonTerminal = new RuleNode(this, "@argument");
+                nonTerminal = new RuleNode(this, "@expr");
             }
             return  this.nonTerminal;
         }
-        if (argument==SymbolTable.getInstance().token) {
+        if (metaSymbol==SymbolTable.getInstance().token) {
             if (token == null) {
                 token = new RuleNode(this, "@token");
             }
             return  this.token;
         }
-        throw new ParseException("Bad Meta Token @"+SymbolTable.getInstance().getSymbol(argument));
+        throw new ParseException("Bad Meta Token @"+SymbolTable.getInstance().getSymbol(metaSymbol));
     }
 
     public RuleNode addSymbol(int symbol) {
@@ -178,9 +178,9 @@ public class RuleNode {
         return null;
     }
 
-//    public RuleNode getRuleForArgument(int argument) {
+//    public RuleNode getRuleFormetaSymbol(int metaSymbol) {
 //        RuleNode ret = null;
-//        if (nextArgumentMap != null && (ret = nextArgumentMap.get(argument))!=null){
+//        if (nextmetaSymbolMap != null && (ret = nextmetaSymbolMap.get(metaSymbol))!=null){
 //            return ret;
 //        }
 //        return null;

@@ -48,7 +48,7 @@ import java.util.TreeMap;
  */
 
 /* @keywords
-    @block @argument @LS @literal @symbol @nl { } true false null number-literals string-literals def assert print ( ) ,
+    @block @expr @LS @literal @symbol @nl { } true false null number-literals string-literals def assert print ( ) ,
     |
 
     */
@@ -376,13 +376,13 @@ public class CObject {
         argCount=0;
     }
 
-    public void addMeta(int argument) {
-        curr = curr.addMeta(rules,argument);
+    public void addMeta(int metaSymbol) {
+        curr = curr.addMeta(rules,metaSymbol);
         argCount++;
     }
 
-    public void addMeta(int argument,boolean override) {
-        curr = curr.addMeta(rules,argument,override);
+    public void addMeta(int metaSymbol,boolean override) {
+        curr = curr.addMeta(rules,metaSymbol,override);
         argCount++;
     }
 

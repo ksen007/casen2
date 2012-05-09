@@ -1,4 +1,4 @@
-def foo @argument {|x|{|y| x+y}}
+def foo @expr {|x|{|y| x+y}}
 
 var bar1 = (foo 5)
 var bar2 = (foo 8)

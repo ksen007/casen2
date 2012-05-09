@@ -36,16 +36,16 @@ public class StandardLongProto {
     final static public CNonPrimitiveObject instance = new CNonPrimitiveObject();
     
     static {
-        instance.eval("def + @argument @add endef");
-        instance.eval("def - @argument @subtract endef");
-        instance.eval("def * @argument @multiply endef");
-        instance.eval("def / @argument @divide endef");
-        instance.eval("def % @argument @mod endef");
-        instance.eval("def < @argument @lt endef");
-        instance.eval("def > @argument @gt endef");
-        instance.eval("def <= @argument @le endef");
-        instance.eval("def >= @argument @ge endef");
-        instance.eval("def == @argument @eq endef");
-        instance.eval("def != @argument @ne endef");
+        instance.eval("def + @expr @add endef");
+        instance.eval("def - @expr @subtract endef");
+        instance.eval("def * @expr @multiply endef");
+        instance.eval("def / @expr @divide endef");
+        instance.eval("def % @expr @mod endef");
+        instance.eval("def < @expr @lt endef");
+        instance.eval("def > @expr @gt endef");
+        instance.eval("def <= @expr @le endef");
+        instance.eval("def >= @expr @ge endef");
+        instance.eval("def == @expr @eq endef");
+        instance.eval("def != @expr @ne endef");
     }
 }

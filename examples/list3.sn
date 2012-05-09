@@ -1,14 +1,14 @@
-def Node @argument @argument {|data, next|
+def Node @expr @expr {|data, next|
     var ret = new Object
     ret var data = data
     ret var next = next
     ret}
 
-def list @argument {|data|
+def list @expr {|data|
     var ret = new Object
     ret var val = Node data null
 
-    ret def , @argument {|data|
+    ret def , @expr {|data|
             self val = (Node data (self val))
             self}
 

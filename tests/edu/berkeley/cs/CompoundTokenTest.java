@@ -39,4 +39,4 @@ public class CompoundTokenTest extends TestCase {
         Interpreter.interpret("(load \"examples/tutorial/assignment.sn\")()");
     }
 }
-//def Array @argument @edu.berkeley.cs.builtin.objects.CArray endef ; var x = (Array 10); x[1] = 89; print (x[1]);
+//def Array @expr @edu.berkeley.cs.builtin.objects.CArray endef ; var x = (Array 10); x[1] = 89; print (x[1]);

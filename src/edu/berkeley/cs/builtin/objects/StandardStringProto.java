@@ -36,9 +36,9 @@ public class StandardStringProto {
     final public static CObject instance =  new CNonPrimitiveObject();
 
     static {
-        instance.eval("def + @argument @add endef");
-        instance.eval("def == @argument @eq endef");
-        instance.eval("def != @argument @ne endef");
+        instance.eval("def + @expr @add endef");
+        instance.eval("def == @expr @eq endef");
+        instance.eval("def != @expr @ne endef");
     }
 
 }
