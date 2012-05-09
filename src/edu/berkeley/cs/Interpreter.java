@@ -52,9 +52,7 @@ public class Interpreter {
     }
 }
 
-//@todo: @argument -> @expr
 //@todo: remove var
-//@todo: make space have higher precedence
 //@todo: void token
 //@todo: allow creation of CompoundToken from a sequence of tokens
 //@todo: provide undef, isdef, redef, getAction

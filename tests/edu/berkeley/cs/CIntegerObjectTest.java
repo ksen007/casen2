@@ -45,35 +45,35 @@ public class CIntegerObjectTest extends TestCase {
     }
 
     public void testAdd2() throws Exception {
-        Interpreter.interpret("(var x = 1156 + 1156 + 1156); print x; assert x == 3468;");
+        Interpreter.interpret("(var x = 1156 + 1156 + 1156); print x; assert (x == 3468);");
     }
 
     public void testSub1() throws Exception {
-        Interpreter.interpret("(var x = 5000 -  1156 - 1156); print x; assert x== 2688; ");
+        Interpreter.interpret("(var x = 5000 -  1156 - 1156); print x; assert (x== 2688); ");
     }
 
     public void testAddMul1() throws Exception {
-        Interpreter.interpret("(var x = 5000 - 2 * 1156); print x; assert x== 2688; ");
+        Interpreter.interpret("(var x = 5000 - 2 * 1156); print x; assert (x== 2688); ");
     }
 
     public void testAddDiv1() throws Exception {
-        Interpreter.interpret("(var x = 1156 - 1156 * 1156/1156); print x; assert x== 0; ");
+        Interpreter.interpret("(var x = 1156 - 1156 * 1156/1156); print x; assert (x== 0); ");
     }
 
     public void testVarAddDiv1() throws Exception {
-        Interpreter.interpret("var y = 1156; var x = y - y*y/y; print y; assert x==0; assert y==1156;");
+        Interpreter.interpret("var y = 1156; var x = y - y*y/y; print y; assert (x==0); assert (y==1156);");
     }
 
     public void testVarAddDiv2() throws Exception {
-        Interpreter.interpret("var y = 1156; y = y = y + 10; print y; assert y==1166;");
+        Interpreter.interpret("var y = 1156; y = y = y + 10; print y; assert (y==1166);");
     }
 
     public void testVarAddDiv3() throws Exception {
-        Interpreter.interpret("var y = 1156; ; ; var x = y - y*y/y; print y; assert x==0; assert y==1156;");
+        Interpreter.interpret("var y = 1156; ; ; var x = y - y*y/y; print y; assert (x==0); assert (y==1156);");
     }
 
     public void testUnary() throws Exception {
-        Interpreter.interpret("var y = 1156; var x = 10; y = - y + -x ; assert y == -1166; print y;");
+        Interpreter.interpret("var y = 1156; var x = 10; y = - y + -x ; assert (y == -1166); print y;");
     }
 
 }

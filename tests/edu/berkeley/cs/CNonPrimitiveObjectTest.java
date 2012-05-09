@@ -47,11 +47,11 @@ public class CNonPrimitiveObjectTest extends TestCase {
 //    }
 
     public void testAssert0() throws Exception {
-        Interpreter.interpret("assert 1156 == 1156;");
+        Interpreter.interpret("assert (1156 == 1156);");
     }
 
     public void testAssert1() throws Exception {
-        Interpreter.interpret("var x = 1156; assert x == 1156;");
+        Interpreter.interpret("var x = 1156; assert (x == 1156);");
     }
 
     public void testAssert2() throws Exception {
@@ -229,7 +229,7 @@ public class CNonPrimitiveObjectTest extends TestCase {
     }
 
     public void testExprToToken() throws Exception {
-        Interpreter.interpret("var y = tokenToExpr x; def exprToToken (y) {14}; print x; assert x == 14;");
+        Interpreter.interpret("var y = tokenToExpr x; def exprToToken (y) {14}; print x; assert (x == 14);");
     }
 
 }

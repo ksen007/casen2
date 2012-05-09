@@ -37,6 +37,7 @@ import gnu.trove.map.hash.TIntIntHashMap;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class OperatorPrecedence {
+    public final int offset = 500;
     private static OperatorPrecedence ourInstance = new OperatorPrecedence();
     private TIntIntHashMap precedenceTable = new TIntIntHashMap();
     // even number => left-associative
@@ -48,38 +49,38 @@ public class OperatorPrecedence {
     }
 
     private OperatorPrecedence() {
-        precedenceTable.put(SymbolTable.getInstance().getId(","),90);
+        precedenceTable.put(SymbolTable.getInstance().getId(","),90-offset);
 
-        precedenceTable.put(SymbolTable.getInstance().getId("="),-105);
+        precedenceTable.put(SymbolTable.getInstance().getId("="),-105-offset);
 
-        precedenceTable.put(SymbolTable.getInstance().getId("&&"),120);
-        precedenceTable.put(SymbolTable.getInstance().getId("||"),130);
+        precedenceTable.put(SymbolTable.getInstance().getId("&&"),120-offset);
+        precedenceTable.put(SymbolTable.getInstance().getId("||"),130-offset);
 
 
-        precedenceTable.put(SymbolTable.getInstance().getId("|"),140);
-        precedenceTable.put(SymbolTable.getInstance().getId("^"),150);
-        precedenceTable.put(SymbolTable.getInstance().getId("&"),160);
+        precedenceTable.put(SymbolTable.getInstance().getId("|"),140-offset);
+        precedenceTable.put(SymbolTable.getInstance().getId("^"),150-offset);
+        precedenceTable.put(SymbolTable.getInstance().getId("&"),160-offset);
 
-        precedenceTable.put(SymbolTable.getInstance().getId("=="),170);
-        precedenceTable.put(SymbolTable.getInstance().getId("!="),170);
+        precedenceTable.put(SymbolTable.getInstance().getId("=="),170-offset);
+        precedenceTable.put(SymbolTable.getInstance().getId("!="),170-offset);
 
-        precedenceTable.put(SymbolTable.getInstance().getId("<"),180);
-        precedenceTable.put(SymbolTable.getInstance().getId("<="),180);
-        precedenceTable.put(SymbolTable.getInstance().getId(">"),180);
-        precedenceTable.put(SymbolTable.getInstance().getId(">="),180);
+        precedenceTable.put(SymbolTable.getInstance().getId("<"),180-offset);
+        precedenceTable.put(SymbolTable.getInstance().getId("<="),180-offset);
+        precedenceTable.put(SymbolTable.getInstance().getId(">"),180-offset);
+        precedenceTable.put(SymbolTable.getInstance().getId(">="),180-offset);
 
-        precedenceTable.put(SymbolTable.getInstance().getId(">>"),190);
-        precedenceTable.put(SymbolTable.getInstance().getId("<<"),190);
-        precedenceTable.put(SymbolTable.getInstance().getId("+"),200);
-        precedenceTable.put(SymbolTable.getInstance().getId("-"),200);
+        precedenceTable.put(SymbolTable.getInstance().getId(">>"),190-offset);
+        precedenceTable.put(SymbolTable.getInstance().getId("<<"),190-offset);
+        precedenceTable.put(SymbolTable.getInstance().getId("+"),200-offset);
+        precedenceTable.put(SymbolTable.getInstance().getId("-"),200-offset);
 
-        precedenceTable.put(SymbolTable.getInstance().getId("*"),210);
-        precedenceTable.put(SymbolTable.getInstance().getId("%"),210);
-        precedenceTable.put(SymbolTable.getInstance().getId("/"),210);
+        precedenceTable.put(SymbolTable.getInstance().getId("*"),210-offset);
+        precedenceTable.put(SymbolTable.getInstance().getId("%"),210-offset);
+        precedenceTable.put(SymbolTable.getInstance().getId("/"),210-offset);
 
-        precedenceTable.put(SymbolTable.getInstance().getId("!"),215);
+        precedenceTable.put(SymbolTable.getInstance().getId("!"),215-offset);
 
-        precedenceTable.put(SymbolTable.getInstance().getId("."),220);
+        precedenceTable.put(SymbolTable.getInstance().getId("."),220-offset);
     }
 
     public boolean isShift(int exprPrecedence, Token shiftOp) {

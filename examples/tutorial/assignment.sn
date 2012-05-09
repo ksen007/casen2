@@ -36,7 +36,7 @@ ret var b = 3
 
 // define fields a and b
 
-print ((ret a) + (ret b))
+print (ret a + ret b)
 // access fields a and b of ret
 // no need to use . operator as in Java, Python, Javascript
 // 5
