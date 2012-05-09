@@ -45,10 +45,14 @@ public class Interpreter {
 
     public static void main(String[] args) {
         CompoundToken pgm = (CompoundToken)CObject.load(args[0], false);
-        pgm.execute(new CNonPrimitiveObject(),true);
+        CObject ret = pgm.execute(new CNonPrimitiveObject(),true);
+        if (ret.isException()) {
+            System.err.println(ret);
+        }
     }
 }
 
+//@todo: void token
 //@todo: allow creation of CompoundToken from a sequence of tokens
 //@todo: provide undef, isdef, redef, getAction
 //@todo: handle internal exceptions and translate them into caseN exceptions

@@ -1,0 +1,151 @@
+
+def // {
+    var ret = new Object
+    ret def @token {|x| self}
+    return ret
+}
+
+// I defined the comment operator // so that I can write comments
+
+// /////////////////////////////////////
+// integral numbers are mapped Java long type
+
+print 100
+// 100
+
+print (2 + 2)
+// 4
+
+print (7*8)
+// 56
+
+print (3 / 5)
+// 0
+// no automatic conversion
+
+print (3 + 4 * 5)
+// 23
+// supports standard precedence rules for arithmetic operators
+
+// /////////////////////////////////////
+// floating point numbers are mapped to Java double type
+
+print 5.4
+// 5.4
+
+print (5.4 * 8.9)
+// 48.06
+
+// no automatic conversion
+// print (5.6 * 4)  will throw exception
+
+
+// /////////////////////////////////////
+// strings are mapped to Java String class
+
+print "Hello World!\n"
+// Hello World!
+//
+
+print "Hello" + "world!\n"
+// Hello World!
+//
+
+// /////////////////////////////////////
+// Boolean types are mapped to Java bool type
+
+print true
+// true
+print false
+// false
+print (4 > 5)
+// false
+print ("Hello" != "Hello")
+// true
+print (true || false)
+// true
+// no short-circuit
+
+print (false && true)
+// false
+// no short-circuit
+
+print !true
+// false
+
+// ///////////////////////////////////////
+// lambda types
+print { 1 + 2 }
+//  1 `+ 2
+
+print {|x, y|
+    x = x + y
+    return x + y
+}
+
+//  |`x,`y,|
+//  `
+//  `x `= `x `+ `y `
+//  `return `x `+ `y `
+// 
+
+// invoking a lambda
+print ({1 + 2}())
+// 3
+
+print ({|x, y|
+    x = x + y
+    return (x + y)
+}(2,3))
+// 8
+
+print ({ return "Hello World!" }())
+// Hello World!
+
+print ({ "Hello World!" }())
+// Hello World!
+
+// ///////////////////////////////////////
+// symbol type
+// any identifier
+print (tokenToExpr x)
+// `x
+print (tokenToExpr //)
+// `//
+
+print (tokenToExpr *&*&)
+// `*&*&
+
+print (tokenToExpr abc123)
+// `abc123
+
+// ///////////////////////////////////////
+// meta token type
+// any identifier preceded by @
+// @token, @argument, @nl, @eof are reserved
+print @hello
+// @hello
+print @token
+// @token
+print @x
+// @x
+print @argument
+// @argument
+print @eof
+// @eof
+
+// ///////////////////////////////////////
+// null is a special object
+print null
+// null
+
+// ///////////////////////////////////////
+// object type
+// everything is object
+// even integral numbers, floating point numbers, strings, Booleans, lambdas, symbols, meta tokens are objects
+// a scope is an object (more on this later)
+// new objects can be created as follows
+print new Object
+
+
+

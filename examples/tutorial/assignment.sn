@@ -1,0 +1,45 @@
+def // {
+    var ret = new Object
+    ret def @token {|x| self}
+    return ret
+}
+
+// I defined the comment operator // so that I can write comments
+
+var x = 100
+// defines the variable x in the local scope
+
+var y = 200
+// defines the variable y in the local scope
+
+print (x + y)
+// 300
+
+x = 11
+// once defined variables can be redefined or accessed
+print x
+// 11
+
+var ret = new Object
+// create a new empty object and assign it to ret
+
+ret var a = 2
+ret var b = 3
+
+// define fields a and b
+
+print ((ret a) + (ret b))
+// access fields a and b of ret
+// no need to use . operator as in Java, Python, Javascript
+
+var foo = {|x, y| return (x + y) }
+print (foo (3,4))
+// 7
+// defines the variable foo as a lambda
+// applies foo on 3, 4
+
+ret var bar = {|x,y| return (x+y) }
+print (ret bar (3,4))
+// 7
+// defines the field bar of ret as a lambda
+// applies bar of ret to 3, 4
