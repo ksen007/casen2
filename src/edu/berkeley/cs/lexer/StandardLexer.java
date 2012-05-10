@@ -1,50 +1,11 @@
 package edu.berkeley.cs.lexer;
 
-/**
- * Copyright (c) 2006-2011,
- * Koushik Sen    <ksen@cs.berkeley.edu>
- * All rights reserved.
- * <p/>
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- * <p/>
- * 1. Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- * <p/>
- * 2. Redistributions in binary form must reproduce the above copyright
- * notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- * <p/>
- * 3. The names of the contributors may not be used to endorse or promote
- * products derived from this software without specific prior written
- * permission.
- * <p/>
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
- * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
- * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER
- * OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
- * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-import edu.berkeley.cs.builtin.objects.*;
 import edu.berkeley.cs.builtin.objects.preprocessor.*;
 import edu.berkeley.cs.parser.SymbolTable;
 
 import java.io.IOException;
 import java.io.Reader;
 
-/**
- * The <a href="http://en.wikipedia.org/wiki/Lexical_analysis#Scanner">lexer</a>
- * is used to read characters and identify tokens and pass them to the parser
- *
- * @author <a href="mailto:grom@zeminvaders.net">Cameron Zemek</a>
- */
 public class StandardLexer implements Lexer {
     static final private int END_OF_FILE = -1;
 
@@ -68,7 +29,6 @@ public class StandardLexer implements Lexer {
                 columnNo = 0;
             }
             columnNo++;
-            //System.out.println("c = " + c);
             return c;
         } catch (IOException e) {
             throw new LexerException(e.getMessage(), lineNo, columnNo);
@@ -117,19 +77,10 @@ public class StandardLexer implements Lexer {
 
     public Token getNextToken() {
         int character = lookAhead(1);
-        // Skip whitespace
         while (character == ' ' || character == '\t' ||
                 character == '\r') {
             character = next();
         }
-//        while(character=='#') {
-//            matchLineComment();
-//            character = lookAhead(1);
-//        }
-//        while (character == ' ' || character == '\t' ||
-//                character == '\r' || character == '\n') {
-//            character = next();
-//        }
         switch (character) {
             case END_OF_FILE: {
                 close();
@@ -189,19 +140,16 @@ public class StandardLexer implements Lexer {
 
     private void matchDecimalNumber(StringBuilder sb) {
         int character = lookAhead(1);
-        // IntegerPart
         if (character >= '0' && character <= '9') {
             matchDigits(sb);
             character = lookAhead(1);
         }
-        // FractionPart
         if (character == '.') {
             sb.append('.');
             character = next();
             matchDigits(sb);
             character = lookAhead(1);
         }
-        // Exponent
         if (character == 'e' || character == 'E') {
             sb.append('e');
             character = next();
@@ -279,12 +227,6 @@ public class StandardLexer implements Lexer {
         } else {
             matchDecimalNumber(sb);
         }
-        /*
-         * Check that another number does not immediately follow as this means
-         * we have an invalid number. For example, the input 12.34.5 after the
-         * above code finishes leaves us with 12.34 matched. Without this
-         * check .5 will then be matched separately as another valid number.
-         */
         int character = lookAhead(1);
         if (character == '.' || (character >= '0' && character <= '9')) {
             throw new LexerException("Unexpected '" + ((char) character) + "' character", lineNo, columnNo);
@@ -297,11 +239,6 @@ public class StandardLexer implements Lexer {
         }
     }
 
-    /**
-     * An identifier is either a keyword, function, or variable
-     *
-     * @return Token
-     */
     private Token matchIdentifier(boolean isMeta) {
         SourcePosition pos = new SourcePosition(lineNo, columnNo);
         StringBuilder sb = new StringBuilder();
@@ -335,7 +272,6 @@ public class StandardLexer implements Lexer {
 
         }
         String word = sb.toString();
-        //System.out.println("Word:" + word);
         if (isMeta) {
             return new MetaToken(pos,SymbolTable.getInstance().getId(word));
         } else {
