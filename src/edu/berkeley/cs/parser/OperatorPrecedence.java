@@ -49,12 +49,14 @@ public class OperatorPrecedence {
     }
 
     private OperatorPrecedence() {
-        precedenceTable.put(SymbolTable.getInstance().getId(","),90-offset);
+       precedenceTable.put(SymbolTable.getInstance().getId(","),90-offset);
 
-        precedenceTable.put(SymbolTable.getInstance().getId("="),-105-offset);
+        precedenceTable.put(SymbolTable.getInstance().getId("="),-121-offset);
 
-        precedenceTable.put(SymbolTable.getInstance().getId("&&"),120-offset);
-        precedenceTable.put(SymbolTable.getInstance().getId("||"),130-offset);
+        precedenceTable.put(SymbolTable.getInstance().getId("?"),-111-offset);
+
+        precedenceTable.put(SymbolTable.getInstance().getId("||"),120-offset);
+        precedenceTable.put(SymbolTable.getInstance().getId("&&"),130-offset);
 
 
         precedenceTable.put(SymbolTable.getInstance().getId("|"),140-offset);
@@ -71,6 +73,7 @@ public class OperatorPrecedence {
 
         precedenceTable.put(SymbolTable.getInstance().getId(">>"),190-offset);
         precedenceTable.put(SymbolTable.getInstance().getId("<<"),190-offset);
+        
         precedenceTable.put(SymbolTable.getInstance().getId("+"),200-offset);
         precedenceTable.put(SymbolTable.getInstance().getId("-"),200-offset);
 
@@ -78,9 +81,12 @@ public class OperatorPrecedence {
         precedenceTable.put(SymbolTable.getInstance().getId("%"),210-offset);
         precedenceTable.put(SymbolTable.getInstance().getId("/"),210-offset);
 
-        precedenceTable.put(SymbolTable.getInstance().getId("!"),215-offset);
+        precedenceTable.put(SymbolTable.getInstance().getId("!"),221-offset);
+        precedenceTable.put(SymbolTable.getInstance().getId("~"),221-offset);
 
-        precedenceTable.put(SymbolTable.getInstance().getId("."),220-offset);
+        precedenceTable.put(SymbolTable.getInstance().getId("."),230-offset);
+        precedenceTable.put(SymbolTable.getInstance().getId("("),230-offset);
+        precedenceTable.put(SymbolTable.getInstance().getId("["),230-offset);
     }
 
     public boolean isShift(int exprPrecedence, Token shiftOp) {

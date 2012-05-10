@@ -76,7 +76,7 @@ public class CDefinitionEater extends CObject {
         } else if(arg instanceof MetaToken) {
             int argument = ((MetaToken)arg).metaSymbol;
             if (argument == SymbolTable.getInstance().nl) {
-                self.parent.addSymbol(SymbolTable.getInstance().getId("\n"));
+                self.parent.addSymbol(SymbolTable.getInstance().newline);
             } else if (argument == SymbolTable.getInstance().eof) {
                 self.parent.addSymbol(SymbolToken.end.symbol);
             } else {

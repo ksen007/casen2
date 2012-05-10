@@ -76,4 +76,7 @@ public class CIntegerObjectTest extends TestCase {
         Interpreter.interpret("var y = 1156; var x = 10; y = - y + -x ; assert (y == -1166); print y;");
     }
 
+    public void testUnary2() throws Exception {
+        Interpreter.interpret("var y = 1156; var x = 10; y = - y + - - - x ; assert (y == -1166); print y;");
+    }
 }

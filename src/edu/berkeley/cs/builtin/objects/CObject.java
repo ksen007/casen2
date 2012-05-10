@@ -184,11 +184,11 @@ public class CObject {
         }
     }
 
-    public CObject equality(CObject ret) {
+    public CObject eq(CObject ret) {
         return this==ret?BooleanToken.TRUE():BooleanToken.FALSE();
     }
 
-    public CObject disequality(CObject ret) {
+    public CObject ne(CObject ret) {
         return this==ret?BooleanToken.FALSE():BooleanToken.TRUE();
     }
 

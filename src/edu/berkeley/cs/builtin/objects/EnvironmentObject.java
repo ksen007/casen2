@@ -40,14 +40,14 @@ public class EnvironmentObject extends CObject {
 
     private EnvironmentObject() {
         this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().getId("var"));
+        this.addSymbol(SymbolTable.getInstance().var);
         this.addMeta(SymbolTable.getInstance().token);
-        this.addSymbol(SymbolTable.getInstance().getId("="));
+        this.addSymbol(SymbolTable.getInstance().assign);
         this.addMeta(SymbolTable.getInstance().expr);
         this.addAction(new NativeFunction("assignment"));
 
         this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().getId("def"));
+        this.addSymbol(SymbolTable.getInstance().def);
         this.addAction(new NativeFunction("newDefinitionEater"));
 
         this.addNewRule();
@@ -55,9 +55,9 @@ public class EnvironmentObject extends CObject {
         this.addAction(new NativeFunction("interpretPrimitive"));
 
         this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().getId("("));
+        this.addSymbol(SymbolTable.getInstance().lparen);
         this.addMeta(SymbolTable.getInstance().expr);
-        this.addSymbol(SymbolTable.getInstance().getId(")"));
+        this.addSymbol(SymbolTable.getInstance().rparen);
         this.addAction(new NativeFunction("returnArgument"));
 
         this.addNewRule();

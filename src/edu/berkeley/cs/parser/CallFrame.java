@@ -113,38 +113,30 @@ public class CallFrame {
             if (t instanceof CompoundToken) {
                 t = new CompoundToken((CompoundToken)t,LS);
             }
-//            if (matchesToken(t,"exprToToken")) {
-//                t = scnr.nextToken();
-//                if (consumeExpr(toBePushed,t)) return true;
-//                scnr.pushBack(t);
-//            } else {
-                parseRuleStack.pop();
-                parseRuleStack.push(toBePushed);
-                computationStack.push(t);
-                return true;
+            parseRuleStack.pop();
+            parseRuleStack.push(toBePushed);
+            computationStack.push(t);
+            return true;
 //            }
         }
         return false;
     }
 
-    private boolean consumeExpr(RuleNode toBePushed, Token t) {
-        RuleNode rn;
+    private boolean consumeExpr(RuleNode currentRule, Token t) {
+        RuleNode rn, toBePushed;
 
-        if ((rn = contextLookAhead(LS, environment, t, false))!=null) {
-            parseRuleStack.pop();
-            parseRuleStack.push(toBePushed);
+        if ((toBePushed = currentRule.getRuleForNonTerminal()) !=null) {
 
-//            Integer prec = toBePushed.getOptionalPrecedence();
-//            if (prec !=null) {
-//                tokenStack.pop();
-//                tokenStack.push(prec);
-//            }
-//
-            computationStack.push(LS);
-            parseRuleStack.push(rn);
-            tokenStack.push(OperatorPrecedence.getInstance().getPrecedence(t));
-            scnr.pushBack(t);
-            return true;
+            if ((rn = contextLookAhead(LS, environment, t, false))!=null) {
+                parseRuleStack.pop();
+                parseRuleStack.push(toBePushed);
+
+                computationStack.push(LS);
+                parseRuleStack.push(rn);
+                tokenStack.push(OperatorPrecedence.getInstance().getPrecedence(t));
+                scnr.pushBack(t);
+                return true;
+            }
         }
         return false;
     }
@@ -195,6 +187,7 @@ public class CallFrame {
 
         try {
             if (consumeSymbol(currentRule,t)) return true;
+
             if (matchesToken(t,"exprToToken") && !currentRule.isActionOnly()) {
                 parseRuleStack.push((new ExptToTokenObject(scnr)).getRuleNode());
                 tokenStack.push(OperatorPrecedence.getInstance().getPrecedence(t));
@@ -203,10 +196,7 @@ public class CallFrame {
 
             if (!matchesToken(t,"\n")) {
                 if (consumeToken(currentRule,t)) return true;
-                RuleNode toBePushed;
-                if ((toBePushed = currentRule.getRuleForNonTerminal()) !=null) {
-                    if (consumeExpr(toBePushed,t)) return true;
-                }
+                if (consumeExpr(currentRule,t)) return true;
             }
             if (consumeAction(currentRule,t)) return true;
 

@@ -42,9 +42,9 @@ public class ExptToTokenObject extends CObject {
 
     public ExptToTokenObject(Scanner scnr) {
         this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().getId("("));
+        this.addSymbol(SymbolTable.getInstance().lparen);
         this.addMeta(SymbolTable.getInstance().expr);
-        this.addSymbol(SymbolTable.getInstance().getId(")"));
+        this.addSymbol(SymbolTable.getInstance().rparen);
 
         this.addAction(new PushResultToScanner(scnr));
     }

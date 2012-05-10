@@ -74,27 +74,27 @@ public class CompoundToken extends Token {
         int N = parameters.size();
 
         this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().getId("("));
+        this.addSymbol(SymbolTable.getInstance().lparen);
         for(int i=0; i<N; i++) {
             this.addMeta(SymbolTable.getInstance().expr);
             if (i<N-1)
-                this.addSymbol(SymbolTable.getInstance().getId(","));
+                this.addSymbol(SymbolTable.getInstance().comma);
         }
-        this.addSymbol(SymbolTable.getInstance().getId(")"));
+        this.addSymbol(SymbolTable.getInstance().rparen);
         this.addAction(new DirectCall());
 
         this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().getId("("));
+        this.addSymbol(SymbolTable.getInstance().lparen);
         this.addMeta(SymbolTable.getInstance().expr);
         if (N > 0)
-            this.addSymbol(SymbolTable.getInstance().getId(","));
+            this.addSymbol(SymbolTable.getInstance().comma);
 
         for(int i=0; i<N; i++) {
             this.addMeta(SymbolTable.getInstance().expr);
             if (i<N-1)
-                this.addSymbol(SymbolTable.getInstance().getId(","));
+                this.addSymbol(SymbolTable.getInstance().comma);
         }
-        this.addSymbol(SymbolTable.getInstance().getId(")"));
+        this.addSymbol(SymbolTable.getInstance().rparen);
         this.addAction(new DirectCallWith());
     }
 
@@ -122,7 +122,7 @@ public class CompoundToken extends Token {
 
             LS.addNewRule();
             LS.addSymbol(param.symbol);
-            LS.addSymbol(SymbolTable.getInstance().getId("="));
+            LS.addSymbol(SymbolTable.getInstance().assign);
             LS.addMeta(SymbolTable.getInstance().expr);
             LS.addAction(new PutField(common));
         }

@@ -50,7 +50,7 @@ public class UserDefinedFunction implements Invokable {
         CNonPrimitiveObject LS = new CNonPrimitiveObject();
         
         LS.addNewRule();
-        LS.addSymbol(SymbolTable.getInstance().getId("self"));
+        LS.addSymbol(SymbolTable.getInstance().self);
         LS.addAction(new GetField(new Reference(args.removeFirst())));
 
         return body.execute(LS,args,true);

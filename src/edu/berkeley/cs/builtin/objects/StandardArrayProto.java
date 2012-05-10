@@ -40,6 +40,6 @@ public class StandardArrayProto {
         instance.eval("def [ @expr ] = @expr @set endef");
         instance.eval("def length @length endef");
         instance.eval("def map @expr {|f| var i = 0; while {i< (self length)} { f( self [ i ] ) ; i = i + 1;}; }");
-        instance.eval("def == @expr @equality endef");
+        instance.eval("def == @expr @eq endef");
     }
 }

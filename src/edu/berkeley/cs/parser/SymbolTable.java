@@ -47,6 +47,23 @@ public class SymbolTable {
     public int token = getId("token");
     public int nl = getId("nl");
     public int eof = getId("eof");
+    
+    public int self = getId("self");
+    public int newline = getId("\n");
+    public int var = getId("var");
+    public int eq = getId("==");
+    public int ne = getId("!=");
+    public int def = getId("def");
+    public int assign = getId("=");
+    public int LS = getId("LS");
+    public int lparen = getId("(");
+    public int rparen = getId(")");
+    public int dot = getId(".");
+    public int endef = getId("endef");
+    public int comma = getId(",");
+    public int bar = getId("|");
+    public int lcurly = getId("{");
+    public int rcurly = getId("}");
 //    public int meta = getId("meta");
 //    public int literal = getId("literal");
 //    public int block = getId("block");
