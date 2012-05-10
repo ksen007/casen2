@@ -52,11 +52,9 @@ public class Interpreter {
     }
 }
 
-//@todo: remove var
 //@todo: void token
 //@todo: allow creation of CompoundToken from a sequence of tokens
 //@todo: provide undef, isdef, redef, getAction
-//@todo: handle internal exceptions and translate them into caseN exceptions
 //@todo: handle return from blocks
 //@todo: provide support for reflection
 //@todo: coroutine

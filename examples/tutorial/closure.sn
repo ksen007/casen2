@@ -1,0 +1,95 @@
+def // {
+    var ret = new Object
+    ret def @token {|x| self}
+    return ret
+}
+
+def /* 1000 {
+    var ret = new Object
+    ret def @token 1000 {|x| self}
+    ret def @nl 1000 { self }
+    ret def */ 1000 { null}
+    return ret
+}
+
+
+/* ********************************************************
+Every function computes in a scope, i.e. all the local variables, functions, and
+patterned functions defined inside the function are made members of this scope.  A scope
+is simply an object.  When a function or a patterned function is invoked, it creates
+a new scope (i.e. creates a new empty object), assigns its arguments to the variables
+denoted by the parameters of the function.  The variables are defined as members of
+the scope.  The newly created scope is also assigned to the member variable LS_ of the
+scope.  The scope inside which the function was defined (i.e. the lexical scope of
+the function) is assigned to the variable SS_ of the newly created scope.  When a
+variable is accessed in the scope, the function searches the definition of the
+variable in LS_.  If the search fails, it continues the search in the SS_ of LS_, SS_ of SS_
+of LS_,  and so on up to the global scope.  Similarly, when a patterned function is
+invoked in the function, its definition is searched is a similar way. When a function
+or a patterned function is called, normally a new scope is created.  However, one can
+ask a simple function to compute in an existing scope.  In order to ask a function
+to compute in an existing scope, the function is called by passing the scope as the
+first argument.
+*********************************************************
+*/
+
+
+var x = 1
+var y = 2
+var z = 3
+
+def foo {
+    print x
+    var x = 4
+    print x
+    print (SS x)
+
+    print y
+    y = 5
+    print y
+    print (SS y)
+
+    def bar {
+        print x
+        var x = 6
+        print x
+        print (SS x)
+        print (SS SS x)
+
+        print y
+        y = 7
+        print y
+        // (SS_ y) is not defined
+        print (SS SS y)
+
+        return {
+            print x
+            print y
+        }
+    }
+
+    return bar
+}
+
+var fun = foo
+// 1 4 1 2 5 5 4 6 4 1 5 7 7
+
+fun()
+// 6 7
+y = 8
+x = 9
+fun()
+// 6 8
+
+
+
+def foo1 @expr {|x|{|y| x+y}}
+
+var bar1 = (foo1 15)
+var bar2 = (foo1 18)
+
+print (bar1(1))
+print (bar2(1))
+// 16 19
+
+

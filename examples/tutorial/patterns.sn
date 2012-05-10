@@ -1,0 +1,123 @@
+def // {
+    var ret = new Object
+    ret def @token {|x| self}
+    return ret
+}
+
+def /* 1000 {
+    var ret = new Object
+    ret def @token 1000 {|x| self}
+    ret def @nl 1000 { self }
+    ret def */ 1000 { null}
+    return ret
+}
+
+
+def fac @expr {|n|
+    if (n <= 1) then {
+        var ret = 1
+    } else {
+        var ret = n * fac (n - 1)
+    }
+    return ret
+}
+
+print (fac 5)
+// 120
+// here "fac @expr {|n| ... }" is a patterned function defined in the local scope
+// an expression "fac 5" in the current scope will evaluate 5 as an expression in the current scope
+// and invoke the function associated with the pattern after binding n to 5
+
+
+def max @expr @expr {|x,y|
+    if (x > y) then {
+        var ret = x
+    } else {
+        var ret = y
+    }
+    return ret
+}
+
+print (max 7 8)
+// 8
+// here "max @expr @expr {|x,y| ... }" is another patterned function defined in the local scope
+// an expression "max 7 3" in the current scope invokes the function associated with the pattern
+// after binding x to 7 and y to 3
+
+// Note that "max(7,3)" will result in exception
+def max (@expr , @expr ) {|x,y|
+    if (x > y) then {
+        var ret = x
+    } else {
+        var ret = y
+    }
+    return ret
+}
+
+// now we can write the following expression
+print max(7,8)
+// 8
+
+
+
+// patterned functions allow to define arbitrary syntax
+// patterned functions cannot start with @expr
+
+def is @expr greater than @expr ? {|x,y|
+    if (x > y) then {
+        var ret = true
+    } else {
+        var ret = false
+    }
+    return ret
+}
+
+// now you can call
+print (is (7-19) greater than 5?)
+// false
+
+// Objects can have patterned functions
+
+var obj = new Object
+obj var a = 5
+obj var b = 2
+obj def bar @expr {|x|
+    return (self a * x + self b)
+}
+// defined patterned function "bar @expr {|x| ... }" of object obj
+// self a denotes the field a of the current object
+
+print (obj bar 5)
+// invoking a a patterned function of an object is simple, simply prefix the pattern expression with the object
+// 27
+
+def Node @expr @expr {|data, next|
+    var ret = new Object
+    ret var data = data
+    ret var next = next
+    return ret
+}
+
+def list @expr {|data|
+    var ret = new Object
+    ret var val = Node data null
+
+    ret def , @expr {|data|
+            self val = Node data (self val)
+            return self
+    }
+
+    ret def print {
+        var tmp = self val
+        while {tmp != null} {
+            print (tmp data)
+            tmp = tmp next
+        }
+    }
+
+    return ret
+}
+
+var ret = list 8, 9, 10, 11, 12
+ret print
+

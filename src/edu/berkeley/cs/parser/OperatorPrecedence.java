@@ -42,6 +42,7 @@ public class OperatorPrecedence {
     private TIntIntHashMap precedenceTable = new TIntIntHashMap();
     // even number => left-associative
     // odd number => right associative
+    // 0 is the default precedence
 
 
     public static OperatorPrecedence getInstance() {
@@ -49,11 +50,11 @@ public class OperatorPrecedence {
     }
 
     private OperatorPrecedence() {
-       precedenceTable.put(SymbolTable.getInstance().getId(","),90-offset);
+//       precedenceTable.put(SymbolTable.getInstance().getId(","),90-offset);
 
         precedenceTable.put(SymbolTable.getInstance().getId("="),-121-offset);
 
-        precedenceTable.put(SymbolTable.getInstance().getId("?"),-111-offset);
+//        precedenceTable.put(SymbolTable.getInstance().getId("?"),-111-offset);
 
         precedenceTable.put(SymbolTable.getInstance().getId("||"),120-offset);
         precedenceTable.put(SymbolTable.getInstance().getId("&&"),130-offset);
@@ -84,9 +85,9 @@ public class OperatorPrecedence {
         precedenceTable.put(SymbolTable.getInstance().getId("!"),221-offset);
         precedenceTable.put(SymbolTable.getInstance().getId("~"),221-offset);
 
-        precedenceTable.put(SymbolTable.getInstance().getId("."),230-offset);
-        precedenceTable.put(SymbolTable.getInstance().getId("("),230-offset);
-        precedenceTable.put(SymbolTable.getInstance().getId("["),230-offset);
+//        precedenceTable.put(SymbolTable.getInstance().getId("."),230-offset);
+//        precedenceTable.put(SymbolTable.getInstance().getId("("),230-offset);
+//        precedenceTable.put(SymbolTable.getInstance().getId("["),230-offset);
     }
 
     public boolean isShift(int exprPrecedence, Token shiftOp) {

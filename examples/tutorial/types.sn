@@ -74,7 +74,7 @@ print !true
 // false
 
 // ///////////////////////////////////////
-// lambda types
+// function types
 print { 1 + 2 }
 //  1 `+ 2
 
@@ -89,7 +89,7 @@ print {|x, y|
 //  `return `x `+ `y `
 // 
 
-// invoking a lambda
+// invoking a function
 print ({1 + 2}())
 // 3
 
@@ -142,7 +142,7 @@ print null
 // ///////////////////////////////////////
 // object type
 // everything is object
-// even integral numbers, floating point numbers, strings, Booleans, lambdas, symbols, meta tokens are objects
+// even integral numbers, floating point numbers, strings, Booleans, functions, symbols, meta tokens are objects
 // a scope is an object (more on this later)
 // new objects can be created as follows
 print new Object
