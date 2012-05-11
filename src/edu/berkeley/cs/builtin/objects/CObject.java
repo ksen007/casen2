@@ -96,34 +96,22 @@ public class CObject {
         this.rules = methods.rules;
     }
 
-    public CObject getParent(boolean isPrototype) {
-        if (isPrototype)
-            return prototype==null?null:prototype.value;
-        else
-            return SS;
+    public CObject getParent() {
+        return prototype==null?null:prototype.value;
     }
 
-    public void setParent(CObject obj,boolean isPrototype) {
-        if (isPrototype) {
-            this.prototype = new Reference(obj);
-            if (obj !=null) {
-                this.addNewRule();
-                this.addSymbol(SymbolTable.getInstance().getId("prototype"));
-                this.addAction(new GetField(prototype));
+    public void setParent(CObject obj) {
+        this.prototype = new Reference(obj);
+        if (obj !=null) {
+            this.addNewRule();
+            this.addSymbol(SymbolTable.getInstance().getId("prototype"));
+            this.addAction(new GetField(prototype));
 
-                this.addNewRule();
-                this.addSymbol(SymbolTable.getInstance().getId("prototype"));
-                this.addSymbol(SymbolTable.getInstance().getId("="));
-                this.addMeta(SymbolTable.getInstance().expr);
-                this.addAction(new PutField(prototype));
-            }
-        } else {
-            this.SS = obj;
-            if (obj !=null) {
-                this.addNewRule();
-                this.addSymbol(SymbolTable.getInstance().getId("SS"));
-                this.addAction(new GetField(new Reference(obj)));
-            }
+            this.addNewRule();
+            this.addSymbol(SymbolTable.getInstance().getId("prototype"));
+            this.addSymbol(SymbolTable.getInstance().getId("="));
+            this.addMeta(SymbolTable.getInstance().expr);
+            this.addAction(new PutField(prototype));
         }
     }
 
@@ -319,7 +307,7 @@ public class CObject {
 
     public CObject newObject() {
         CNonPrimitiveObject ret = new CNonPrimitiveObject();
-        ret.setParent(this,false);
+        //ret.setParent(this,false);
         return ret;
     }
 

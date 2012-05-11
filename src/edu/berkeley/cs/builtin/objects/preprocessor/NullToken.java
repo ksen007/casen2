@@ -59,7 +59,7 @@ public class NullToken extends Token {
 
     public NullToken(SourcePosition position) {
         super(position);
-        setParent(StandardNullProto.instance, true);
+        setParent(StandardNullProto.instance);
     }
 
     @Override

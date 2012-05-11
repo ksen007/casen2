@@ -21,9 +21,9 @@ a new scope (i.e. creates a new empty object), assigns its arguments to the vari
 denoted by the parameters of the function.  The variables are defined as members of
 the scope.  The newly created scope is also assigned to the member variable LS_ of the
 scope.  The scope inside which the function was defined (i.e. the lexical scope of
-the function) is assigned to the variable SS_ of the newly created scope.  When a
+the function) is assigned to the variable prototype_ of the newly created scope.  When a
 variable is accessed in the scope, the function searches the definition of the
-variable in LS_.  If the search fails, it continues the search in the SS_ of LS_, SS_ of SS_
+variable in LS_.  If the search fails, it continues the search in the prototype_ of LS_, prototype_ of prototype_
 of LS_,  and so on up to the global scope.  Similarly, when a patterned function is
 invoked in the function, its definition is searched is a similar way. When a function
 or a patterned function is called, normally a new scope is created.  However, one can
@@ -42,25 +42,25 @@ def foo {
     print x
     var x = 4
     print x
-    print (SS x)
+    print (prototype x)
 
     print y
     y = 5
     print y
-    print (SS y)
+    print (prototype y)
 
     def bar {
         print x
         var x = 6
         print x
-        print (SS x)
-        print (SS SS x)
+        print (prototype x)
+        print (prototype prototype x)
 
         print y
         y = 7
         print y
-        // (SS_ y) is not defined
-        print (SS SS y)
+        // (prototype_ y) is not defined
+        print (prototype prototype y)
 
         return {
             print x

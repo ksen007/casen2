@@ -45,7 +45,7 @@ public class StringToken extends Token {
     public StringToken(SourcePosition position, String s) {
         super(position);
         this.value = s;
-        setParent(StandardStringProto.instance,true);
+        setParent(StandardStringProto.instance);
     }
 
     public CObject add(CObject operand2) {

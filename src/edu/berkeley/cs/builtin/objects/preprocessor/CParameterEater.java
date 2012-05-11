@@ -61,7 +61,7 @@ public class CParameterEater extends CObject {
     public CParameterEater(TokenEater ss) {
         parameters = new ArrayList<SymbolToken>();
         this.parent = ss;
-        setParent(superClass,true);
+        setParent(superClass);
     }
 
     public CObject appendParameter(CObject arg) {

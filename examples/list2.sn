@@ -1,3 +1,4 @@
+// this won't work anymore because Node is not in the scope
 
 def Node @expr @expr {|data, next|
     LS}

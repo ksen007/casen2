@@ -74,9 +74,9 @@ public class CNonPrimitiveObject extends CObject {
 
     public CNonPrimitiveObject() {
         this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().getId("LS"));
+        this.addSymbol(SymbolTable.getInstance().LS);
         this.addAction(new GetField(new Reference(this)));
-        setParent(superClass,true);
+        setParent(superClass);
     }
 
 }

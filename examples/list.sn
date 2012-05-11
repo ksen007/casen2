@@ -1,11 +1,10 @@
+// this won't work anymore because Node is not in the scope
+
 def Node @expr @expr {|data, next|
     var ret = new Object
     ret var data = data
     ret var next = next
     ret}
-
-def newObject {
-LS}
 
 def list @expr {|data|
     var ret = new Object

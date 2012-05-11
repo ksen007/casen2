@@ -52,7 +52,7 @@ public class CArray extends CObject implements Invokable {
 
     public CArray(long size) {
         arr = new CObject[(int)size];
-        setParent(StandardArrayProto.instance,true);
+        setParent(StandardArrayProto.instance);
     }
 
     public CObject get(CObject index) {

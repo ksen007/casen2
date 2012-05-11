@@ -46,7 +46,7 @@ public class LongToken extends Token {
     public LongToken(SourcePosition position, long l) {
         super(position);
         this.value = l;
-        setParent(StandardLongProto.instance,true);
+        setParent(StandardLongProto.instance);
     }
 
     public CObject add(CObject operand2) {

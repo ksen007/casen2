@@ -60,7 +60,7 @@ public class BooleanToken extends Token {
     public BooleanToken(SourcePosition position, boolean value) {
         super(position);
         this.value = value;
-        setParent(StandardBooleanProto.instance,true);
+        setParent(StandardBooleanProto.instance);
     }
 
     public CObject and(CObject operand2) {

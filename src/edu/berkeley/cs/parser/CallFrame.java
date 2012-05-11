@@ -127,7 +127,7 @@ public class CallFrame {
 
         if ((toBePushed = currentRule.getRuleForNonTerminal()) !=null) {
 
-            if ((rn = contextLookAhead(LS, environment, t, false))!=null) {
+            if ((rn = contextLookAhead(LS, environment, t))!=null) {
                 parseRuleStack.pop();
                 parseRuleStack.push(toBePushed);
 
@@ -227,7 +227,7 @@ public class CallFrame {
     private RuleNode shift(RuleNode reduce, CObject shift, int exprPrecedence, Token shiftOperator, Integer childPrecedence) {
         boolean first = isProgressPossible(reduce,shiftOperator);
         RuleNode ret;
-        boolean second = (ret = contextLookAhead(shift,null,shiftOperator,true))!=null;
+        boolean second = (ret = contextLookAhead(shift,null,shiftOperator))!=null;
         if (!second) return null;
         if (!first) return ret;
         if (childPrecedence != null) {
@@ -245,7 +245,7 @@ public class CallFrame {
     }
 
 
-    private static RuleNode contextLookAhead(CObject LS, CObject extra, Token t, boolean isProto) {
+    private static RuleNode contextLookAhead(CObject LS, CObject extra, Token t) {
         CObject current;
         RuleNode ret;
 
@@ -255,7 +255,7 @@ public class CallFrame {
             if (ret!=null && ret.matchSymbol(t)!=null) {
                 return ret;
             }
-            current = current.getParent(isProto);
+            current = current.getParent();
         }
         if (extra != null ) {
             ret = extra.getRuleNode();
@@ -270,7 +270,7 @@ public class CallFrame {
             if (ret.getRuleForToken()!=null) {
                 return ret;
             }
-            current = current.getParent(isProto);
+            current = current.getParent();
         }
         if (extra != null ) {
             ret = extra.getRuleNode();
@@ -285,7 +285,7 @@ public class CallFrame {
             if (ret.getRuleForNonTerminal()!=null) {
                 return ret;
             }
-            current = current.getParent(isProto);
+            current = current.getParent();
         }
         if (extra != null ) {
             ret = extra.getRuleNode();
@@ -300,7 +300,7 @@ public class CallFrame {
             if (ret.getRuleForAction()!=null) {
                 return ret;
             }
-            current = current.getParent(isProto);
+            current = current.getParent();
         }
         if (extra != null ) {
             ret = extra.getRuleNode();

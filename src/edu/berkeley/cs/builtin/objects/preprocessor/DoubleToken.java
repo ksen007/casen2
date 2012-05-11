@@ -45,7 +45,7 @@ public class DoubleToken extends Token {
     public DoubleToken(SourcePosition position, double l) {
         super(position);
         this.value = l;
-        setParent(StandardDoubleProto.instance,true);
+        setParent(StandardDoubleProto.instance);
     }
 
 

@@ -56,13 +56,13 @@ public class CompoundToken extends Token {
 //        return new BufferedScanner(tokens);
     }
 
-    public CompoundToken(CompoundToken cloneMe,CObject SS) {
+    public CompoundToken(CompoundToken cloneMe,CObject prototype) {
         super(cloneMe.getPosition());
         tokens = cloneMe.tokens;
         parameters = cloneMe.parameters;
         file = cloneMe.file;
         setRule(cloneMe);
-        this.setParent(SS,false);
+        this.setParent(prototype);
     }
 
     public CompoundToken(TokenEater ss,String file) {
@@ -98,9 +98,9 @@ public class CompoundToken extends Token {
         this.addAction(new DirectCallWith());
     }
 
-    public CObject execute(CObject LS, boolean overrideSS) {
-        if (overrideSS)
-            LS.setParent(getParent(false),false);
+    public CObject execute(CObject LS, boolean overridePrototype) {
+        if (overridePrototype)
+            LS.setParent(getParent());
         String tmp = CObject.currentFile;
         CObject.currentFile = file;
         try {
@@ -112,7 +112,7 @@ public class CompoundToken extends Token {
         }
     }
 
-    public CObject execute(CObject LS, LinkedList<CObject> args, boolean overrideSS) {
+    public CObject execute(CObject LS, LinkedList<CObject> args, boolean overridePrototype) {
         for(SymbolToken param:parameters) {
             Reference common;
 
@@ -126,7 +126,7 @@ public class CompoundToken extends Token {
             LS.addMeta(SymbolTable.getInstance().expr);
             LS.addAction(new PutField(common));
         }
-        return execute(LS,overrideSS);
+        return execute(LS,overridePrototype);
     }
 
 

@@ -51,13 +51,13 @@ public class LoadTests extends TestCase {
         Interpreter.interpret("(load \"examples/test4.sn\")()");
     }
 
-    public void testLoad5() throws Exception {
-        Interpreter.interpret("(load \"examples/list.sn\")()");
-    }
-
-    public void testLoad6() throws Exception {
-        Interpreter.interpret("(load \"examples/list2.sn\")()");
-    }
+//    public void testLoad5() throws Exception {
+//        Interpreter.interpret("(load \"examples/list.sn\")()");
+//    }
+//
+//    public void testLoad6() throws Exception {
+//        Interpreter.interpret("(load \"examples/list2.sn\")()");
+//    }
 
     public void testLoad9() throws Exception {
         Interpreter.interpret("(load \"examples/list3.sn\")()");
