@@ -69,6 +69,13 @@ public class StringToken extends Token {
         return value;
 
     }
+
+    @Override
+    public int hashCode() {
+        return value.hashCode();
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof StringToken)) return false;

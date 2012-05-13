@@ -42,28 +42,28 @@ public class CNonPrimitiveObject extends CObject {
 
     static {
         superClass.addNewRule();
-        superClass.addSymbol(SymbolTable.getInstance().var);
+        superClass.addObject(SymbolTable.getInstance().var);
         superClass.addMeta(SymbolTable.getInstance().token);
-        superClass.addSymbol(SymbolTable.getInstance().assign);
+        superClass.addObject(SymbolTable.getInstance().assign);
         superClass.addMeta(SymbolTable.getInstance().expr);
         superClass.addAction(new NativeFunction("assignment"));
 
         superClass.addNewRule();
-        superClass.addSymbol(SymbolTable.getInstance().def);
+        superClass.addObject(SymbolTable.getInstance().def);
         superClass.addAction(new NativeFunction("newDefinitionEater"));
 
         superClass.addNewRule();
-        superClass.addSymbol(SymbolTable.getInstance().eq);
+        superClass.addObject(SymbolTable.getInstance().eq);
         superClass.addMeta(SymbolTable.getInstance().expr);
         superClass.addAction(new NativeFunction("eq"));
 
         superClass.addNewRule();
-        superClass.addSymbol(SymbolTable.getInstance().ne);
+        superClass.addObject(SymbolTable.getInstance().ne);
         superClass.addMeta(SymbolTable.getInstance().expr);
         superClass.addAction(new NativeFunction("ne"));
 
         superClass.addNewRule();
-        superClass.addSymbol(SymbolTable.getInstance().LS);
+        superClass.addObject(SymbolTable.getInstance().LS);
         superClass.addAction(new GetField(new Reference(superClass)));
 
     }
@@ -74,7 +74,7 @@ public class CNonPrimitiveObject extends CObject {
 
     public CNonPrimitiveObject() {
         this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().LS);
+        this.addObject(SymbolTable.getInstance().LS);
         this.addAction(new GetField(new Reference(this)));
         setParent(superClass);
     }

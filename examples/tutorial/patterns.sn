@@ -4,14 +4,6 @@ def // {
     return ret
 }
 
-def /* 1000 {
-    var ret = new Object
-    ret def @token 1000 {|x| self}
-    ret def @nl 1000 { self }
-    ret def */ 1000 { null}
-    return ret
-}
-
 
 def fac @expr {|n|
     if (n <= 1) then {

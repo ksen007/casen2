@@ -40,14 +40,14 @@ public class EnvironmentObject extends CObject {
 
     private EnvironmentObject() {
         this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().var);
+        this.addObject(SymbolTable.getInstance().var);
         this.addMeta(SymbolTable.getInstance().token);
-        this.addSymbol(SymbolTable.getInstance().assign);
+        this.addObject(SymbolTable.getInstance().assign);
         this.addMeta(SymbolTable.getInstance().expr);
         this.addAction(new NativeFunction("assignment"));
 
         this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().def);
+        this.addObject(SymbolTable.getInstance().def);
         this.addAction(new NativeFunction("newDefinitionEater"));
 
         this.addNewRule();
@@ -55,81 +55,81 @@ public class EnvironmentObject extends CObject {
         this.addAction(new NativeFunction("interpretPrimitive"));
 
         this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().lparen);
+        this.addObject(SymbolTable.getInstance().lparen);
         this.addMeta(SymbolTable.getInstance().expr);
-        this.addSymbol(SymbolTable.getInstance().rparen);
+        this.addObject(SymbolTable.getInstance().rparen);
         this.addAction(new NativeFunction("returnArgument"));
 
         this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().getId("load"));
+        this.addObject(SymbolTable.getInstance().load);
         this.addMeta(SymbolTable.getInstance().expr);
         this.addAction(new NativeFunction("loadFile"));
 
         this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().getId("tokenToExpr"));
+        this.addObject(SymbolTable.getInstance().tokenToExpr);
         this.addMeta(SymbolTable.getInstance().token);
         this.addAction(new NativeFunction("returnToken"));
 
         this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().getId("-"));
+        this.addObject(SymbolTable.getInstance().minus);
         this.addMeta(SymbolTable.getInstance().expr);
         this.addAction(new NativeFunction("unaryMinus"));
 
         this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().getId("!"));
+        this.addObject(SymbolTable.getInstance().not);
         this.addMeta(SymbolTable.getInstance().expr);
         this.addAction(new NativeFunction("unaryNot"));
 
         this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().getId("print"));
+        this.addObject(SymbolTable.getInstance().print);
         this.addMeta(SymbolTable.getInstance().expr);
         this.addAction(new NativeFunction("print"));
 
         this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().getId("new"));
-        this.addSymbol(SymbolTable.getInstance().getId("Object"));
+        this.addObject(SymbolTable.getInstance().New);
+        this.addObject(SymbolTable.getInstance().object);
         this.addAction(new NativeFunction("newObject"));
 
         this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().getId("assert"));
+        this.addObject(SymbolTable.getInstance().Assert);
         this.addMeta(SymbolTable.getInstance().expr);
         this.addAction(new NativeFunction("assertEquality"));
 
         this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().getId("if"));
+        this.addObject(SymbolTable.getInstance().If);
         this.addMeta(SymbolTable.getInstance().expr);
-        this.addSymbol(SymbolTable.getInstance().getId("then"));
+        this.addObject(SymbolTable.getInstance().then);
         this.addMeta(SymbolTable.getInstance().expr);
-        this.addSymbol(SymbolTable.getInstance().getId("else"));
+        this.addObject(SymbolTable.getInstance().Else);
         this.addMeta(SymbolTable.getInstance().expr);
         this.addAction(new NativeFunction("ifAction"));
 
         this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().getId("try"));
+        this.addObject(SymbolTable.getInstance().Try);
         this.addMeta(SymbolTable.getInstance().expr);
-        this.addSymbol(SymbolTable.getInstance().getId("catch"));
+        this.addObject(SymbolTable.getInstance().Catch);
         this.addMeta(SymbolTable.getInstance().token);
         this.addMeta(SymbolTable.getInstance().expr);
         this.addAction(new NativeFunction("tryCatch"));
 
         this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().getId("while"));
+        this.addObject(SymbolTable.getInstance().While);
         this.addMeta(SymbolTable.getInstance().expr);
         this.addMeta(SymbolTable.getInstance().expr);
         this.addAction(new NativeFunction("whileAction"));
 
         this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().getId("once"));
+        this.addObject(SymbolTable.getInstance().once);
         this.addMeta(SymbolTable.getInstance().expr);
         this.addAction(new NativeFunction("onceAction"));
 
         this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().getId("throw"));
+        this.addObject(SymbolTable.getInstance().Throw);
         this.addMeta(SymbolTable.getInstance().expr);
         this.addAction(new NativeFunction("cException"));
 
         this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().getId("return"));
+        this.addObject(SymbolTable.getInstance().Return);
         this.addMeta(SymbolTable.getInstance().expr);
         this.addAction(new NativeFunction("cReturn"));
 

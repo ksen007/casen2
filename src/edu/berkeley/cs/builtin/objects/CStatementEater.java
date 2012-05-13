@@ -44,29 +44,29 @@ public class CStatementEater extends CObject {
 
         this.addNewRule();
         this.addMeta(SymbolTable.getInstance().expr,true);
-        this.addSymbol(SymbolTable.getInstance().getId(";"));
+        this.addObject(SymbolTable.getInstance().semi);
         this.addAction(new NativeFunction("returnSS"));
 
         this.addNewRule();
         this.addMeta(SymbolTable.getInstance().expr,true);
-        this.addSymbol(SymbolTable.getInstance().getId("\n"));
+        this.addObject(SymbolTable.getInstance().newline);
         this.addAction(new NativeFunction("returnSS"));
 
         this.addNewRule();
         this.addMeta(SymbolTable.getInstance().expr,true);
-        this.addSymbol(SymbolToken.end.symbol);
+        this.addObject(SymbolToken.end);
         this.addAction(new NativeFunction("signalReturn"));
 
         this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().getId(";"));
+        this.addObject(SymbolTable.getInstance().semi);
         this.addAction(new NativeFunction("returnSS"));
 
         this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().getId("\n"));
+        this.addObject(SymbolTable.getInstance().newline);
         this.addAction(new NativeFunction("returnSS"));
 
         this.addNewRule();
-        this.addSymbol(SymbolToken.end.symbol);
+        this.addObject(SymbolToken.end);
         this.addAction(new NativeFunction("signalReturn"));
 
     }

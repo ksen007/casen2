@@ -102,6 +102,12 @@ public class LongToken extends Token {
         return value+"";
 
     }
+
+    @Override
+    public int hashCode() {
+        return (int)value;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof LongToken)) return false;

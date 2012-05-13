@@ -51,20 +51,20 @@ public class TokenEater extends CObject {
     public static CObject thisClass = new CObject();
     static {
         thisClass.addNewRule();
-        thisClass.addSymbol(SymbolTable.getInstance().getId("exprToToken"));
+        thisClass.addObject(SymbolTable.getInstance().exprToToken);
         thisClass.addAction(new NativeFunction("appendExprToToken"));
 
         thisClass.addNewRule();
-        thisClass.addSymbol(SymbolTable.getInstance().lcurly);
+        thisClass.addObject(SymbolTable.getInstance().lcurly);
         thisClass.addAction(new NativeFunction("createNewTokenEater"));
 
         thisClass.addNewRule();
-        thisClass.addSymbol(SymbolTable.getInstance().lcurly);
-        thisClass.addSymbol(SymbolTable.getInstance().bar);
+        thisClass.addObject(SymbolTable.getInstance().lcurly);
+        thisClass.addObject(SymbolTable.getInstance().bar);
         thisClass.addAction(new NativeFunction("createNewParameterEater"));
 
         thisClass.addNewRule();
-        thisClass.addSymbol(SymbolTable.getInstance().rcurly);
+        thisClass.addObject(SymbolTable.getInstance().rcurly);
         thisClass.addAction(new NativeFunction("returnParentTokenEater"));
 
         thisClass.addNewRule();
@@ -72,11 +72,11 @@ public class TokenEater extends CObject {
         thisClass.addAction(new NativeFunction("append"));
 
         thisClass.addNewRule();
-        thisClass.addSymbol(SymbolTable.getInstance().newline);
+        thisClass.addObject(SymbolTable.getInstance().newline);
         thisClass.addAction(new NativeFunction("appendNewLine"));
 
         thisClass.addNewRule();
-        thisClass.addSymbol(SymbolToken.end.symbol);
+        thisClass.addObject(SymbolToken.end);
         thisClass.addAction(new NativeFunction("returnTokenEater"));
     }
 

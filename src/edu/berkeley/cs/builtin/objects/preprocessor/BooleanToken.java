@@ -89,6 +89,12 @@ public class BooleanToken extends Token {
         return value+"";
 
     }
+
+    @Override
+    public int hashCode() {
+        return value?1:0;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof BooleanToken)) return false;

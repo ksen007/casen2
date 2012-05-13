@@ -1,5 +1,6 @@
 package edu.berkeley.cs.parser;
 
+import edu.berkeley.cs.builtin.objects.CObject;
 import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
 
 import java.util.ArrayList;
@@ -48,22 +49,44 @@ public class SymbolTable {
     public int nl = getId("nl");
     public int eof = getId("eof");
     
-    public int self = getId("self");
-    public int newline = getId("\n");
-    public int var = getId("var");
-    public int eq = getId("==");
-    public int ne = getId("!=");
-    public int def = getId("def");
-    public int assign = getId("=");
-    public int LS = getId("LS");
-    public int lparen = getId("(");
-    public int rparen = getId(")");
-    public int dot = getId(".");
-    public int endef = getId("endef");
-    public int comma = getId(",");
-    public int bar = getId("|");
-    public int lcurly = getId("{");
-    public int rcurly = getId("}");
+    public SymbolToken self = new SymbolToken(null,getId("self"));
+    public SymbolToken newline = new SymbolToken(null,getId("\n"));
+    public SymbolToken var = new SymbolToken(null,getId("var"));
+    public SymbolToken eq = new SymbolToken(null,getId("=="));
+    public SymbolToken ne = new SymbolToken(null,getId("!="));
+    public SymbolToken def = new SymbolToken(null,getId("def"));
+    public SymbolToken assign = new SymbolToken(null,getId("="));
+    public SymbolToken LS = new SymbolToken(null,getId("LS"));
+    public SymbolToken lparen = new SymbolToken(null,getId("("));
+    public SymbolToken rparen = new SymbolToken(null,getId(")"));
+    public SymbolToken dot = new SymbolToken(null,getId("."));
+    public SymbolToken endef = new SymbolToken(null,getId("endef"));
+    public SymbolToken comma = new SymbolToken(null,getId(","));
+    public SymbolToken bar = new SymbolToken(null,getId("|"));
+    public SymbolToken lcurly = new SymbolToken(null,getId("{"));
+    public SymbolToken rcurly = new SymbolToken(null,getId("}"));
+    public SymbolToken prototype = new SymbolToken(null,getId("prototype"));
+    public SymbolToken exprToToken = new SymbolToken(null,getId("exprToToken"));
+    public SymbolToken semi = new SymbolToken(null,getId(";"));
+    public SymbolToken load = new SymbolToken(null,getId("load"));
+
+
+    public SymbolToken If = new SymbolToken(null,getId("if"));
+    public SymbolToken then = new SymbolToken(null,getId("then"));
+    public SymbolToken Else = new SymbolToken(null,getId("else"));
+    public SymbolToken While = new SymbolToken(null,getId("while"));
+    public SymbolToken Try = new SymbolToken(null,getId("try"));
+    public SymbolToken Catch = new SymbolToken(null,getId("catch"));
+    public SymbolToken Throw = new SymbolToken(null,getId("throw"));
+    public SymbolToken Return = new SymbolToken(null,getId("return"));
+    public SymbolToken once = new SymbolToken(null,getId("once"));
+    public SymbolToken print = new SymbolToken(null,getId("print"));
+    public SymbolToken minus = new SymbolToken(null,getId("-"));
+    public SymbolToken not = new SymbolToken(null,getId("!"));
+    public SymbolToken New = new SymbolToken(null,getId("new"));
+    public SymbolToken object = new SymbolToken(null,getId("Object"));
+    public SymbolToken tokenToExpr = new SymbolToken(null,getId("tokenToExpr"));
+    public SymbolToken Assert = new SymbolToken(null,getId("assert"));
 //    public int meta = getId("meta");
 //    public int literal = getId("literal");
 //    public int block = getId("block");

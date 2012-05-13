@@ -56,6 +56,11 @@ public class MetaToken extends Token {
     }
 
     @Override
+    public int hashCode() {
+        return metaSymbol;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (!(o instanceof MetaToken)) return false;
         return metaSymbol == ((MetaToken)o).metaSymbol;

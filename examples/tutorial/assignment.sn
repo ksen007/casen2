@@ -4,13 +4,6 @@ def // {
     return ret
 }
 
-def /* 1000 {
-    var ret = new Object
-    ret def @token 1000 {|x| self}
-    ret def @nl 1000 { self }
-    ret def */ 1000 { null}
-    return ret
-}
 
 // I defined the comment operator // so that I can write comments
 

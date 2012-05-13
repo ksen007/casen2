@@ -49,12 +49,12 @@ public class CParameterEater extends CObject {
     static {
         superClass.addNewRule();
         superClass.addMeta(SymbolTable.getInstance().token);
-        superClass.addSymbol(SymbolTable.getInstance().comma);
+        superClass.addObject(SymbolTable.getInstance().comma);
         superClass.addAction(new NativeFunction("appendParameter"));
 
         superClass.addNewRule();
         superClass.addMeta(SymbolTable.getInstance().token);
-        superClass.addSymbol(SymbolTable.getInstance().bar);
+        superClass.addObject(SymbolTable.getInstance().bar);
         superClass.addAction(new NativeFunction("appendAndReturnParent"));
     }
 

@@ -1,6 +1,5 @@
 package edu.berkeley.cs.parser;
 
-import edu.berkeley.cs.builtin.functions.PushResultToScanner;
 import edu.berkeley.cs.builtin.objects.CObject;
 import edu.berkeley.cs.builtin.objects.preprocessor.*;
 import edu.berkeley.cs.lexer.Scanner;
@@ -93,7 +92,7 @@ public class CallFrame {
     }
 
     private boolean consumeSymbol(RuleNode currentRule, Token t) {
-        RuleNode ret = currentRule.matchSymbol(t);
+        RuleNode ret = currentRule.getRuleForObject(t);
         if (ret!=null) {
             parseRuleStack.pop();
             parseRuleStack.push(ret);
@@ -125,7 +124,7 @@ public class CallFrame {
     private boolean consumeExpr(RuleNode currentRule, Token t) {
         RuleNode rn, toBePushed;
 
-        if ((toBePushed = currentRule.getRuleForNonTerminal()) !=null) {
+        if ((toBePushed = currentRule.getRuleForExpr()) !=null) {
 
             if ((rn = contextLookAhead(LS, environment, t))!=null) {
                 parseRuleStack.pop();
@@ -218,8 +217,8 @@ public class CallFrame {
 
     private static boolean isProgressPossible(RuleNode rn, Token t) {
         return rn !=null
-                && (rn.matchSymbol(t)!=null
-                || rn.getRuleForNonTerminal()!=null
+                && (rn.getRuleForObject(t)!=null
+                || rn.getRuleForExpr()!=null
                 || rn.getRuleForToken()!=null
                 || rn.getRuleForAction()!=null);
     }
@@ -252,14 +251,14 @@ public class CallFrame {
         current = LS;
         while(current!=null) {
             ret = current.getRuleNode();
-            if (ret!=null && ret.matchSymbol(t)!=null) {
+            if (ret!=null && ret.getRuleForObject(t)!=null) {
                 return ret;
             }
             current = current.getParent();
         }
         if (extra != null ) {
             ret = extra.getRuleNode();
-            if (ret!=null && ret.matchSymbol(t)!=null) {
+            if (ret!=null && ret.getRuleForObject(t)!=null) {
                 return ret;
             }
         }
@@ -282,14 +281,14 @@ public class CallFrame {
         current = LS;
         while(current!=null) {
             ret = current.getRuleNode();
-            if (ret.getRuleForNonTerminal()!=null) {
+            if (ret.getRuleForExpr()!=null) {
                 return ret;
             }
             current = current.getParent();
         }
         if (extra != null ) {
             ret = extra.getRuleNode();
-            if (ret.getRuleForNonTerminal()!=null) {
+            if (ret.getRuleForExpr()!=null) {
                 return ret;
             }
         }

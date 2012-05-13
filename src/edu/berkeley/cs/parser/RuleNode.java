@@ -1,11 +1,14 @@
 package edu.berkeley.cs.parser;
 
 import edu.berkeley.cs.builtin.functions.Invokable;
+import edu.berkeley.cs.builtin.objects.CObject;
 import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
 import edu.berkeley.cs.builtin.objects.preprocessor.Token;
 import gnu.trove.iterator.TIntObjectIterator;
 import gnu.trove.map.hash.TIntObjectHashMap;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
@@ -41,9 +44,9 @@ import java.util.LinkedList;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class RuleNode {
-    private TIntObjectHashMap<RuleNode> nextSymbolMap;
+    private HashMap<CObject,RuleNode> next;
     private Action action;
-    private RuleNode nonTerminal;
+    private RuleNode expr;
     private RuleNode token;
 
     private Integer optionalPrecedence;
@@ -85,28 +88,17 @@ public class RuleNode {
 
     private LinkedList<String> print() {
         LinkedList<String> ret = new LinkedList<String>();
-        if (nextSymbolMap!=null) {
-            for (TIntObjectIterator<RuleNode> iterator = nextSymbolMap.iterator(); iterator.hasNext(); ) {
-                iterator.advance();
-                RuleNode next = iterator.value();
-                LinkedList<String> tmp = next.print();
-                for(String child:tmp) {
-                    ret.add(SymbolTable.getInstance().getSymbol(iterator.key())+" "+child);
+        if (next!=null) {
+            for (CObject cObject : next.keySet()) {
+                RuleNode rn = next.get(cObject);
+                LinkedList<String> tmp = rn.print();
+                for (String child : tmp) {
+                    ret.add(cObject + " " + child);
                 }
             }
         }
-//        if (nextArgumentMap!=null) {
-//            for (TIntObjectIterator<RuleNode> iterator = nextArgumentMap.iterator(); iterator.hasNext(); ) {
-//                iterator.advance();
-//                RuleNode next = iterator.value();
-//                LinkedList<String> tmp = next.print();
-//                for(String child:tmp) {
-//                    ret.add("@"+SymbolTable.getInstance().getSymbol(iterator.key())+" "+child);
-//                }
-//            }
-//        }
-        if (nonTerminal!=null) {
-            LinkedList<String> tmp = nonTerminal.print();
+        if (expr !=null) {
+            LinkedList<String> tmp = expr.print();
             for(String child:tmp) {
                 ret.add("@expr "+child);
             }
@@ -134,10 +126,10 @@ public class RuleNode {
             throw new ParseException("First token of a def cannot be @expr.");
         }
         if (metaSymbol==SymbolTable.getInstance().expr) {
-            if (nonTerminal == null) {
-                nonTerminal = new RuleNode(this, "@expr");
+            if (expr == null) {
+                expr = new RuleNode(this, "@expr");
             }
-            return  this.nonTerminal;
+            return  this.expr;
         }
         if (metaSymbol==SymbolTable.getInstance().token) {
             if (token == null) {
@@ -148,14 +140,14 @@ public class RuleNode {
         throw new ParseException("Bad Meta Token @"+SymbolTable.getInstance().getSymbol(metaSymbol));
     }
 
-    public RuleNode addSymbol(int symbol) {
+    public RuleNode addObject(CObject val) {
         RuleNode ret;
-        if (nextSymbolMap == null) {
-            nextSymbolMap = new TIntObjectHashMap<RuleNode>();
+        if (next == null) {
+            next = new HashMap<CObject, RuleNode>();
         }
-        ret = nextSymbolMap.get(symbol);
+        ret = next.get(val);
         if (ret==null) {
-            nextSymbolMap.put(symbol,ret=new RuleNode(this,SymbolTable.getInstance().getSymbol(symbol)));
+            next.put(val,ret=new RuleNode(this,val.toString()));
         }
         return ret;
     }
@@ -170,28 +162,20 @@ public class RuleNode {
         return null;
     }
 
-    public RuleNode getRuleForSymbol(int symbol) {
+    public RuleNode getRuleForObject(CObject object) {
         RuleNode ret = null;
-        if (nextSymbolMap != null && (ret = nextSymbolMap.get(symbol))!=null){
+        if (next != null && (ret = next.get(object))!=null){
             return ret;
         }
         return null;
     }
 
-//    public RuleNode getRuleFormetaSymbol(int metaSymbol) {
-//        RuleNode ret = null;
-//        if (nextmetaSymbolMap != null && (ret = nextmetaSymbolMap.get(metaSymbol))!=null){
-//            return ret;
-//        }
-//        return null;
-//    }
-
     public Action getRuleForAction() {
         return action;
     }
 
-    public RuleNode getRuleForNonTerminal() {
-        return nonTerminal;
+    public RuleNode getRuleForExpr() {
+        return expr;
     }
 
     public RuleNode getRuleForToken() {
@@ -202,19 +186,19 @@ public class RuleNode {
         return optionalPrecedence;
     }
 
-    public RuleNode matchSymbol(Token t) {
-        RuleNode ret;
-        if (t instanceof SymbolToken) {
-            SymbolToken st = (SymbolToken)t;
-            if ((ret = getRuleForSymbol(st.symbol))!=null){
-                return ret;
-            }
-        }
-        return null;
-    }
+//    public RuleNode matchSymbol(Token t) {
+//        RuleNode ret;
+//        if (t instanceof SymbolToken) {
+//            SymbolToken st = (SymbolToken)t;
+//            if ((ret = getRuleForSymbol(st.symbol))!=null){
+//                return ret;
+//            }
+//        }
+//        return null;
+//    }
 
 
     public boolean isActionOnly() {
-        return (nextSymbolMap==null && nonTerminal==null && token == null && action != null);
+        return (next==null && expr ==null && token == null && action != null);
     }
 }

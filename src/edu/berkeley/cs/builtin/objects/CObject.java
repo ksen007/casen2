@@ -54,7 +54,6 @@ import java.util.TreeMap;
     */
 
 public class CObject {
-    private CObject SS;
     private Reference prototype;
     private RuleNode rules;
 
@@ -104,12 +103,12 @@ public class CObject {
         this.prototype = new Reference(obj);
         if (obj !=null) {
             this.addNewRule();
-            this.addSymbol(SymbolTable.getInstance().getId("prototype"));
+            this.addObject(SymbolTable.getInstance().prototype);
             this.addAction(new GetField(prototype));
 
             this.addNewRule();
-            this.addSymbol(SymbolTable.getInstance().getId("prototype"));
-            this.addSymbol(SymbolTable.getInstance().getId("="));
+            this.addObject(SymbolTable.getInstance().prototype);
+            this.addObject(SymbolTable.getInstance().assign);
             this.addMeta(SymbolTable.getInstance().expr);
             this.addAction(new PutField(prototype));
         }
@@ -211,12 +210,12 @@ public class CObject {
         Reference common = new Reference(value);
 
         self.addNewRule();
-        self.addSymbol(symbol.symbol);
+        self.addObject(symbol);
         self.addAction(new GetField(common));
 
         self.addNewRule();
-        self.addSymbol(symbol.symbol);
-        self.addSymbol(SymbolTable.getInstance().getId("="));
+        self.addObject(symbol);
+        self.addObject(SymbolTable.getInstance().assign);
         self.addMeta(SymbolTable.getInstance().expr);
         self.addAction(new PutField(common));
 
@@ -331,12 +330,12 @@ public class CObject {
             Reference common = new Reference(ret);
 
             this.addNewRule();
-            this.addSymbol(symbol.symbol);
+            this.addObject(symbol);
             this.addAction(new GetField(common));
 
             this.addNewRule();
-            this.addSymbol(symbol.symbol);
-            this.addSymbol(SymbolTable.getInstance().getId("="));
+            this.addObject(symbol);
+            this.addObject(SymbolTable.getInstance().assign);
             this.addMeta(SymbolTable.getInstance().expr);
             this.addAction(new PutField(common));
 
@@ -344,6 +343,11 @@ public class CObject {
             if (ret.isException()) return ret;
         }
         return NullToken.NULL();
+    }
+
+    @Override
+    public int hashCode() {
+        return System.identityHashCode(this);
     }
 
     @Override
@@ -374,8 +378,8 @@ public class CObject {
         argCount++;
     }
 
-    public void addSymbol(int symbol) {
-        curr = curr.addSymbol(symbol);
+    public void addObject(CObject object) {
+        curr = curr.addObject(object);
     }
 
     public void addAction(Invokable func) {

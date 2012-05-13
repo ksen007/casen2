@@ -57,6 +57,12 @@ public class SymbolToken extends Token {
     }
 
     @Override
+    public int hashCode() {
+        return symbol;
+    }
+
+
+    @Override
     public boolean equals(Object o) {
         if (!(o instanceof SymbolToken)) return false;
         return symbol == ((SymbolToken)o).symbol;

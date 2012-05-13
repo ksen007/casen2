@@ -102,6 +102,13 @@ public class DoubleToken extends Token {
         return value+"";
 
     }
+
+
+    @Override
+    public int hashCode() {
+        return (int)value;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof DoubleToken)) return false;

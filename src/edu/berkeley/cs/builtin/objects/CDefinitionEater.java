@@ -61,33 +61,21 @@ public class CDefinitionEater extends CObject {
         if (arg instanceof CompoundToken) {
             self.parent.addAction(new UserDefinedFunction((CompoundToken) arg));
             return NullToken.NULL();
-        }
-        if (arg instanceof MetaToken) {
-            MetaToken mt = (MetaToken) arg;
-            if (mt.metaSymbol != SymbolTable.getInstance().expr
-                    && mt.metaSymbol != SymbolTable.getInstance().nl
-                    && mt.metaSymbol != SymbolTable.getInstance().eof
-                    && mt.metaSymbol != SymbolTable.getInstance().token) {
-                return new JavaClassEater(self.parent,SymbolTable.getInstance().getSymbol(mt.metaSymbol));
-            }
-        }
-        if(arg instanceof SymbolToken) {
-            self.parent.addSymbol(((SymbolToken) arg).symbol);
-        } else if(arg instanceof MetaToken) {
+        } else if (arg instanceof MetaToken) {
             int argument = ((MetaToken)arg).metaSymbol;
-            if (argument == SymbolTable.getInstance().nl) {
-                self.parent.addSymbol(SymbolTable.getInstance().newline);
-            } else if (argument == SymbolTable.getInstance().eof) {
-                self.parent.addSymbol(SymbolToken.end.symbol);
-            } else {
+            if (argument == SymbolTable.getInstance().expr
+                    || argument == SymbolTable.getInstance().token) {
                 self.parent.addMeta(argument);
+            } else if (argument == SymbolTable.getInstance().nl) {
+                self.parent.addObject(SymbolTable.getInstance().newline);
+            } else if (argument == SymbolTable.getInstance().eof) {
+                self.parent.addObject(SymbolToken.end);
+            } else {
+                return new JavaClassEater(self.parent,SymbolTable.getInstance().getSymbol(argument));
             }
-        } else if (arg instanceof LongToken) {
-            self.parent.addPrecedence((int)((LongToken)arg).value);
         } else {
-            throw new RuntimeException("Token must be @token, @expr, @nl, or @eof "+arg);
+            self.parent.addObject(arg);
         }
-//        SS.parent.addToken((Token)arg);
         return self;
     }
 

@@ -72,6 +72,12 @@ public class NullToken extends Token {
         return "null";
 
     }
+
+    @Override
+    public int hashCode() {
+        return 1024;
+    }
+
     @Override
     public boolean equals(Object o) {
          return (o instanceof NullToken);

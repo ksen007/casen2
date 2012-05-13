@@ -74,27 +74,27 @@ public class CompoundToken extends Token {
         int N = parameters.size();
 
         this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().lparen);
+        this.addObject(SymbolTable.getInstance().lparen);
         for(int i=0; i<N; i++) {
             this.addMeta(SymbolTable.getInstance().expr);
             if (i<N-1)
-                this.addSymbol(SymbolTable.getInstance().comma);
+                this.addObject(SymbolTable.getInstance().comma);
         }
-        this.addSymbol(SymbolTable.getInstance().rparen);
+        this.addObject(SymbolTable.getInstance().rparen);
         this.addAction(new DirectCall());
 
         this.addNewRule();
-        this.addSymbol(SymbolTable.getInstance().lparen);
+        this.addObject(SymbolTable.getInstance().lparen);
         this.addMeta(SymbolTable.getInstance().expr);
         if (N > 0)
-            this.addSymbol(SymbolTable.getInstance().comma);
+            this.addObject(SymbolTable.getInstance().comma);
 
         for(int i=0; i<N; i++) {
             this.addMeta(SymbolTable.getInstance().expr);
             if (i<N-1)
-                this.addSymbol(SymbolTable.getInstance().comma);
+                this.addObject(SymbolTable.getInstance().comma);
         }
-        this.addSymbol(SymbolTable.getInstance().rparen);
+        this.addObject(SymbolTable.getInstance().rparen);
         this.addAction(new DirectCallWith());
     }
 
@@ -117,12 +117,12 @@ public class CompoundToken extends Token {
             Reference common;
 
             LS.addNewRule();
-            LS.addSymbol(param.symbol);
+            LS.addObject(param);
             LS.addAction(new GetField(common = new Reference(args.removeFirst())));
 
             LS.addNewRule();
-            LS.addSymbol(param.symbol);
-            LS.addSymbol(SymbolTable.getInstance().assign);
+            LS.addObject(param);
+            LS.addObject(SymbolTable.getInstance().assign);
             LS.addMeta(SymbolTable.getInstance().expr);
             LS.addAction(new PutField(common));
         }
@@ -154,11 +154,6 @@ public class CompoundToken extends Token {
         }
         sb.append('}');
         return sb.toString();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return this == o;
     }
 
 }
