@@ -39,7 +39,7 @@ import edu.berkeley.cs.parser.TokenVisitor;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class NullToken extends Token {
+public class NullToken extends CObject {
     public static NullToken NULL() {
         if (NULL==null)
             NULL = new NullToken(null);
@@ -60,11 +60,6 @@ public class NullToken extends Token {
     public NullToken(SourcePosition position) {
         super(position);
         setParent(StandardNullProto.instance);
-    }
-
-    @Override
-    public Object accept(TokenVisitor v) {
-        return v.visitNullToken(this);
     }
 
     @Override

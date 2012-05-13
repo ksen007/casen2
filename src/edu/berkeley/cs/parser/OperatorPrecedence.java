@@ -1,7 +1,7 @@
 package edu.berkeley.cs.parser;
 
+import edu.berkeley.cs.builtin.objects.CObject;
 import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
-import edu.berkeley.cs.builtin.objects.preprocessor.Token;
 import gnu.trove.map.hash.TIntIntHashMap;
 
 /**
@@ -90,7 +90,7 @@ public class OperatorPrecedence {
 //        precedenceTable.put(SymbolTable.getInstance().getId("["),230-offset);
     }
 
-    public boolean isShift(int exprPrecedence, Token shiftOp) {
+    public boolean isShift(int exprPrecedence, CObject shiftOp) {
         if (shiftOp instanceof SymbolToken) {
             int sym2 = precedenceTable.get(((SymbolToken)shiftOp).symbol);
             return isShift(exprPrecedence,sym2);
@@ -105,7 +105,7 @@ public class OperatorPrecedence {
         return false;
     }
 
-    public Integer getPrecedence(Token t) {
+    public Integer getPrecedence(CObject t) {
         if (t instanceof SymbolToken) {
             return precedenceTable.get(((SymbolToken)t).symbol);
         }

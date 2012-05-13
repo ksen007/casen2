@@ -1,6 +1,6 @@
 package edu.berkeley.cs.parser;
 
-import edu.berkeley.cs.builtin.objects.preprocessor.Token;
+import edu.berkeley.cs.builtin.objects.CObject;
 
 /**
  * Copyright (c) 2006-2011,
@@ -35,18 +35,18 @@ import edu.berkeley.cs.builtin.objects.preprocessor.Token;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class ParseException extends RuntimeException {
-    private Token token;
+    private CObject token;
     private CallFrame frame;
     private Exception child;
     private String message;
 
-    public ParseException(Token token, CallFrame frame, Exception child) {
+    public ParseException(CObject token, CallFrame frame, Exception child) {
         this.token = token;
         this.frame = frame;
         this.child = child;
     }
 
-    public ParseException(Token token, CallFrame frame) {
+    public ParseException(CObject token, CallFrame frame) {
         this.token = token;
         this.frame = frame;
         this.child = null;

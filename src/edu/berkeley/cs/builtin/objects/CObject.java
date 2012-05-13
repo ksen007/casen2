@@ -4,10 +4,7 @@ import edu.berkeley.cs.builtin.functions.GetField;
 import edu.berkeley.cs.builtin.functions.Invokable;
 import edu.berkeley.cs.builtin.functions.PutField;
 import edu.berkeley.cs.builtin.objects.preprocessor.*;
-import edu.berkeley.cs.lexer.BasicScanner;
-import edu.berkeley.cs.lexer.Lexer;
-import edu.berkeley.cs.lexer.StandardLexer;
-import edu.berkeley.cs.lexer.Scanner;
+import edu.berkeley.cs.lexer.*;
 import edu.berkeley.cs.parser.*;
 
 import java.io.*;
@@ -86,9 +83,24 @@ public class CObject {
         return (flags & RETURN_FLAG) > 0;
     }
 
+    private SourcePosition position;
+
+    public SourcePosition getPosition() {
+        return position;
+    }
+
+
+    public CObject(SourcePosition position) {
+        this.position = position;
+    }
+
+    public String locationString() {
+        return position==null?"":position.toString();
+    }
+
 
     public CObject() {
-        rules = new RuleNode(null);
+        //rules = new RuleNode(null);
     }
 
     public void assign(SymbolToken var, Reference val) {
@@ -114,7 +126,7 @@ public class CObject {
     public void setParent(CObject obj) {
         this.prototype = new Reference(obj);
         if (obj !=null) {
-            assign(SymbolTable.getInstance().prototype,prototype);
+            assign(SymbolTable.getInstance().prototype, prototype);
         }
     }
 
@@ -232,10 +244,10 @@ public class CObject {
         return arg;
     }
 
-    public CObject interpretPrimitive(CObject arg) {
-        return arg;
-//        return (CObject)(((Token)arg).accept(new StandardTokenInterpreterVisitor(this)));
+    public CObject returnToken(CObject tok) {
+        return tok;
     }
+
 
     public CObject whileAction(CObject S1, CObject S2) {
         CompoundToken s1 = (CompoundToken)S1;
@@ -293,10 +305,6 @@ public class CObject {
 
     }
 
-    public CObject returnToken(CObject tok) {
-        return tok;
-    }
-
     public CObject newObject() {
         CNonPrimitiveObject ret = new CNonPrimitiveObject();
         //ret.setParent(this,false);
@@ -321,7 +329,7 @@ public class CObject {
         if (ret.isException()) {
             ret.clearException();
             Reference common = new Reference(ret);
-            assign(symbol,common);
+            assign(symbol, common);
 
             ret = s2.execute(this,false);
             if (ret.isException()) return ret;

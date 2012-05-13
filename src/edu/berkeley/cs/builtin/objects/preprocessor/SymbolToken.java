@@ -1,5 +1,6 @@
 package edu.berkeley.cs.builtin.objects.preprocessor;
 
+import edu.berkeley.cs.builtin.objects.CObject;
 import edu.berkeley.cs.lexer.SourcePosition;
 import edu.berkeley.cs.parser.SymbolTable;
 import edu.berkeley.cs.parser.TokenVisitor;
@@ -36,7 +37,7 @@ import edu.berkeley.cs.parser.TokenVisitor;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class SymbolToken extends Token {
+public class SymbolToken extends CObject {
     final public static SymbolToken end = new SymbolToken(null,-1);
 
     public int symbol;
@@ -45,11 +46,6 @@ public class SymbolToken extends Token {
         super(position);
         this.symbol = symbol;
     }
-
-    public Object accept(TokenVisitor v) {
-        return v.visitSymbolToken(this);
-    }
-
 
     @Override
     public String toString() {

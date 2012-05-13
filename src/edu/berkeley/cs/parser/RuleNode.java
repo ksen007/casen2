@@ -2,13 +2,8 @@ package edu.berkeley.cs.parser;
 
 import edu.berkeley.cs.builtin.functions.Invokable;
 import edu.berkeley.cs.builtin.objects.CObject;
-import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
-import edu.berkeley.cs.builtin.objects.preprocessor.Token;
-import gnu.trove.iterator.TIntObjectIterator;
-import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 
 /**

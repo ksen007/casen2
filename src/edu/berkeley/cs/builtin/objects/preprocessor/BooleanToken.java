@@ -38,7 +38,7 @@ import edu.berkeley.cs.parser.TokenVisitor;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class BooleanToken extends Token {
+public class BooleanToken extends CObject {
     public static BooleanToken TRUE() {
         if (TRUE==null)
             TRUE = new BooleanToken(null,true);
@@ -77,11 +77,6 @@ public class BooleanToken extends Token {
 
     public CObject ne(CObject operand2) {
         return (value != ((BooleanToken)operand2).value)? BooleanToken.TRUE(): BooleanToken.FALSE();
-    }
-
-    @Override
-    public Object accept(TokenVisitor v) {
-        return v.visitBooleanToken(this);
     }
 
     @Override

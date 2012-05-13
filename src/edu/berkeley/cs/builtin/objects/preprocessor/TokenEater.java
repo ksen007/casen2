@@ -39,7 +39,7 @@ import java.util.ArrayList;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class TokenEater extends CObject {
-    public ArrayList<Token> tokens;
+    public ArrayList<CObject> tokens;
     public ArrayList<SymbolToken> parameters;
     public TokenEater parent;
     private String file;
@@ -81,7 +81,7 @@ public class TokenEater extends CObject {
     }
 
     public TokenEater(TokenEater ss, String file) {
-        tokens = new ArrayList<Token>();
+        tokens = new ArrayList<CObject>();
         this.parent = ss;
         parameters = new ArrayList<SymbolToken>();
         this.file = file;
@@ -100,7 +100,7 @@ public class TokenEater extends CObject {
     }
 
     public CObject append(CObject token) {
-        tokens.add((Token)token);
+        tokens.add(token);
         return this;
     }
 

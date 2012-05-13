@@ -1,5 +1,6 @@
 package edu.berkeley.cs.builtin.objects.preprocessor;
 
+import edu.berkeley.cs.builtin.objects.CObject;
 import edu.berkeley.cs.lexer.SourcePosition;
 import edu.berkeley.cs.parser.SymbolTable;
 import edu.berkeley.cs.parser.TokenVisitor;
@@ -36,16 +37,12 @@ import edu.berkeley.cs.parser.TokenVisitor;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class MetaToken extends Token {
+public class MetaToken extends CObject {
     public int metaSymbol;
 
     public MetaToken(SourcePosition position, int metaSymbol) {
         super(position);
         this.metaSymbol = metaSymbol;
-    }
-
-    public Object accept(TokenVisitor v) {
-        return v.visitMetaToken(this);
     }
 
 

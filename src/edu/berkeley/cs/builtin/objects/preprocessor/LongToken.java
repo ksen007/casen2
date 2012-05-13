@@ -40,7 +40,7 @@ import edu.berkeley.cs.parser.TokenVisitor;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class LongToken extends Token {
+public class LongToken extends CObject {
     public long value;
 
     public LongToken(SourcePosition position, long l) {
@@ -91,10 +91,6 @@ public class LongToken extends Token {
 
     public CObject ne(CObject operand2) {
         return value!=((LongToken)operand2).value?BooleanToken.TRUE(): BooleanToken.FALSE();
-    }
-
-    public Object accept(TokenVisitor v) {
-        return v.visitLongToken(this);
     }
 
     @Override

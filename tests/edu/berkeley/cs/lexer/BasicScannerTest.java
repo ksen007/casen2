@@ -1,6 +1,6 @@
 package edu.berkeley.cs.lexer;
 
-import edu.berkeley.cs.builtin.objects.preprocessor.Token;
+import edu.berkeley.cs.builtin.objects.CObject;
 import junit.framework.TestCase;
 
 import java.io.FileReader;
@@ -42,7 +42,7 @@ public class BasicScannerTest extends TestCase {
     public void testLex1() throws Exception {
         Lexer lexer = new StandardLexer(new FileReader("test1"));
         BasicScanner scanner = new BasicScanner(lexer);
-        Token token;
+        CObject token;
         while((token = scanner.nextToken())!=null) {
             System.out.println(token);
         }
@@ -52,7 +52,7 @@ public class BasicScannerTest extends TestCase {
     public void testString() throws Exception {
         Lexer lexer = new StandardLexer(new StringReader("y = x + y; def foo @LS {};"));
         BasicScanner scanner = new BasicScanner(lexer);
-        Token token;
+        CObject token;
         while((token = scanner.nextToken())!=null) {
             System.out.println(token);
         }

@@ -1,6 +1,6 @@
 package edu.berkeley.cs.lexer;
 
-import edu.berkeley.cs.builtin.objects.preprocessor.Token;
+import edu.berkeley.cs.builtin.objects.CObject;
 
 /**
  * Copyright (c) 2006-2011,
@@ -35,5 +35,5 @@ import edu.berkeley.cs.builtin.objects.preprocessor.Token;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public interface Lexer {
-    public Token getNextToken();
+    public CObject getNextToken();
 }

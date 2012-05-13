@@ -44,8 +44,8 @@ import java.util.LinkedList;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class CompoundToken extends Token {
-    private ArrayList<Token> tokens;
+public class CompoundToken extends CObject {
+    private ArrayList<CObject> tokens;
     public ArrayList<SymbolToken> parameters;
     private String file;
 
@@ -120,12 +120,6 @@ public class CompoundToken extends Token {
         return execute(LS,overridePrototype);
     }
 
-
-    public Object accept(TokenVisitor v) {
-        return v.visitCompoundToken(this);
-    }
-
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -140,7 +134,7 @@ public class CompoundToken extends Token {
         if (!parameters.isEmpty()) {
             sb.append("|\n");
         }
-        for(Token t:tokens) {
+        for(CObject t:tokens) {
             sb.append(t.toString()).append(' ');
         }
         sb.append('}');

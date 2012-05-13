@@ -1,7 +1,6 @@
 package edu.berkeley.cs.builtin.functions;
 
 import edu.berkeley.cs.builtin.objects.CObject;
-import edu.berkeley.cs.builtin.objects.preprocessor.Token;
 import edu.berkeley.cs.lexer.Scanner;
 
 import java.util.LinkedList;
@@ -47,7 +46,7 @@ public class PushResultToScanner implements Invokable {
 
     public CObject apply(LinkedList<CObject> args) {
         CObject ret = args.removeFirst();
-        scnr.pushBack((Token)args.removeFirst());
+        scnr.pushBack(args.removeFirst());
         return ret;
     }
 }

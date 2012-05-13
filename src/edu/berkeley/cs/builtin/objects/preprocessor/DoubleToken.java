@@ -39,7 +39,7 @@ import edu.berkeley.cs.parser.TokenVisitor;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class DoubleToken extends Token {
+public class DoubleToken extends CObject {
     public double value;
 
     public DoubleToken(SourcePosition position, double l) {
@@ -91,10 +91,6 @@ public class DoubleToken extends Token {
 
     public CObject ne(CObject operand2) {
         return value!=((DoubleToken)operand2).value?BooleanToken.TRUE(): BooleanToken.FALSE();
-    }
-
-    public Object accept(TokenVisitor v) {
-        return v.visitDoubleToken(this);
     }
 
     @Override

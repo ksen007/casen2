@@ -1,5 +1,6 @@
 package edu.berkeley.cs.lexer;
 
+import edu.berkeley.cs.builtin.objects.CObject;
 import edu.berkeley.cs.builtin.objects.preprocessor.*;
 import edu.berkeley.cs.parser.SymbolTable;
 
@@ -63,19 +64,19 @@ public class StandardLexer implements Lexer {
         return str;
     }
 
-    private Token createToken(char c) {
+    private CObject createToken(char c) {
         SourcePosition pos = new SourcePosition(lineNo, columnNo);
         match(c);
         return new SymbolToken(pos, SymbolTable.getInstance().getId("" + c));
     }
 
-    private Token createToken(String str) {
+    private CObject createToken(String str) {
         SourcePosition pos = new SourcePosition(lineNo, columnNo);
         match(str);
         return new SymbolToken(pos, SymbolTable.getInstance().getId(str));
     }
 
-    public Token getNextToken() {
+    public CObject getNextToken() {
         int character = lookAhead(1);
         while (character == ' ' || character == '\t' ||
                 character == '\r') {
@@ -205,7 +206,7 @@ public class StandardLexer implements Lexer {
         return count;
     }
 
-    private Token matchNumber() {
+    private CObject matchNumber() {
         SourcePosition pos = new SourcePosition(lineNo, columnNo);
         StringBuilder sb = new StringBuilder();
         int digit = lookAhead(1);
@@ -239,7 +240,7 @@ public class StandardLexer implements Lexer {
         }
     }
 
-    private Token matchIdentifier(boolean isMeta) {
+    private CObject matchIdentifier(boolean isMeta) {
         SourcePosition pos = new SourcePosition(lineNo, columnNo);
         StringBuilder sb = new StringBuilder();
         int character = lookAhead(1);
@@ -286,7 +287,7 @@ public class StandardLexer implements Lexer {
         }
     }
 
-    private Token matchStringLiteral(char quote) {
+    private CObject matchStringLiteral(char quote) {
         SourcePosition pos = new SourcePosition(lineNo, columnNo);
         match(quote);
         StringBuilder sb = new StringBuilder();

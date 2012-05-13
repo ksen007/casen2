@@ -1,5 +1,6 @@
 package edu.berkeley.cs.parser;
 
+import edu.berkeley.cs.builtin.functions.NativeFunction;
 import edu.berkeley.cs.builtin.objects.CObject;
 import edu.berkeley.cs.builtin.objects.preprocessor.*;
 import edu.berkeley.cs.lexer.Scanner;
@@ -48,7 +49,7 @@ public class CallFrame {
 
 
     public CallFrame(CObject LS, CObject base, CObject environment, Scanner scnr) {
-        Token t;
+        CObject t;
 
         this.environment = environment;
         this.LS = LS;
@@ -68,7 +69,7 @@ public class CallFrame {
 
     }
 
-    private static boolean matchesToken(Token t, String sym) {
+    private static boolean matchesToken(CObject t, String sym) {
         if (t instanceof SymbolToken) {
             return ((SymbolToken)t).symbol == SymbolTable.getInstance().getId(sym);
         }
@@ -91,7 +92,7 @@ public class CallFrame {
 //        return computationStack.peek();
     }
 
-    private boolean consumeSymbol(RuleNode currentRule, Token t) {
+    private boolean consumeSymbol(RuleNode currentRule, CObject t) {
         RuleNode ret = currentRule.getRuleForObject(t);
         if (ret!=null) {
             parseRuleStack.pop();
@@ -105,7 +106,7 @@ public class CallFrame {
         return false;
     }
 
-    private boolean consumeToken(RuleNode currentRule, Token t) {
+    private boolean consumeToken(RuleNode currentRule, CObject t) {
         RuleNode toBePushed;
         if ((toBePushed = currentRule.getRuleForToken()) !=null) {
 
@@ -121,7 +122,7 @@ public class CallFrame {
         return false;
     }
 
-    private boolean consumeExpr(RuleNode currentRule, Token t) {
+    private boolean consumeExpr(RuleNode currentRule, CObject t) {
         RuleNode rn, toBePushed;
 
         if ((toBePushed = currentRule.getRuleForExpr()) !=null) {
@@ -140,7 +141,7 @@ public class CallFrame {
         return false;
     }
 
-    private boolean consumeAction(RuleNode currentRule, Token t) {
+    private boolean consumeAction(RuleNode currentRule, CObject t) {
         if (currentRule.getRuleForAction() != null) {
             doAction(currentRule,t);
 
@@ -152,7 +153,7 @@ public class CallFrame {
         return false;
     }
 
-    private void doAction(RuleNode currentRule, Token t) {
+    private void doAction(RuleNode currentRule, CObject t) {
         scnr.pushBack(t);
         parseRuleStack.pop();
         tokenStack.pop();
@@ -161,7 +162,7 @@ public class CallFrame {
 
     private void tryShifting(RuleNode currentRule) {
         CObject nt = computationStack.peek();
-        Token t = scnr.nextToken();
+        CObject t = scnr.nextToken();
         RuleNode reduce;
         int tmp;
         if (parseRuleStack.isEmpty()) {
@@ -181,7 +182,7 @@ public class CallFrame {
     }
 
     public boolean interpretAux() {
-        Token t = scnr.nextToken();
+        CObject t = scnr.nextToken();
         RuleNode currentRule = parseRuleStack.peek();
 
         try {
@@ -203,7 +204,7 @@ public class CallFrame {
                 return true;
             }
         } catch (Exception e) {
-            StringToken ret = new StringToken(null,"Failed to consume "+t+" at "+t.locationString()+" with "+this+ " because "+e);
+            StringToken ret = new StringToken(null,"Failed to consume "+t+" at "+t.locationString()+" with "+this+ " because "+ NativeFunction.getStackTrace(e));
             ret.setException();
             computationStack.push(ret);
             return true;
@@ -215,7 +216,7 @@ public class CallFrame {
         return true;
     }
 
-    private static boolean isProgressPossible(RuleNode rn, Token t) {
+    private static boolean isProgressPossible(RuleNode rn, CObject t) {
         return rn !=null
                 && (rn.getRuleForObject(t)!=null
                 || rn.getRuleForExpr()!=null
@@ -223,7 +224,7 @@ public class CallFrame {
                 || rn.getRuleForAction()!=null);
     }
 
-    private RuleNode shift(RuleNode reduce, CObject shift, int exprPrecedence, Token shiftOperator, Integer childPrecedence) {
+    private RuleNode shift(RuleNode reduce, CObject shift, int exprPrecedence, CObject shiftOperator, Integer childPrecedence) {
         boolean first = isProgressPossible(reduce,shiftOperator);
         RuleNode ret;
         boolean second = (ret = contextLookAhead(shift,null,shiftOperator))!=null;
@@ -244,7 +245,7 @@ public class CallFrame {
     }
 
 
-    private static RuleNode contextLookAhead(CObject LS, CObject extra, Token t) {
+    private static RuleNode contextLookAhead(CObject LS, CObject extra, CObject t) {
         CObject current;
         RuleNode ret;
 
@@ -266,14 +267,14 @@ public class CallFrame {
         current = LS;
         while(current!=null) {
             ret = current.getRuleNode();
-            if (ret.getRuleForToken()!=null) {
+            if (ret!=null && ret.getRuleForToken()!=null) {
                 return ret;
             }
             current = current.getParent();
         }
         if (extra != null ) {
             ret = extra.getRuleNode();
-            if (ret.getRuleForToken()!=null) {
+            if (ret!=null && ret.getRuleForToken()!=null) {
                 return ret;
             }
         }
@@ -281,14 +282,14 @@ public class CallFrame {
         current = LS;
         while(current!=null) {
             ret = current.getRuleNode();
-            if (ret.getRuleForExpr()!=null) {
+            if (ret!=null && ret.getRuleForExpr()!=null) {
                 return ret;
             }
             current = current.getParent();
         }
         if (extra != null ) {
             ret = extra.getRuleNode();
-            if (ret.getRuleForExpr()!=null) {
+            if (ret!=null && ret.getRuleForExpr()!=null) {
                 return ret;
             }
         }
@@ -296,14 +297,14 @@ public class CallFrame {
         current = LS;
         while(current!=null) {
             ret = current.getRuleNode();
-            if (ret.getRuleForAction()!=null) {
+            if (ret!=null && ret.getRuleForAction()!=null) {
                 return ret;
             }
             current = current.getParent();
         }
         if (extra != null ) {
             ret = extra.getRuleNode();
-            if (ret.getRuleForAction()!=null) {
+            if (ret!=null && ret.getRuleForAction()!=null) {
                 return ret;
             }
         }

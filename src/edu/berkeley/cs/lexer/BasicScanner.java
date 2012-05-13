@@ -1,6 +1,6 @@
 package edu.berkeley.cs.lexer;
 
-import edu.berkeley.cs.builtin.objects.preprocessor.Token;
+import edu.berkeley.cs.builtin.objects.CObject;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -39,14 +39,15 @@ import java.util.LinkedList;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class BasicScanner extends Scanner{
-    private LinkedList<Token> tokenQueue;
+    private LinkedList<CObject> tokenQueue;
     private Lexer lexer;
 
     public BasicScanner(Lexer lexer) {
         this.lexer = lexer;
-        tokenQueue = new LinkedList<Token>();
+        tokenQueue = new LinkedList<CObject>();
     }
-    public Token nextToken() {
+
+    public CObject nextToken() {
         if (!tokenQueue.isEmpty()) {
             return tokenQueue.removeFirst();
         } else {
@@ -54,14 +55,14 @@ public class BasicScanner extends Scanner{
         }
     }
 
-    public void pushBack(Token t) {
+    public void pushBack(CObject t) {
         tokenQueue.addFirst(t);
     }
 
     public static void main(String[] args) throws IOException {
         Lexer lexer = new StandardLexer(new FileReader("test1"));
         BasicScanner scanner = new BasicScanner(lexer);
-        Token token;
+        CObject token;
         while((token = scanner.nextToken())!=null) {
             System.out.println(token);
         }

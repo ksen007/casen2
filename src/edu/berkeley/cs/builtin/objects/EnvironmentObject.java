@@ -52,7 +52,7 @@ public class EnvironmentObject extends CObject {
 
         this.addNewRule();
         this.addMeta(SymbolTable.getInstance().token);
-        this.addAction(new NativeFunction("interpretPrimitive"));
+        this.addAction(new NativeFunction("returnToken"));
 
         this.addNewRule();
         this.addObject(SymbolTable.getInstance().lparen);
@@ -67,7 +67,9 @@ public class EnvironmentObject extends CObject {
 
         this.addNewRule();
         this.addObject(SymbolTable.getInstance().tokenToExpr);
+        this.addObject(SymbolTable.getInstance().lparen);
         this.addMeta(SymbolTable.getInstance().token);
+        this.addObject(SymbolTable.getInstance().rparen);
         this.addAction(new NativeFunction("returnToken"));
 
         this.addNewRule();

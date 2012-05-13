@@ -1,7 +1,7 @@
 package edu.berkeley.cs.lexer;
 
+import edu.berkeley.cs.builtin.objects.CObject;
 import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
-import edu.berkeley.cs.builtin.objects.preprocessor.Token;
 
 import java.util.ArrayList;
 
@@ -38,16 +38,16 @@ import java.util.ArrayList;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class BufferedLexer implements Lexer {
-    private ArrayList<Token> tokens;
+    private ArrayList<CObject> tokens;
     private int iter;
 
 
-    public BufferedLexer(ArrayList<Token> tokens) {
+    public BufferedLexer(ArrayList<CObject> tokens) {
         this.tokens = tokens;
         iter = 0;
     }
 
-    public Token getNextToken() {
+    public CObject getNextToken() {
         if (iter < tokens.size()) {
             iter++;
             return tokens.get(iter-1);

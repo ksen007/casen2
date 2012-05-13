@@ -1,8 +1,7 @@
 package edu.berkeley.cs.lexer;
 
 
-import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
-import edu.berkeley.cs.builtin.objects.preprocessor.Token;
+import edu.berkeley.cs.builtin.objects.CObject;
 
 /**
  * Copyright (c) 2006-2011,
@@ -37,7 +36,7 @@ import edu.berkeley.cs.builtin.objects.preprocessor.Token;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public abstract class Scanner {
-    abstract public Token nextToken();
-    abstract public void pushBack(Token t);
+    abstract public CObject nextToken();
+    abstract public void pushBack(CObject t);
 
 }
