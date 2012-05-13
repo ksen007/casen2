@@ -7,7 +7,6 @@ import edu.berkeley.cs.lexer.BufferedLexer;
 import edu.berkeley.cs.lexer.Scanner;
 import edu.berkeley.cs.parser.CallFrame;
 import edu.berkeley.cs.parser.SymbolTable;
-import edu.berkeley.cs.parser.TokenVisitor;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -115,7 +114,7 @@ public class CompoundToken extends CObject {
     public CObject execute(CObject LS, LinkedList<CObject> args, boolean overridePrototype) {
         for(SymbolToken param:parameters) {
             Reference common = new Reference(args.removeFirst());
-            LS.assign(param,common);
+            LS.assign(param, common);
         }
         return execute(LS,overridePrototype);
     }

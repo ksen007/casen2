@@ -3,7 +3,6 @@ package edu.berkeley.cs.builtin.objects.preprocessor;
 import edu.berkeley.cs.builtin.objects.CObject;
 import edu.berkeley.cs.lexer.SourcePosition;
 import edu.berkeley.cs.parser.SymbolTable;
-import edu.berkeley.cs.parser.TokenVisitor;
 
 /**
  * Copyright (c) 2006-2011,
