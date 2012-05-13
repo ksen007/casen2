@@ -114,17 +114,8 @@ public class CompoundToken extends Token {
 
     public CObject execute(CObject LS, LinkedList<CObject> args, boolean overridePrototype) {
         for(SymbolToken param:parameters) {
-            Reference common;
-
-            LS.addNewRule();
-            LS.addObject(param);
-            LS.addAction(new GetField(common = new Reference(args.removeFirst())));
-
-            LS.addNewRule();
-            LS.addObject(param);
-            LS.addObject(SymbolTable.getInstance().assign);
-            LS.addMeta(SymbolTable.getInstance().expr);
-            LS.addAction(new PutField(common));
+            Reference common = new Reference(args.removeFirst());
+            LS.assign(param,common);
         }
         return execute(LS,overridePrototype);
     }

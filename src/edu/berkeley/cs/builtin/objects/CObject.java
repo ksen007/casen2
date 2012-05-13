@@ -91,6 +91,18 @@ public class CObject {
         rules = new RuleNode(null);
     }
 
+    public void assign(SymbolToken var, Reference val) {
+        this.addNewRule();
+        this.addObject(var);
+        this.addAction(new GetField(val));
+
+        this.addNewRule();
+        this.addObject(var);
+        this.addObject(SymbolTable.getInstance().assign);
+        this.addMeta(SymbolTable.getInstance().expr);
+        this.addAction(new PutField(val));
+    }
+
     public void setRule(CObject methods) {
         this.rules = methods.rules;
     }
@@ -102,15 +114,7 @@ public class CObject {
     public void setParent(CObject obj) {
         this.prototype = new Reference(obj);
         if (obj !=null) {
-            this.addNewRule();
-            this.addObject(SymbolTable.getInstance().prototype);
-            this.addAction(new GetField(prototype));
-
-            this.addNewRule();
-            this.addObject(SymbolTable.getInstance().prototype);
-            this.addObject(SymbolTable.getInstance().assign);
-            this.addMeta(SymbolTable.getInstance().expr);
-            this.addAction(new PutField(prototype));
+            assign(SymbolTable.getInstance().prototype,prototype);
         }
     }
 
@@ -208,19 +212,8 @@ public class CObject {
         SymbolToken symbol = (SymbolToken)sym;
 
         Reference common = new Reference(value);
-
-        self.addNewRule();
-        self.addObject(symbol);
-        self.addAction(new GetField(common));
-
-        self.addNewRule();
-        self.addObject(symbol);
-        self.addObject(SymbolTable.getInstance().assign);
-        self.addMeta(SymbolTable.getInstance().expr);
-        self.addAction(new PutField(common));
-
-        return NullToken.NULL();
-
+        assign(symbol,common);
+        return value;
     }
 
     public CObject print(CObject ret) {
@@ -328,16 +321,7 @@ public class CObject {
         if (ret.isException()) {
             ret.clearException();
             Reference common = new Reference(ret);
-
-            this.addNewRule();
-            this.addObject(symbol);
-            this.addAction(new GetField(common));
-
-            this.addNewRule();
-            this.addObject(symbol);
-            this.addObject(SymbolTable.getInstance().assign);
-            this.addMeta(SymbolTable.getInstance().expr);
-            this.addAction(new PutField(common));
+            assign(symbol,common);
 
             ret = s2.execute(this,false);
             if (ret.isException()) return ret;
