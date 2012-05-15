@@ -1,7 +1,7 @@
 package edu.berkeley.cs.builtin.objects.preprocessor;
 
 import edu.berkeley.cs.builtin.objects.CObject;
-import edu.berkeley.cs.builtin.objects.StandardNullProto;
+import edu.berkeley.cs.builtin.objects.ProtoNullToken;
 import edu.berkeley.cs.lexer.SourcePosition;
 
 /**
@@ -57,7 +57,7 @@ public class NullToken extends CObject {
     public NullToken(SourcePosition position, boolean isSpace) {
         super(position);
         if (!isSpace) setNoSpace();
-        setParent(StandardNullProto.instance);
+        setParent(ProtoNullToken.INSTANCE);
     }
 
     @Override

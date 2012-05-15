@@ -1,7 +1,7 @@
 package edu.berkeley.cs.builtin.objects.preprocessor;
 
 import edu.berkeley.cs.builtin.objects.CObject;
-import edu.berkeley.cs.builtin.objects.StandardBooleanProto;
+import edu.berkeley.cs.builtin.objects.ProtoBooleanToken;
 import edu.berkeley.cs.lexer.SourcePosition;
 
 /**
@@ -59,7 +59,7 @@ public class BooleanToken extends CObject {
         super(position);
         this.value = value;
         if (!isSpace) setNoSpace();
-        setParent(StandardBooleanProto.instance);
+        setParent(ProtoBooleanToken.INSTANCE);
     }
 
     public CObject and(CObject operand2) {

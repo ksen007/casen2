@@ -36,47 +36,12 @@ import edu.berkeley.cs.parser.SymbolTable;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class CNonPrimitiveObject extends CObject {
-
-    private static CNonPrimitiveObject superClass =  new CNonPrimitiveObject(true);
-
-    static {
-        superClass.addNewRule();
-        superClass.addObject(SymbolTable.getInstance().var);
-        superClass.addMeta(SymbolTable.getInstance().token);
-        superClass.addObject(SymbolTable.getInstance().assign);
-        superClass.addMeta(SymbolTable.getInstance().expr);
-        superClass.addAction(new NativeFunction("assignment"));
-
-        superClass.addNewRule();
-        superClass.addObject(SymbolTable.getInstance().def);
-        superClass.addAction(new NativeFunction("newDefinitionEater"));
-
-        superClass.addNewRule();
-        superClass.addObject(SymbolTable.getInstance().eq);
-        superClass.addMeta(SymbolTable.getInstance().expr);
-        superClass.addAction(new NativeFunction("eq"));
-
-        superClass.addNewRule();
-        superClass.addObject(SymbolTable.getInstance().ne);
-        superClass.addMeta(SymbolTable.getInstance().expr);
-        superClass.addAction(new NativeFunction("ne"));
-
-        superClass.addNewRule();
-        superClass.addObject(SymbolTable.getInstance().LS);
-        superClass.addAction(new GetField(new Reference(superClass)));
-
-    }
-
-    private CNonPrimitiveObject(boolean fake) {
-
-    }
-
-    public CNonPrimitiveObject() {
+public class StandardObject extends CObject {
+    public StandardObject() {
         this.addNewRule();
         this.addObject(SymbolTable.getInstance().LS);
         this.addAction(new GetField(new Reference(this)));
-        setParent(superClass);
-    }
 
+        setParent(ProtoStandardObject.instance);
+    }
 }

@@ -1,8 +1,7 @@
 package edu.berkeley.cs;
 
-import edu.berkeley.cs.builtin.objects.CNonPrimitiveObject;
+import edu.berkeley.cs.builtin.objects.StandardObject;
 import edu.berkeley.cs.builtin.objects.CObject;
-import edu.berkeley.cs.builtin.objects.EnvironmentObject;
 import edu.berkeley.cs.builtin.objects.preprocessor.CompoundToken;
 
 /**
@@ -39,13 +38,13 @@ import edu.berkeley.cs.builtin.objects.preprocessor.CompoundToken;
  */
 public class Interpreter {
     public static CObject interpret(String s) {
-        CNonPrimitiveObject tmp = new CNonPrimitiveObject();
+        StandardObject tmp = new StandardObject();
         return tmp.eval(s);
     }
 
     public static void main(String[] args) {
         CompoundToken pgm = (CompoundToken)CObject.load(args[0], false);
-        CObject ret = pgm.execute(new CNonPrimitiveObject(),true);
+        CObject ret = pgm.execute(new StandardObject(),true);
         if (ret.isException()) {
             System.err.println(ret);
         }

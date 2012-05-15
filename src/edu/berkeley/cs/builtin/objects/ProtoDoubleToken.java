@@ -1,9 +1,4 @@
-package edu.berkeley.cs.builtin.functions;
-
-import edu.berkeley.cs.builtin.objects.*;
-import edu.berkeley.cs.builtin.objects.preprocessor.CompoundToken;
-
-import java.util.LinkedList;
+package edu.berkeley.cs.builtin.objects;
 
 /**
  * Copyright (c) 2006-2011,
@@ -37,11 +32,20 @@ import java.util.LinkedList;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class DirectCall implements Invokable {
-    public CObject apply(LinkedList<CObject> args) {
-        CompoundToken body = (CompoundToken)args.removeFirst();
-        StandardObject LS = new StandardObject();
-        return body.execute(LS,args,true);
-    }
+public class ProtoDoubleToken {
+    final public static StandardObject INSTANCE =  new StandardObject();
 
+    static {
+        INSTANCE.eval("def + @expr @add endef");
+        INSTANCE.eval("def - @expr @subtract endef");
+        INSTANCE.eval("def * @expr @multiply endef");
+        INSTANCE.eval("def / @expr @divide endef");
+        INSTANCE.eval("def % @expr @mod endef");
+        INSTANCE.eval("def < @expr @lt endef");
+        INSTANCE.eval("def > @expr @gt endef");
+        INSTANCE.eval("def <= @expr @le endef");
+        INSTANCE.eval("def >= @expr @ge endef");
+        INSTANCE.eval("def == @expr @eq endef");
+        INSTANCE.eval("def != @expr @ne endef");
+    }
 }

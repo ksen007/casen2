@@ -32,13 +32,13 @@ package edu.berkeley.cs.builtin.objects;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class StandardBooleanProto {
-    final public static CNonPrimitiveObject instance =  new CNonPrimitiveObject();
+public class ProtoStringToken {
+    final public static StandardObject INSTANCE =  new StandardObject();
 
     static {
-        instance.eval("def && @expr @and endef");
-        instance.eval("def || @expr @or endef");
-        instance.eval("def == @expr @eq endef");
-        instance.eval("def != @expr @ne endef");
+        INSTANCE.eval("def + @expr @add endef");
+        INSTANCE.eval("def == @expr @eq endef");
+        INSTANCE.eval("def != @expr @ne endef");
     }
+
 }

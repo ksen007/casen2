@@ -32,13 +32,20 @@ package edu.berkeley.cs.builtin.objects;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class StandardStringProto {
-    final public static CObject instance =  new CNonPrimitiveObject();
-
+public class ProtoLongToken {
+    final static public StandardObject INSTANCE = new StandardObject();
+    
     static {
-        instance.eval("def + @expr @add endef");
-        instance.eval("def == @expr @eq endef");
-        instance.eval("def != @expr @ne endef");
+        INSTANCE.eval("def + @expr @add endef");
+        INSTANCE.eval("def - @expr @subtract endef");
+        INSTANCE.eval("def * @expr @multiply endef");
+        INSTANCE.eval("def / @expr @divide endef");
+        INSTANCE.eval("def % @expr @mod endef");
+        INSTANCE.eval("def < @expr @lt endef");
+        INSTANCE.eval("def > @expr @gt endef");
+        INSTANCE.eval("def <= @expr @le endef");
+        INSTANCE.eval("def >= @expr @ge endef");
+        INSTANCE.eval("def == @expr @eq endef");
+        INSTANCE.eval("def != @expr @ne endef");
     }
-
 }

@@ -32,14 +32,14 @@ package edu.berkeley.cs.builtin.objects;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class StandardArrayProto {
-    public static CNonPrimitiveObject instance =  new CNonPrimitiveObject();
+public class ProtoCArray {
+    final public static StandardObject INSTANCE =  new StandardObject();
 
     static {
-        instance.eval("def [ @expr ] @get endef");
-        instance.eval("def [ @expr ] = @expr @set endef");
-        instance.eval("def length @length endef");
-        instance.eval("def map @expr {|f| var i = 0; while {i< (self length)} { f( self [ i ] ) ; i = i + 1;}; }");
-        instance.eval("def == @expr @eq endef");
+        INSTANCE.eval("def [ @expr ] @get endef");
+        INSTANCE.eval("def [ @expr ] = @expr @set endef");
+        INSTANCE.eval("def length @length endef");
+        INSTANCE.eval("def map @expr {|f| var i = 0; while {i< (self length)} { f( self [ i ] ) ; i = i + 1;}; }");
+        INSTANCE.eval("def == @expr @eq endef");
     }
 }

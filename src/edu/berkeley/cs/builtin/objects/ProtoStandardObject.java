@@ -1,5 +1,9 @@
 package edu.berkeley.cs.builtin.objects;
 
+import edu.berkeley.cs.builtin.functions.GetField;
+import edu.berkeley.cs.builtin.functions.NativeFunction;
+import edu.berkeley.cs.parser.SymbolTable;
+
 /**
  * Copyright (c) 2006-2011,
  * Koushik Sen    <ksen@cs.berkeley.edu>
@@ -32,20 +36,34 @@ package edu.berkeley.cs.builtin.objects;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class StandardDoubleProto {
-    final public static CNonPrimitiveObject instance =  new CNonPrimitiveObject();
+public class ProtoStandardObject {
+    final public static CObject instance =  new CObject();
 
     static {
-        instance.eval("def + @expr @add endef");
-        instance.eval("def - @expr @subtract endef");
-        instance.eval("def * @expr @multiply endef");
-        instance.eval("def / @expr @divide endef");
-        instance.eval("def % @expr @mod endef");
-        instance.eval("def < @expr @lt endef");
-        instance.eval("def > @expr @gt endef");
-        instance.eval("def <= @expr @le endef");
-        instance.eval("def >= @expr @ge endef");
-        instance.eval("def == @expr @eq endef");
-        instance.eval("def != @expr @ne endef");
+        instance.addNewRule();
+        instance.addObject(SymbolTable.getInstance().var);
+        instance.addMeta(SymbolTable.getInstance().token);
+        instance.addObject(SymbolTable.getInstance().assign);
+        instance.addMeta(SymbolTable.getInstance().expr);
+        instance.addAction(new NativeFunction("assignment"));
+
+        instance.addNewRule();
+        instance.addObject(SymbolTable.getInstance().def);
+        instance.addAction(new NativeFunction("newDefinitionEater"));
+
+        instance.addNewRule();
+        instance.addObject(SymbolTable.getInstance().eq);
+        instance.addMeta(SymbolTable.getInstance().expr);
+        instance.addAction(new NativeFunction("eq"));
+
+        instance.addNewRule();
+        instance.addObject(SymbolTable.getInstance().ne);
+        instance.addMeta(SymbolTable.getInstance().expr);
+        instance.addAction(new NativeFunction("ne"));
+
+        instance.addNewRule();
+        instance.addObject(SymbolTable.getInstance().LS);
+        instance.addAction(new GetField(new Reference(instance)));
+
     }
 }

@@ -2,7 +2,7 @@ package edu.berkeley.cs.builtin.objects.preprocessor;
 
 
 import edu.berkeley.cs.builtin.objects.CObject;
-import edu.berkeley.cs.builtin.objects.StandardLongProto;
+import edu.berkeley.cs.builtin.objects.ProtoLongToken;
 import edu.berkeley.cs.lexer.SourcePosition;
 
 /**
@@ -43,14 +43,14 @@ public class LongToken extends CObject {
     public LongToken(SourcePosition position, long l) {
         super(position);
         this.value = l;
-        setParent(StandardLongProto.instance);
+        setParent(ProtoLongToken.INSTANCE);
     }
 
     public LongToken(SourcePosition position, boolean isSpace, long l) {
         super(position);
         this.value = l;
         if (!isSpace) setNoSpace();
-        setParent(StandardLongProto.instance);
+        setParent(ProtoLongToken.INSTANCE);
     }
 
     public CObject add(CObject operand2) {

@@ -322,7 +322,7 @@ public class CObject {
     }
 
     public CObject newObject() {
-        CNonPrimitiveObject ret = new CNonPrimitiveObject();
+        StandardObject ret = new StandardObject();
         //ret.setParent(this,false);
         return ret;
     }

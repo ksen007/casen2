@@ -1,7 +1,7 @@
 package edu.berkeley.cs.builtin.objects.preprocessor;
 
 import edu.berkeley.cs.builtin.objects.CObject;
-import edu.berkeley.cs.builtin.objects.StandardDoubleProto;
+import edu.berkeley.cs.builtin.objects.ProtoDoubleToken;
 import edu.berkeley.cs.lexer.SourcePosition;
 
 /**
@@ -43,13 +43,13 @@ public class DoubleToken extends CObject {
         super(position);
         this.value = l;
         if (!isSpace) setNoSpace();
-        setParent(StandardDoubleProto.instance);
+        setParent(ProtoDoubleToken.INSTANCE);
     }
 
     public DoubleToken(SourcePosition position, double l) {
         super(position);
         this.value = l;
-        setParent(StandardDoubleProto.instance);
+        setParent(ProtoDoubleToken.INSTANCE);
     }
 
     public CObject add(CObject operand2) {

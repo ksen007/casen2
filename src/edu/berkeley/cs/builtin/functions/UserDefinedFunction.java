@@ -1,6 +1,6 @@
 package edu.berkeley.cs.builtin.functions;
 
-import edu.berkeley.cs.builtin.objects.CNonPrimitiveObject;
+import edu.berkeley.cs.builtin.objects.StandardObject;
 import edu.berkeley.cs.builtin.objects.CObject;
 import edu.berkeley.cs.builtin.objects.Reference;
 import edu.berkeley.cs.builtin.objects.preprocessor.CompoundToken;
@@ -48,7 +48,7 @@ public class UserDefinedFunction implements Invokable {
     }
 
     public CObject apply(LinkedList<CObject> args) {
-        CNonPrimitiveObject LS = new CNonPrimitiveObject();
+        StandardObject LS = new StandardObject();
         
         LS.addNewRule();
         LS.addObject(SymbolTable.getInstance().self);
