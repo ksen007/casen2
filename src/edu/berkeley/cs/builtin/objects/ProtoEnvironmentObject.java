@@ -136,9 +136,10 @@ public class ProtoEnvironmentObject extends CObject {
         instance.addMeta(SymbolTable.getInstance().expr);
         instance.addAction(new NativeFunction("cReturn"));
 
-        instance.addNewRule();
-        instance.addObject(SymbolTable.getInstance().LS);
-        instance.addAction(new GetField(new Reference(instance)));        
+        instance.assign(SymbolTable.getInstance().LS,new Reference(instance));
+//        instance.addNewRule();
+//        instance.addObject(SymbolTable.getInstance().LS);
+//        instance.addAction(new GetField(new Reference(instance)));
     }
     
 }

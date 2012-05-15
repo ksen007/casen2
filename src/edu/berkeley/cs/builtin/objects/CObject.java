@@ -253,7 +253,7 @@ public class CObject {
     public CObject assertEquality(CObject first) {
         if (!((BooleanToken)first).value)
             throw new RuntimeException("assert failed");
-        return NullToken.NULL();
+        return VoidToken.VOID();
     }
 
     public CObject returnArgument(CObject arg) {
@@ -279,7 +279,7 @@ public class CObject {
             ret = s1.execute(this);
             if (ret.isException()) return ret;
         }
-        return NullToken.NULL();
+        return VoidToken.VOID();
     }
 
 
@@ -302,11 +302,11 @@ public class CObject {
         if (cond.value) {
             CObject ret = s1.execute(this);
             if (ret.isException()) return ret;
-            return NullToken.NULL();
+            return VoidToken.VOID();
         } else {
             CObject ret = s2.execute(this);
             if (ret.isException()) return ret;
-            return NullToken.NULL();
+            return VoidToken.VOID();
         }
     }
 
@@ -350,7 +350,7 @@ public class CObject {
             ret = s2.execute(this);
             if (ret.isException()) return ret;
         }
-        return NullToken.NULL();
+        return VoidToken.VOID();
     }
 
     @Override

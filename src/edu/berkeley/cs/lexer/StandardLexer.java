@@ -267,6 +267,8 @@ public class StandardLexer implements Lexer {
                 return new BooleanToken(pos,isSpace,false);
             } else if(word.equals("null")){
                 return new NullToken(pos,isSpace);
+            } else if(word.equals("void")){
+                return new VoidToken(pos,isSpace);
             }
             return new SymbolToken(pos,isSpace,SymbolTable.getInstance().getId(word));
         }

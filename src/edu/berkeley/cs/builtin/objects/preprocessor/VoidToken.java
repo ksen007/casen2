@@ -1,7 +1,8 @@
-package edu.berkeley.cs.builtin.objects;
+package edu.berkeley.cs.builtin.objects.preprocessor;
 
-import edu.berkeley.cs.builtin.functions.GetField;
-import edu.berkeley.cs.parser.SymbolTable;
+import edu.berkeley.cs.builtin.objects.CObject;
+import edu.berkeley.cs.builtin.objects.ProtoNullToken;
+import edu.berkeley.cs.lexer.SourcePosition;
 
 /**
  * Copyright (c) 2006-2011,
@@ -35,10 +36,35 @@ import edu.berkeley.cs.parser.SymbolTable;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class EnvironmentObject extends CObject {
+public class VoidToken extends CObject {
+    public static VoidToken VOID() {
+        if (VOID==null)
+            VOID = new VoidToken(null,true);
+        return VOID;
+    }
 
-    public EnvironmentObject() {
-        this.assign(SymbolTable.getInstance().LS,new Reference(this));
-        setParent(ProtoEnvironmentObject.instance);
+    private static VoidToken VOID;
+
+
+    public VoidToken(SourcePosition position, boolean isSpace) {
+        super(position);
+        if (!isSpace) setNoSpace();
+    }
+
+    @Override
+    public String toString() {
+        return "void";
+
+    }
+
+    @Override
+    public int hashCode() {
+        return 512;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+         return (o instanceof VoidToken);
     }
 }
+

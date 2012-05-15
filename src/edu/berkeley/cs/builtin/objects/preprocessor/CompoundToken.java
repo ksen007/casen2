@@ -122,9 +122,10 @@ public class CompoundToken extends CObject {
         CObject LS = new EnvironmentObject();
         LS.setParent(scope);
         if (isInstance) {
-            LS.addNewRule();
-            LS.addObject(SymbolTable.getInstance().self);
-            LS.addAction(new GetField(new Reference(args.removeFirst())));
+            LS.assign(SymbolTable.getInstance().self,new Reference(args.removeFirst()));
+//            LS.addNewRule();
+//            LS.addObject(SymbolTable.getInstance().self);
+//            LS.addAction(new GetField(new Reference(args.removeFirst())));
         }
         for(SymbolToken param:parameters) {
             Reference common = new Reference(args.removeFirst());

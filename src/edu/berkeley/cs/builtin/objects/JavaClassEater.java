@@ -4,6 +4,7 @@ import edu.berkeley.cs.builtin.functions.Invokable;
 import edu.berkeley.cs.builtin.functions.NativeFunction;
 import edu.berkeley.cs.builtin.objects.preprocessor.NullToken;
 import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
+import edu.berkeley.cs.builtin.objects.preprocessor.VoidToken;
 import edu.berkeley.cs.parser.SymbolTable;
 
 /**
@@ -89,6 +90,6 @@ public class JavaClassEater extends CObject {
                 throw new RuntimeException(e.getMessage());
             }
         }
-        return NullToken.NULL();
+        return VoidToken.VOID();
     }
 }

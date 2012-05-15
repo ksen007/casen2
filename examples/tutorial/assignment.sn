@@ -1,6 +1,7 @@
 def // {
     var ret = new Object
     ret def @token {|x| self}
+    ret prototype = void
     return ret
 }
 

@@ -60,7 +60,7 @@ public class CDefinitionEater extends CObject {
 
         if (arg instanceof CompoundToken) {
             self.parent.addAction(new UserDefinedFunction((CompoundToken) arg));
-            return NullToken.NULL();
+            return VoidToken.VOID();
         } else if (arg instanceof MetaToken) {
             int argument = ((MetaToken)arg).metaSymbol;
             if (argument == SymbolTable.getInstance().expr
