@@ -387,7 +387,14 @@ public class CObject {
     }
 
     public void addObject(CObject object) {
-        curr = curr.addObject(object);
+        RuleNode tmp = curr.addObject(object);
+        if (curr==rules) {
+            tmp.addPrecedence(OperatorPrecedence.getInstance().getPrecedence(object));
+//            if (tmp.getOptionalPrecedence()!=0) {
+//                System.out.println("precedence:"+tmp.getOptionalPrecedence()+":"+object);
+//            }
+        }
+        curr = tmp;
     }
 
     public void addAction(Invokable func) {

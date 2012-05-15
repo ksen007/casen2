@@ -1,14 +1,6 @@
 
-def // {
-    var ret = new Object
-    ret def @token {|x|
-        print "Eat2"
-        print x
-        return self
-    }
-    return ret
+def * * {
+    print "hello"
 }
 
-// hello
-
-print 7
+**

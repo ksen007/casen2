@@ -2,6 +2,7 @@ package edu.berkeley.cs.lexer;
 
 import edu.berkeley.cs.builtin.objects.CObject;
 import edu.berkeley.cs.builtin.objects.preprocessor.*;
+import edu.berkeley.cs.parser.OperatorPrecedence;
 import edu.berkeley.cs.parser.SymbolTable;
 
 import java.io.IOException;
@@ -239,12 +240,14 @@ public class StandardLexer implements Lexer {
             if (isMeta && character == '\n') {
                 sb.append('@');
             } else {
-                if(!isMeta && character=='=') {
+                if(!isMeta) {
                     sb.append((char) character);
                     character = next();
-                    if (character == '=') {
-                        sb.append((char) character);
+                    sb.append((char) character);
+                    if (OperatorPrecedence.getInstance().isDefined(sb.toString())) {
                         next();
+                    } else {
+                        sb.deleteCharAt(1);
                     }
                 } else {
                     sb.append((char) character);

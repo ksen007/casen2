@@ -51,8 +51,8 @@ public class SymbolTable {
     public SymbolToken self = new SymbolToken(null,getId("self"));
     public SymbolToken newline = new SymbolToken(null,getId("\n"));
     public SymbolToken var = new SymbolToken(null,getId("var"));
-    //public SymbolToken eq = new SymbolToken(null,getId("=="));
-    //public SymbolToken not = new SymbolToken(null,getId("!="));
+    public SymbolToken eq = new SymbolToken(null,getId("=="));
+    public SymbolToken ne = new SymbolToken(null,getId("!="));
     public SymbolToken def = new SymbolToken(null,getId("def"));
     public SymbolToken assign = new SymbolToken(null,getId("="));
     public SymbolToken LS = new SymbolToken(null,getId("LS"));

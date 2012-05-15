@@ -1,9 +1,6 @@
 package edu.berkeley.cs;
 
-import edu.berkeley.cs.Interpreter;
 import junit.framework.TestCase;
-
-import java.io.IOException;
 
 /**
  * Copyright (c) 2006-2011,
@@ -57,7 +54,7 @@ public class CIntegerObjectTest extends TestCase {
     }
 
     public void testAddDiv1() throws Exception {
-        Interpreter.interpret("(var x = 1156 - 1156 * 1156/1156); print x; assert (x== 0); ");
+        Interpreter.interpret("(var x = 4 + 1156 * 1156/1156); print x; assert (x == 1160); ");
     }
 
     public void testVarAddDiv1() throws Exception {

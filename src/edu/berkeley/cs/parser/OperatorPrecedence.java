@@ -105,10 +105,15 @@ public class OperatorPrecedence {
         return false;
     }
 
-    public Integer getPrecedence(CObject t) {
+    public int getPrecedence(CObject t) {
         if (t instanceof SymbolToken) {
             return precedenceTable.get(((SymbolToken)t).symbol);
         }
         return 0;
     }
+
+    public boolean isDefined(String op) {
+        return precedenceTable.containsKey(SymbolTable.getInstance().getId(op));
+    }
+
 }

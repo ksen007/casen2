@@ -46,7 +46,7 @@ public class RuleNode {
 
     boolean isNoSpace = false;
 
-    private Integer optionalPrecedence;
+    private int optionalPrecedence = 0;
 
     public static boolean DEBUG = false;
 
@@ -185,7 +185,7 @@ public class RuleNode {
         return token;
     }
 
-    public Integer getOptionalPrecedence() {
+    public int getOptionalPrecedence() {
         return optionalPrecedence;
     }
 

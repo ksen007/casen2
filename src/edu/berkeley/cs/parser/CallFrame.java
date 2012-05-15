@@ -42,7 +42,7 @@ import java.util.Stack;
 public class CallFrame {
     private Stack<RuleNode> parseRuleStack;
     private Stack<CObject> computationStack;
-    private Stack<Integer> tokenStack;
+    private Stack<Integer> precedenceStack;
     private CObject LS;
     private Scanner scnr;
     private CObject environment;
@@ -56,15 +56,13 @@ public class CallFrame {
         this.scnr = scnr;
         parseRuleStack = new Stack<RuleNode>();
         computationStack = new Stack<CObject>();
-        tokenStack = new Stack<Integer>();
+        precedenceStack = new Stack<Integer>();
 
         if (scnr!=null){
             computationStack.push(base);
             parseRuleStack.push(base.getRuleNode());
 
-            t = scnr.nextToken();
-            tokenStack.push(OperatorPrecedence.getInstance().getPrecedence(t));
-            scnr.pushBack(t);
+            precedenceStack.push(0);
         }
 
     }
@@ -102,8 +100,8 @@ public class CallFrame {
             parseRuleStack.pop();
             parseRuleStack.push(ret);
             if (matchesToken(t,SymbolTable.getInstance().assign)) {
-                tokenStack.pop();
-                tokenStack.push(OperatorPrecedence.getInstance().getPrecedence(t));
+                precedenceStack.pop();
+                precedenceStack.push(OperatorPrecedence.getInstance().getPrecedence(t));
             }
             return true;
         }
@@ -127,7 +125,8 @@ public class CallFrame {
     }
 
     private boolean consumeExpr(RuleNode currentRule, CObject t) {
-        RuleNode rn, toBePushed;
+        Pair rn;
+        RuleNode toBePushed;
 
         if ((toBePushed = currentRule.getRuleForExpr()) !=null) {
 
@@ -136,8 +135,8 @@ public class CallFrame {
                 parseRuleStack.push(toBePushed);
 
                 computationStack.push(LS);
-                parseRuleStack.push(rn);
-                tokenStack.push(OperatorPrecedence.getInstance().getPrecedence(t));
+                parseRuleStack.push(rn.fst);
+                precedenceStack.push(rn.snd);
                 scnr.pushBack(t);
                 return true;
             }
@@ -160,7 +159,7 @@ public class CallFrame {
     private void doAction(RuleNode currentRule, CObject t) {
         scnr.pushBack(t);
         parseRuleStack.pop();
-        tokenStack.pop();
+        precedenceStack.pop();
         currentRule.getRuleForAction().apply(computationStack);
     }
 
@@ -174,13 +173,13 @@ public class CallFrame {
             tmp = 0;
         } else {
             reduce = parseRuleStack.peek();
-            tmp = tokenStack.peek();
+            tmp = precedenceStack.peek();
         }
 
-        RuleNode rn;
-        if ((rn=shift(reduce,nt,tmp,t,currentRule.getOptionalPrecedence()))!=null) {
-            parseRuleStack.push(rn);
-            tokenStack.push(OperatorPrecedence.getInstance().getPrecedence(t));
+        Pair rn;
+        if ((rn=shift(reduce,nt,tmp,t))!=null) {
+            parseRuleStack.push(rn.fst);
+            precedenceStack.push(rn.snd);
         }
         scnr.pushBack(t);
     }
@@ -195,7 +194,7 @@ public class CallFrame {
 
             if (matchesToken(t,SymbolTable.getInstance().exprToToken) && !currentRule.isActionOnly()) {
                 parseRuleStack.push((new ExptToTokenObject(scnr)).getRuleNode());
-                tokenStack.push(OperatorPrecedence.getInstance().getPrecedence(t));
+                precedenceStack.push(0);
                 return true;
             }
 
@@ -230,73 +229,69 @@ public class CallFrame {
                 || rn.getRuleForAction()!=null);
     }
 
-    private RuleNode shift(RuleNode reduce, CObject shift, int exprPrecedence, CObject shiftOperator, Integer childPrecedence) {
+    private Pair shift(RuleNode reduce, CObject shift, int exprPrecedence, CObject shiftOperator) {
         boolean first = isProgressPossible(reduce,shiftOperator);
-        RuleNode ret;
+        Pair ret;
         boolean second = (ret = contextLookAhead(shift,null,shiftOperator))!=null;
         if (!second) return null;
         if (!first) return ret;
-        if (childPrecedence != null) {
-            if (OperatorPrecedence.getInstance().isShift(exprPrecedence,childPrecedence)) {
-                return ret;
-            } else {
-                return null;
-            }
-        } else {
-            if (OperatorPrecedence.getInstance().isShift(exprPrecedence,shiftOperator))
-                return ret;
-            else
-                return null;
-        }
+//        if (exprPrecedence !=0 && ret.snd!=0) {
+//            System.out.println("exprPrecedence "+exprPrecedence+" ret.getOptionalPrecedence "+ret.snd);
+//        }
+        if (OperatorPrecedence.getInstance().isShift(exprPrecedence,ret.snd))
+            return ret;
+        else
+            return null;
     }
 
 
-    private static RuleNode contextLookAhead(CObject LS, CObject extra, CObject t) {
+    private static Pair contextLookAhead(CObject LS, CObject extra, CObject t) {
         CObject current;
-        RuleNode ret;
+        RuleNode ret, ret2;
+
 
         current = LS;
         while(current!=null) {
             ret = current.getRuleNode();
-            if (ret!=null && ret.getRuleForObject(t)!=null) {
-                return ret;
+            if (ret!=null && (ret2 = ret.getRuleForObject(t))!=null) {
+                return new Pair(ret,ret2.getOptionalPrecedence());
             }
             current = current.getParent();
         }
         if (extra != null ) {
             ret = extra.getRuleNode();
-            if (ret!=null && ret.getRuleForObject(t)!=null) {
-                return ret;
-            }
-        }
-
-        current = LS;
-        while(current!=null) {
-            ret = current.getRuleNode();
-            if (ret!=null && ret.getRuleForToken()!=null) {
-                return ret;
-            }
-            current = current.getParent();
-        }
-        if (extra != null ) {
-            ret = extra.getRuleNode();
-            if (ret!=null && ret.getRuleForToken()!=null) {
-                return ret;
+            if (ret!=null && (ret2=ret.getRuleForObject(t))!=null) {
+                return new Pair(ret,ret2.getOptionalPrecedence());
             }
         }
 
         current = LS;
         while(current!=null) {
             ret = current.getRuleNode();
-            if (ret!=null && ret.getRuleForExpr()!=null) {
-                return ret;
+            if (ret!=null && (ret2=ret.getRuleForToken())!=null) {
+                return new Pair(ret,ret2.getOptionalPrecedence());
             }
             current = current.getParent();
         }
         if (extra != null ) {
             ret = extra.getRuleNode();
-            if (ret!=null && ret.getRuleForExpr()!=null) {
-                return ret;
+            if (ret!=null && (ret2=ret.getRuleForToken())!=null) {
+                return new Pair(ret,ret2.getOptionalPrecedence());
+            }
+        }
+
+        current = LS;
+        while(current!=null) {
+            ret = current.getRuleNode();
+            if (ret!=null && (ret2=ret.getRuleForExpr())!=null) {
+                return new Pair(ret,ret2.getOptionalPrecedence());
+            }
+            current = current.getParent();
+        }
+        if (extra != null ) {
+            ret = extra.getRuleNode();
+            if (ret!=null && (ret2=ret.getRuleForExpr())!=null) {
+                return new Pair(ret,ret2.getOptionalPrecedence());
             }
         }
 
@@ -304,14 +299,14 @@ public class CallFrame {
         while(current!=null) {
             ret = current.getRuleNode();
             if (ret!=null && ret.getRuleForAction()!=null) {
-                return ret;
+                return new Pair(ret,0);
             }
             current = current.getParent();
         }
         if (extra != null ) {
             ret = extra.getRuleNode();
             if (ret!=null && ret.getRuleForAction()!=null) {
-                return ret;
+                return new Pair(ret,0);
             }
         }
 
@@ -340,4 +335,14 @@ public class CallFrame {
     }
 
 
+}
+
+class Pair {
+    RuleNode fst;
+    int snd;
+
+    Pair(RuleNode fst, int snd) {
+        this.fst = fst;
+        this.snd = snd;
+    }
 }

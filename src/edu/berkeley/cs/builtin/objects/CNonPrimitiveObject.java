@@ -53,14 +53,12 @@ public class CNonPrimitiveObject extends CObject {
         superClass.addAction(new NativeFunction("newDefinitionEater"));
 
         superClass.addNewRule();
-        superClass.addObject(SymbolTable.getInstance().assign);
-        superClass.addObject(SymbolTable.getInstance().assign);
+        superClass.addObject(SymbolTable.getInstance().eq);
         superClass.addMeta(SymbolTable.getInstance().expr);
         superClass.addAction(new NativeFunction("eq"));
 
         superClass.addNewRule();
-        superClass.addObject(SymbolTable.getInstance().not);
-        superClass.addObject(SymbolTable.getInstance().assign);
+        superClass.addObject(SymbolTable.getInstance().ne);
         superClass.addMeta(SymbolTable.getInstance().expr);
         superClass.addAction(new NativeFunction("ne"));
 

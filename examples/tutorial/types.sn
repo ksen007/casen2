@@ -1,143 +1,149 @@
-
-def # {
+def // {
     var ret = new Object
-    ret def @token {|x|
-        return self
-    }
+    ret def @token {|x| self}
     return ret
 }
 
-print 3
+// I defined the comment operator // so that I can write comments
 
-# ##################
-# integral numbers are mapped Java long type
+// /////////////////////////////////////
+// integral numbers are mapped Java long type
 
 print 100
-# 100
+// 100
 
 print (2 + 2)
-# 4
+// 4
 
 print (7*8)
-# 56
+// 56
 
 print (3 / 5)
-# 0
-# no automatic conversion
+// 0
+// no automatic conversion
 
 print (3 + 4 * 5)
-# 23
-# supports standard precedence rules for arithmetic operators
+// 23
+// supports standard precedence rules for arithmetic operators
 
-# ##################
-# floating point numbers are mapped to Java double type
+// /////////////////////////////////////
+// floating point numbers are mapped to Java double type
 
 print 5.4
-# 5.4
+// 5.4
 
 print (5.4 * 8.9)
-# 48.06
+// 48.06
 
-# no automatic conversion
-# print (5.6 * 4)  will throw exception
+// no automatic conversion
+// print (5.6 * 4)  will throw exception
 
 
-# ###################
-# strings are mapped to Java String class
+// /////////////////////////////////////
+// strings are mapped to Java String class
 
 print "Hello World!\n"
-# Hello World
+// Hello World!
+//
 
 print "Hello" + "world!\n"
-# Hello World
+// Hello World!
+//
 
-# ###################
-# Boolean types are mapped to Java bool type
+// /////////////////////////////////////
+// Boolean types are mapped to Java bool type
 
 print true
-# true
+// true
 print false
-# false
+// false
 print (4 > 5)
-# false
+// false
 print ("Hello" != "Hello")
-# true
+// true
 print (true || false)
-# true
-# no short-circuit
+// true
+// no short-circuit
 
 print (false && true)
-# false
-# no short-circuit
+// false
+// no short-circuit
 
 print !true
-# false
+// false
 
-# ####################
-# function types
+// ///////////////////////////////////////
+// function types
 print { 1 + 2 }
-#  1 `+ 2
+//  1 `+ 2
 
 print {|x, y|
     x = x + y
     return x + y
 }
 
+//  |`x,`y,|
+//  `
+//  `x `= `x `+ `y `
+//  `return `x `+ `y `
+// 
 
-
-# invoking a function
+// invoking a function
 print ({1 + 2}())
-# 3
+// 3
 
 print ({|x, y|
     x = x + y
     return (x + y)
 }(2,3))
-# 8
+// 8
 
 print ({ return "Hello World!" }())
-# Hello World
+// Hello World!
 
 print ({ "Hello World!" }())
-# Hello World
+// Hello World!
 
-# ####################
-# symbol type
-# any identifier
+// ///////////////////////////////////////
+// symbol type
+// any identifier
 print tokenToExpr (x)
-# `x
-print tokenToExpr (?)
-# `?
+// `x
+print tokenToExpr (#)
+// `#
+
+print tokenToExpr (*)
+// `*
 
 print tokenToExpr (abc123)
-# `abc123
+// `abc123
 
-# ####################
-# meta token type
-# any identifier preceded by @
-# @token, @expr, @nl, @eof are reserved
+// ///////////////////////////////////////
+// meta token type
+// any identifier preceded by @
+// @token, @expr, @nl, @eof are reserved
 print @hello
-# @hello
+// @hello
 print @token
-# @token
+// @token
 print @x
-# @x
+// @x
 print @expr
-# @expr
+// @expr
 print @eof
-# @eof
+// @eof
 
-# ####################
-# null is a special object
+// ///////////////////////////////////////
+// null is a special object
 print null
-# null
+// null
 
-# ####################
-# object type
-# everything is object
-# even integral numbers, floating point numbers, strings, Booleans, functions, symbols, meta tokens are objects
-# a scope is an object (more on this later)
-# new objects can be created as follows
+// ///////////////////////////////////////
+// object type
+// everything is object
+// even integral numbers, floating point numbers, strings, Booleans, functions, symbols, meta tokens are objects
+// a scope is an object (more on this later)
+// new objects can be created as follows
 print new Object
 
 
