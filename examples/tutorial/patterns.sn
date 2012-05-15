@@ -113,3 +113,17 @@ def list @expr {|data|
 var ret = list 8, 9, 10, 11, 12
 ret print
 
+def factorial 1 {1}
+def factorial @token {|x| x * factorial exprToToken(x-1)}
+
+
+def IF true @expr @expr {|S1, S2| S1(LS); }
+def IF false @expr @expr {|S1, S2| S2(LS); }
+
+def myif @expr then @expr else @expr {|C, S1, S2| IF exprToToken(C) S1 S2; }
+
+var  r = 4
+myif r > 3 then {print "then"} else {print "else"}
+
+
+print (factorial 5)

@@ -52,8 +52,6 @@ public class Interpreter {
     }
 }
 
-//@todo: merge prototype and SS
-//@todo: see if space can be made into a token
 //@todo: void token
 //@todo: allow creation of CompoundToken from a sequence of tokens
 //@todo: provide undef, isdef, redef, getAction
