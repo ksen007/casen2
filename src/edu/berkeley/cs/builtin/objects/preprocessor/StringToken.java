@@ -45,6 +45,13 @@ public class StringToken extends CObject {
         setParent(StandardStringProto.instance);
     }
 
+    public StringToken(SourcePosition position, boolean isSpace, String s) {
+        super(position);
+        this.value = s;
+        if (!isSpace) setNoSpace();
+        setParent(StandardStringProto.instance);
+    }
+
     public CObject add(CObject operand2) {
         return new StringToken(null,value+operand2);
     }

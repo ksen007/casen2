@@ -1,6 +1,5 @@
 package edu.berkeley.cs.parser;
 
-import edu.berkeley.cs.builtin.objects.CObject;
 import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
 
 import java.util.ArrayList;
@@ -52,8 +51,8 @@ public class SymbolTable {
     public SymbolToken self = new SymbolToken(null,getId("self"));
     public SymbolToken newline = new SymbolToken(null,getId("\n"));
     public SymbolToken var = new SymbolToken(null,getId("var"));
-    public SymbolToken eq = new SymbolToken(null,getId("=="));
-    public SymbolToken ne = new SymbolToken(null,getId("!="));
+    //public SymbolToken eq = new SymbolToken(null,getId("=="));
+    //public SymbolToken not = new SymbolToken(null,getId("!="));
     public SymbolToken def = new SymbolToken(null,getId("def"));
     public SymbolToken assign = new SymbolToken(null,getId("="));
     public SymbolToken LS = new SymbolToken(null,getId("LS"));
@@ -106,6 +105,14 @@ public class SymbolTable {
     }
 
     private SymbolTable() {
+//         SymbolTable.getInstance().getId("||");
+//         SymbolTable.getInstance().getId("&&");
+//         SymbolTable.getInstance().getId("==");
+//         SymbolTable.getInstance().getId("!=");
+//         SymbolTable.getInstance().getId("<=");
+//         SymbolTable.getInstance().getId(">=");
+//         SymbolTable.getInstance().getId(">>");
+//         SymbolTable.getInstance().getId("<<");
     }
 
     public int getId(String sym) {

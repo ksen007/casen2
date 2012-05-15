@@ -44,6 +44,12 @@ public class MetaToken extends CObject {
         this.metaSymbol = metaSymbol;
     }
 
+    public MetaToken(SourcePosition position, boolean isSpace, int metaSymbol) {
+        super(position);
+        if (!isSpace) setNoSpace();
+        this.metaSymbol = metaSymbol;
+    }
+
 
     @Override
     public String toString() {

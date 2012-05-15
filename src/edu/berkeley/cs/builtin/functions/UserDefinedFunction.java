@@ -1,8 +1,9 @@
 package edu.berkeley.cs.builtin.functions;
 
-import edu.berkeley.cs.builtin.objects.*;
+import edu.berkeley.cs.builtin.objects.CNonPrimitiveObject;
+import edu.berkeley.cs.builtin.objects.CObject;
+import edu.berkeley.cs.builtin.objects.Reference;
 import edu.berkeley.cs.builtin.objects.preprocessor.CompoundToken;
-import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
 import edu.berkeley.cs.parser.SymbolTable;
 
 import java.util.LinkedList;
@@ -53,7 +54,8 @@ public class UserDefinedFunction implements Invokable {
         LS.addObject(SymbolTable.getInstance().self);
         LS.addAction(new GetField(new Reference(args.removeFirst())));
 
-        return body.execute(LS,args,true);
+        CObject ret = body.execute(LS,args,true);
+        return ret;
     }
 
     @Override

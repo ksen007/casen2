@@ -57,6 +57,7 @@ public class CObject {
     private int flags;
     final private static int RETURN_FLAG = 1;
     final private static int EXCEPTION_FLAG = 2;
+    final private static int NO_SPACE_FLAG = 4;
 
 
     public void setException() {
@@ -83,6 +84,19 @@ public class CObject {
         return (flags & RETURN_FLAG) > 0;
     }
 
+    public void setNoSpace() {
+        flags = flags | NO_SPACE_FLAG;
+    }
+
+    public void clearNoSpace() {
+        flags = flags & (~NO_SPACE_FLAG);
+    }
+
+    public boolean isNoSpace() {
+        return (flags & NO_SPACE_FLAG) > 0;
+    }
+
+
     private SourcePosition position;
 
     public SourcePosition getPosition() {
@@ -104,6 +118,8 @@ public class CObject {
     }
 
     public void assign(SymbolToken var, Reference val) {
+        var.clearNoSpace();
+
         this.addNewRule();
         this.addObject(var);
         this.addAction(new GetField(val));

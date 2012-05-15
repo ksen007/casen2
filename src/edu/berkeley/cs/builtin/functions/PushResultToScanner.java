@@ -46,7 +46,9 @@ public class PushResultToScanner implements Invokable {
 
     public CObject apply(LinkedList<CObject> args) {
         CObject ret = args.removeFirst();
-        scnr.pushBack(args.removeFirst());
+        CObject ret2 = args.removeFirst();
+        ret2.clearNoSpace();
+        scnr.pushBack(ret2);
         return ret;
     }
 }

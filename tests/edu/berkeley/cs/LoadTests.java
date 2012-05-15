@@ -71,4 +71,22 @@ public class LoadTests extends TestCase {
     public void testLoad8() throws Exception {
         Interpreter.interpret("(load \"examples/proto1.sn\")()");
     }
+
+    public void testTypes() throws Exception {
+        Interpreter.interpret("(load \"examples/tutorial/types.sn\")()");
+    }
+
+    public void testPatterns() throws Exception {
+        Interpreter.interpret("(load \"examples/tutorial/patterns.sn\")()");
+    }
+
+    public void testAssignment() throws Exception {
+        Interpreter.interpret("(load \"examples/tutorial/assignment.sn\")()");
+    }
+
+    public void testClosure() throws Exception {
+        Interpreter.interpret("(load \"examples/tutorial/closure.sn\")()");
+    }
+
+
 }

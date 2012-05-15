@@ -64,22 +64,24 @@ public class StandardLexer implements Lexer {
         return str;
     }
 
-    private CObject createToken(char c) {
+    private CObject createToken(char c, boolean isSpace) {
         SourcePosition pos = new SourcePosition(lineNo, columnNo);
         match(c);
-        return new SymbolToken(pos, SymbolTable.getInstance().getId("" + c));
+        return new SymbolToken(pos, isSpace,SymbolTable.getInstance().getId("" + c));
     }
 
-    private CObject createToken(String str) {
+    private CObject createToken(String str, boolean isSpace) {
         SourcePosition pos = new SourcePosition(lineNo, columnNo);
         match(str);
-        return new SymbolToken(pos, SymbolTable.getInstance().getId(str));
+        return new SymbolToken(pos, isSpace, SymbolTable.getInstance().getId(str));
     }
 
     public CObject getNextToken() {
         int character = lookAhead(1);
+        boolean isSpace = false;
         while (character == ' ' || character == '\t' ||
                 character == '\r') {
+            isSpace = true;
             character = next();
         }
         switch (character) {
@@ -87,41 +89,19 @@ public class StandardLexer implements Lexer {
                 close();
                 return SymbolToken.end;
             }
-            case '(':
-            case ')':
-            case '{':
-            case '}':
-            case '[':
-            case ']':
-            case ';':
-            case '\n':
-            {
-                return createToken((char)character);
-            }
             case '"': {
-                return matchStringLiteral((char) character);
+                return matchStringLiteral((char) character,isSpace);
             }
             default: {
                 if ((character >= '0' && character <= '9')) {
-                    return matchNumber();
+                    return matchNumber(isSpace);
                 } else if (character=='@') {
                     character = next();
-                    return matchIdentifier(true);
+                    return matchIdentifier(true,isSpace);
                 } else {
-                    return matchIdentifier(false);
+                    return matchIdentifier(false,isSpace);
                 }
             }
-        }
-    }
-
-    private void matchLineComment() {
-        SourcePosition pos = new SourcePosition(lineNo, columnNo);
-        match("#");
-        StringBuilder sb = new StringBuilder();
-        int character = lookAhead(1);
-        while (character != '\r' && character != '\n' && character != END_OF_FILE) {
-            sb.append((char) character);
-            character = next();
         }
     }
 
@@ -206,7 +186,7 @@ public class StandardLexer implements Lexer {
         return count;
     }
 
-    private CObject matchNumber() {
+    private CObject matchNumber(boolean isSpace) {
         SourcePosition pos = new SourcePosition(lineNo, columnNo);
         StringBuilder sb = new StringBuilder();
         int digit = lookAhead(1);
@@ -234,13 +214,13 @@ public class StandardLexer implements Lexer {
         }
         String number = sb.toString();
         if (number.contains(".")) {
-            return new DoubleToken(pos,Double.parseDouble(number));
+            return new DoubleToken(pos,isSpace,Double.parseDouble(number));
         } else {
-            return new LongToken(pos,Long.parseLong(number));
+            return new LongToken(pos,isSpace,Long.parseLong(number));
         }
     }
 
-    private CObject matchIdentifier(boolean isMeta) {
+    private CObject matchIdentifier(boolean isMeta, boolean isSpace) {
         SourcePosition pos = new SourcePosition(lineNo, columnNo);
         StringBuilder sb = new StringBuilder();
         int character = lookAhead(1);
@@ -254,40 +234,42 @@ public class StandardLexer implements Lexer {
                 sb.append((char) character);
                 character = next();
             }
-        } else {
-            while (!( (character >= 'a' && character <= 'z') ||
-                    (character >= 'A' && character <= 'Z') ||
-                    (character >= '0' && character <= '9') ||
-                    character == '_' ||
-                    character == '(' ||
-                    character == ')' ||
-                    character == '[' ||
-                    character == ']' ||
-                    character == '{' ||
-                    character == '}' ||
-                    character == ' ' || character == '\t' ||
-                    character == '\r' || character == '\n' || character == END_OF_FILE)){
-                sb.append((char) character);
-                character = next();
+        } else if (!(character == ' ' || character == '\t'
+                || character == '\r' || character == END_OF_FILE)){
+            if (isMeta && character == '\n') {
+                sb.append('@');
+            } else {
+                if(!isMeta && character=='=') {
+                    sb.append((char) character);
+                    character = next();
+                    if (character == '=') {
+                        sb.append((char) character);
+                        next();
+                    }
+                } else {
+                    sb.append((char) character);
+                    next();
+                }
             }
-
+        } else if (isMeta) {
+            sb.append('@');
         }
         String word = sb.toString();
         if (isMeta) {
-            return new MetaToken(pos,SymbolTable.getInstance().getId(word));
+            return new MetaToken(pos,isSpace,SymbolTable.getInstance().getId(word));
         } else {
             if (word.equals("true")) {
-                return new BooleanToken(pos,true);
+                return new BooleanToken(pos,isSpace,true);
             } else if (word.equals("false")) {
-                return new BooleanToken(pos,false);
+                return new BooleanToken(pos,isSpace,false);
             } else if(word.equals("null")){
-                return new NullToken(pos);
+                return new NullToken(pos,isSpace);
             }
-            return new SymbolToken(pos,SymbolTable.getInstance().getId(word));
+            return new SymbolToken(pos,isSpace,SymbolTable.getInstance().getId(word));
         }
     }
 
-    private CObject matchStringLiteral(char quote) {
+    private CObject matchStringLiteral(char quote, boolean isSpace) {
         SourcePosition pos = new SourcePosition(lineNo, columnNo);
         match(quote);
         StringBuilder sb = new StringBuilder();
@@ -297,7 +279,7 @@ public class StandardLexer implements Lexer {
             character = next();
         }
         match(quote);
-        return new StringToken(pos, sb.toString());
+        return new StringToken(pos, isSpace, sb.toString());
     }
 }
 

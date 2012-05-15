@@ -39,13 +39,13 @@ import edu.berkeley.cs.lexer.SourcePosition;
 public class BooleanToken extends CObject {
     public static BooleanToken TRUE() {
         if (TRUE==null)
-            TRUE = new BooleanToken(null,true);
+            TRUE = new BooleanToken(null,true,true);
         return TRUE;
     }
 
     public static BooleanToken FALSE() {
         if (FALSE==null)
-            FALSE = new BooleanToken(null,false);
+            FALSE = new BooleanToken(null,true,false);
         return FALSE;
     }
 
@@ -55,9 +55,10 @@ public class BooleanToken extends CObject {
 
     public boolean value;
 
-    public BooleanToken(SourcePosition position, boolean value) {
+    public BooleanToken(SourcePosition position, boolean isSpace, boolean value) {
         super(position);
         this.value = value;
+        if (!isSpace) setNoSpace();
         setParent(StandardBooleanProto.instance);
     }
 

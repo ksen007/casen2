@@ -39,7 +39,7 @@ import edu.berkeley.cs.lexer.SourcePosition;
 public class NullToken extends CObject {
     public static NullToken NULL() {
         if (NULL==null)
-            NULL = new NullToken(null);
+            NULL = new NullToken(null,true);
         return NULL;
     }
 
@@ -54,8 +54,9 @@ public class NullToken extends CObject {
         return (operand2 instanceof NullToken)? BooleanToken.FALSE(): BooleanToken.TRUE();
     }
 
-    public NullToken(SourcePosition position) {
+    public NullToken(SourcePosition position, boolean isSpace) {
         super(position);
+        if (!isSpace) setNoSpace();
         setParent(StandardNullProto.instance);
     }
 

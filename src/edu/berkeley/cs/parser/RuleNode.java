@@ -44,6 +44,8 @@ public class RuleNode {
     private RuleNode expr;
     private RuleNode token;
 
+    boolean isNoSpace = false;
+
     private Integer optionalPrecedence;
 
     public static boolean DEBUG = false;
@@ -144,6 +146,7 @@ public class RuleNode {
         if (ret==null) {
             next.put(val,ret=new RuleNode(this,val.toString()));
         }
+        ret.isNoSpace = val.isNoSpace();
         return ret;
     }
 
@@ -160,6 +163,11 @@ public class RuleNode {
     public RuleNode getRuleForObject(CObject object) {
         RuleNode ret = null;
         if (next != null && (ret = next.get(object))!=null){
+            if (ret.isNoSpace && !object.isNoSpace()) {
+                System.out.println("Boom: "+this);
+                System.out.println(object);
+                return null;
+            }
             return ret;
         }
         return null;

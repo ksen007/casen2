@@ -46,6 +46,13 @@ public class LongToken extends CObject {
         setParent(StandardLongProto.instance);
     }
 
+    public LongToken(SourcePosition position, boolean isSpace, long l) {
+        super(position);
+        this.value = l;
+        if (!isSpace) setNoSpace();
+        setParent(StandardLongProto.instance);
+    }
+
     public CObject add(CObject operand2) {
         return new LongToken(null,value+((LongToken)operand2).value);
     }

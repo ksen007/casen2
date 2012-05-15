@@ -69,9 +69,13 @@ public class CallFrame {
 
     }
 
-    private static boolean matchesToken(CObject t, String sym) {
+    private static boolean matchesToken(CObject t, SymbolToken sym) {
         if (t instanceof SymbolToken) {
-            return ((SymbolToken)t).symbol == SymbolTable.getInstance().getId(sym);
+            boolean ret = ((SymbolToken)t).symbol == sym.symbol;
+            if (ret) {
+                //System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+            }
+            return ret;
         }
         return false;
     }
@@ -97,7 +101,7 @@ public class CallFrame {
         if (ret!=null) {
             parseRuleStack.pop();
             parseRuleStack.push(ret);
-            if (matchesToken(t,"=")) {
+            if (matchesToken(t,SymbolTable.getInstance().assign)) {
                 tokenStack.pop();
                 tokenStack.push(OperatorPrecedence.getInstance().getPrecedence(t));
             }
@@ -183,28 +187,30 @@ public class CallFrame {
 
     public boolean interpretAux() {
         CObject t = scnr.nextToken();
+        //System.out.println("Symbol:"+t+":");
         RuleNode currentRule = parseRuleStack.peek();
 
         try {
             if (consumeSymbol(currentRule,t)) return true;
 
-            if (matchesToken(t,"exprToToken") && !currentRule.isActionOnly()) {
+            if (matchesToken(t,SymbolTable.getInstance().exprToToken) && !currentRule.isActionOnly()) {
                 parseRuleStack.push((new ExptToTokenObject(scnr)).getRuleNode());
                 tokenStack.push(OperatorPrecedence.getInstance().getPrecedence(t));
                 return true;
             }
 
-            if (!matchesToken(t,"\n")) {
+            if (!matchesToken(t,SymbolTable.getInstance().newline)) {
                 if (consumeToken(currentRule,t)) return true;
                 if (consumeExpr(currentRule,t)) return true;
             }
             if (consumeAction(currentRule,t)) return true;
 
-            if (matchesToken(t,"\n")) {
+            if (matchesToken(t,SymbolTable.getInstance().newline)) {
                 return true;
             }
         } catch (Exception e) {
-            StringToken ret = new StringToken(null,"Failed to consume "+t+" at "+t.locationString()+" with "+this+ " because "+ NativeFunction.getStackTrace(e));
+            StringToken ret = new StringToken(null,"Failed to consume "+t+" at "+t.locationString()
+                    +" with "+this+ " because "+ NativeFunction.getStackTrace(e));
             ret.setException();
             computationStack.push(ret);
             return true;

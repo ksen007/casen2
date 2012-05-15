@@ -46,6 +46,12 @@ public class SymbolToken extends CObject {
         this.symbol = symbol;
     }
 
+    public SymbolToken(SourcePosition position, boolean isSpace, int symbol) {
+        super(position);
+        if (!isSpace) setNoSpace();
+        this.symbol = symbol;
+    }
+
     @Override
     public String toString() {
         return "`"+SymbolTable.getInstance().getSymbol(symbol);

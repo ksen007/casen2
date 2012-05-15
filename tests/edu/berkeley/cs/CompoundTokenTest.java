@@ -35,8 +35,8 @@ import junit.framework.TestCase;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class CompoundTokenTest extends TestCase {
-    public void testLoad8() throws Exception {
-        Interpreter.interpret("print x;");
+    public void testClosure() throws Exception {
+        Interpreter.interpret("(load \"examples/tutorial/scratch.sn\")()");
     }
 }
 //def Array @expr @edu.berkeley.cs.builtin.objects.CArray endef ; var x = (Array 10); x[1] = 89; print (x[1]);

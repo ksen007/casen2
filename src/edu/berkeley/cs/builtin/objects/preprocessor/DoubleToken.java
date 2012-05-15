@@ -39,12 +39,18 @@ import edu.berkeley.cs.lexer.SourcePosition;
 public class DoubleToken extends CObject {
     public double value;
 
+    public DoubleToken(SourcePosition position, boolean isSpace, double l) {
+        super(position);
+        this.value = l;
+        if (!isSpace) setNoSpace();
+        setParent(StandardDoubleProto.instance);
+    }
+
     public DoubleToken(SourcePosition position, double l) {
         super(position);
         this.value = l;
         setParent(StandardDoubleProto.instance);
     }
-
 
     public CObject add(CObject operand2) {
         return new DoubleToken(null,value+((DoubleToken)operand2).value);
