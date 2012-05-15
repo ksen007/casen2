@@ -118,15 +118,15 @@ public class CNonPrimitiveObjectTest extends TestCase {
         Interpreter.interpret("var t = 899; def foo { print (self t); 1000 }; print foo");
     }
 
-    public void testDef6() throws Exception {
-        System.out.println("------------- testDef6 ----------------------");
-        Interpreter.interpret("def foo { var x = 1; var y = x + 2; LS };  var t = foo; assert ((t x) == 1); assert ((t y) == 3);");
-    }
-
-    public void testDef7() throws Exception {
-        System.out.println("------------- testDef7 ----------------------");
-        Interpreter.interpret("def foo @expr {|a| var x = 1; var y = (a + 5); LS }; var t = (foo 10); assert ((t x) == 1); assert ((t y) == 15);");
-    }
+//    public void testDef6() throws Exception {
+//        System.out.println("------------- testDef6 ----------------------");
+//        Interpreter.interpret("def foo { var x = 1; var y = x + 2; LS };  var t = foo; assert ((t x) == 1); assert ((t y) == 3);");
+//    }
+//
+//    public void testDef7() throws Exception {
+//        System.out.println("------------- testDef7 ----------------------");
+//        Interpreter.interpret("def foo @expr {|a| var x = 1; var y = (a + 5); LS }; var t = (foo 10); assert ((t x) == 1); assert ((t y) == 15);");
+//    }
 
     public void testDef8() throws Exception {
         System.out.println("------------- testDef8 ----------------------");

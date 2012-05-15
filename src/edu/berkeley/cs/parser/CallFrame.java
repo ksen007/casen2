@@ -45,13 +45,13 @@ public class CallFrame {
     private Stack<Integer> precedenceStack;
     private CObject LS;
     private Scanner scnr;
-    private CObject environment;
+    //private CObject environment;
 
 
-    public CallFrame(CObject LS, CObject base, CObject environment, Scanner scnr) {
-        CObject t;
+    public CallFrame(CObject LS, CObject base, /* CObject environment,*/ Scanner scnr) {
+//        CObject t;
 
-        this.environment = environment;
+//        this.environment = environment;
         this.LS = LS;
         this.scnr = scnr;
         parseRuleStack = new Stack<RuleNode>();
@@ -130,7 +130,7 @@ public class CallFrame {
 
         if ((toBePushed = currentRule.getRuleForExpr()) !=null) {
 
-            if ((rn = contextLookAhead(LS, environment, t))!=null) {
+            if ((rn = contextLookAhead(LS, null, t))!=null) {
                 parseRuleStack.pop();
                 parseRuleStack.push(toBePushed);
 

@@ -1,7 +1,6 @@
 package edu.berkeley.cs.builtin.functions;
 
 import edu.berkeley.cs.builtin.objects.CObject;
-import edu.berkeley.cs.parser.ParseException;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -70,7 +69,7 @@ public class NativeFunction implements Invokable {
         } catch (NoSuchMethodException e) {
             throw new RuntimeException("No such native method "+self+" "+methodName+" because "+getStackTrace(e.getCause()));
         } catch (InvocationTargetException e) {
-            throw new RuntimeException("Exception in native method "+self+" "+methodName+" because "+getStackTrace(e.getCause()));
+            throw new RuntimeException("Exception in native method "+self+"."+methodName+"("+args+") because "+getStackTrace(e.getCause()));
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Illegal access in native method "+self+" "+methodName+" because "+getStackTrace(e));
         }

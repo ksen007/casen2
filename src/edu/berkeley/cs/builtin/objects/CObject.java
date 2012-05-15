@@ -155,7 +155,7 @@ public class CObject {
         Scanner scnr = new BasicScanner(lexer);
 
         CObject LS = new TokenEater(null,fname);
-        CallFrame cf = new CallFrame(LS,LS,null,scnr);
+        CallFrame cf = new CallFrame(LS,LS,scnr);
         CompoundToken pgm = (CompoundToken)cf.interpret();
         return pgm;
     }
@@ -163,7 +163,7 @@ public class CObject {
     public CObject eval(String s) {
         try {
             CompoundToken pgm = parseIt(new StringReader(s),null);
-            CObject ret = pgm.execute(this,true);
+            CObject ret = pgm.execute(this);
             if (ret.isException()) {
                 throw new RuntimeException("Eval:\n"+ret);
             }
@@ -269,14 +269,14 @@ public class CObject {
         CompoundToken s1 = (CompoundToken)S1;
         CompoundToken s2 = (CompoundToken)S2;
         CObject ret;
-        ret = s1.execute(this,false);
+        ret = s1.execute(this);
         if (ret.isException()) return ret;
 
         while(((BooleanToken)ret).value) {
-            ret = s2.execute(this,false);
+            ret = s2.execute(this);
             if (ret.isException()) return ret;
 
-            ret = s1.execute(this,false);
+            ret = s1.execute(this);
             if (ret.isException()) return ret;
         }
         return NullToken.NULL();
@@ -288,7 +288,7 @@ public class CObject {
         CompoundToken s = (CompoundToken)S;
         CObject val;
         if ((val = CObject.staticObjects.get(s))==null) {
-            val = s.execute(this,false);
+            val = s.execute(this);
             if (val.isException()) return val;
             CObject.staticObjects.put(s,val);
         }
@@ -300,11 +300,11 @@ public class CObject {
         CompoundToken s1 = (CompoundToken)S1;
         CompoundToken s2 = (CompoundToken)S2;
         if (cond.value) {
-            CObject ret = s1.execute(this,false);
+            CObject ret = s1.execute(this);
             if (ret.isException()) return ret;
             return NullToken.NULL();
         } else {
-            CObject ret = s2.execute(this,false);
+            CObject ret = s2.execute(this);
             if (ret.isException()) return ret;
             return NullToken.NULL();
         }
@@ -341,13 +341,13 @@ public class CObject {
         SymbolToken symbol = (SymbolToken) var;
         CompoundToken s1 = (CompoundToken)tryAction;
         CompoundToken s2 = (CompoundToken)catchAction;
-        CObject ret = s1.execute(this,false);
+        CObject ret = s1.execute(this);
         if (ret.isException()) {
             ret.clearException();
             Reference common = new Reference(ret);
             assign(symbol, common);
 
-            ret = s2.execute(this,false);
+            ret = s2.execute(this);
             if (ret.isException()) return ret;
         }
         return NullToken.NULL();

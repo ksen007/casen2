@@ -1,5 +1,8 @@
 package edu.berkeley.cs.builtin.objects;
 
+import edu.berkeley.cs.builtin.functions.GetField;
+import edu.berkeley.cs.parser.SymbolTable;
+
 /**
  * Copyright (c) 2006-2011,
  * Koushik Sen    <ksen@cs.berkeley.edu>
@@ -33,13 +36,12 @@ package edu.berkeley.cs.builtin.objects;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class EnvironmentObject extends CObject {
-    final public static EnvironmentObject instance = new EnvironmentObject();
 
-    private EnvironmentObject() {
-//            this.addNewRule();
-//            this.addObject(SymbolTable.getInstance().LS);
-//            this.addAction(new GetField(new Reference(this)));
+    public EnvironmentObject() {
+        this.addNewRule();
+        this.addObject(SymbolTable.getInstance().LS);
+        this.addAction(new GetField(new Reference(this)));
 
-            setRule(ProtoEnvironmentObject.instance);
-        }
+        setParent(ProtoEnvironmentObject.instance);
+    }
 }

@@ -36,7 +36,7 @@ import junit.framework.TestCase;
  */
 public class CompoundTokenTest extends TestCase {
     public void testAddMul1() throws Exception {
-        Interpreter.interpret("print (5000 + 2 * 1156);");
+        Interpreter.interpret("def foo { LS };  var t = foo; print 1; ");
     }
 }
 //(var x = 5000 + 2 * 1156); print x; assert (x== 2688); ");

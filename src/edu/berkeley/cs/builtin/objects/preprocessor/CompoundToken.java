@@ -47,6 +47,7 @@ public class CompoundToken extends CObject {
     private ArrayList<CObject> tokens;
     public ArrayList<SymbolToken> parameters;
     private String file;
+    private CObject scope;
 
 //    private CallFrame SS;
 
@@ -61,7 +62,7 @@ public class CompoundToken extends CObject {
         parameters = cloneMe.parameters;
         file = cloneMe.file;
         setRule(cloneMe);
-        this.setParent(prototype);
+        scope = prototype;
     }
 
     public CompoundToken(TokenEater ss,String file) {
@@ -71,6 +72,7 @@ public class CompoundToken extends CObject {
         parameters = ss.parameters;
         this.file = file;
         int N = parameters.size();
+        scope = ProtoEnvironmentObject.instance;
 
         this.addNewRule();
         this.addObject(SymbolTable.getInstance().lparen);
@@ -97,26 +99,46 @@ public class CompoundToken extends CObject {
         this.addAction(new DirectCallWith());
     }
 
-    public CObject execute(CObject LS, boolean overridePrototype) {
-        if (overridePrototype)
-            LS.setParent(getParent());
+
+    public CObject execute() {
+        CObject LS = new EnvironmentObject();
+        LS.setParent(scope);
+        return execute(LS);
+    }
+
+    public CObject execute(CObject LS) {
         String tmp = CObject.currentFile;
         CObject.currentFile = file;
         try {
             Scanner scnr = getScanner();
-            CallFrame cf = new CallFrame(LS, CStatementEater.instance,EnvironmentObject.instance,scnr);
+            CallFrame cf = new CallFrame(LS, CStatementEater.instance,scnr);
             return cf.interpret();
         } finally {
             CObject.currentFile = tmp;
         }
     }
 
-    public CObject execute(CObject LS, LinkedList<CObject> args, boolean overridePrototype) {
+    public CObject execute(LinkedList<CObject> args, boolean isInstance) {
+        CObject LS = new EnvironmentObject();
+        LS.setParent(scope);
+        if (isInstance) {
+            LS.addNewRule();
+            LS.addObject(SymbolTable.getInstance().self);
+            LS.addAction(new GetField(new Reference(args.removeFirst())));
+        }
         for(SymbolToken param:parameters) {
             Reference common = new Reference(args.removeFirst());
             LS.assign(param, common);
         }
-        return execute(LS,overridePrototype);
+        return execute(LS);
+    }
+
+    public CObject execute(CObject LS, LinkedList<CObject> args) {
+        for(SymbolToken param:parameters) {
+            Reference common = new Reference(args.removeFirst());
+            LS.assign(param, common);
+        }
+        return execute(LS);
     }
 
     @Override

@@ -1,10 +1,7 @@
 package edu.berkeley.cs.builtin.functions;
 
-import edu.berkeley.cs.builtin.objects.StandardObject;
 import edu.berkeley.cs.builtin.objects.CObject;
-import edu.berkeley.cs.builtin.objects.Reference;
 import edu.berkeley.cs.builtin.objects.preprocessor.CompoundToken;
-import edu.berkeley.cs.parser.SymbolTable;
 
 import java.util.LinkedList;
 
@@ -48,13 +45,7 @@ public class UserDefinedFunction implements Invokable {
     }
 
     public CObject apply(LinkedList<CObject> args) {
-        StandardObject LS = new StandardObject();
-        
-        LS.addNewRule();
-        LS.addObject(SymbolTable.getInstance().self);
-        LS.addAction(new GetField(new Reference(args.removeFirst())));
-
-        CObject ret = body.execute(LS,args,true);
+        CObject ret = body.execute(args,true);
         return ret;
     }
 
