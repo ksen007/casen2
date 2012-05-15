@@ -38,9 +38,9 @@ import edu.berkeley.cs.parser.SymbolTable;
  */
 public class StandardObject extends CObject {
     public StandardObject() {
-        this.addNewRule();
-        this.addObject(SymbolTable.getInstance().LS);
-        this.addAction(new GetField(new Reference(this)));
+//        this.addNewRule();
+//        this.addObject(SymbolTable.getInstance().LS);
+//        this.addAction(new GetField(new Reference(this)));
 
         setParent(ProtoStandardObject.instance);
     }

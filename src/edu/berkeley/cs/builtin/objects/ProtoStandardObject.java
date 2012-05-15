@@ -61,9 +61,9 @@ public class ProtoStandardObject {
         instance.addMeta(SymbolTable.getInstance().expr);
         instance.addAction(new NativeFunction("ne"));
 
-        instance.addNewRule();
-        instance.addObject(SymbolTable.getInstance().LS);
-        instance.addAction(new GetField(new Reference(instance)));
-
+//        instance.addNewRule();
+//        instance.addObject(SymbolTable.getInstance().LS);
+//        instance.addAction(new GetField(new Reference(instance)));
+//
     }
 }
