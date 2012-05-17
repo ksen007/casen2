@@ -22,10 +22,7 @@ def tagParser {
 }
 
 {
-    print 6
     prototype = tagParser
-    print 7
     s er <tag2< a b c <tag2< d e f <tag1< l m o >/tag1> g h i >/tag2>  >/tag2>
 } ()
-print 5
 
