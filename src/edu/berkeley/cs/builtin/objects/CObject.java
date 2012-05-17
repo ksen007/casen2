@@ -364,6 +364,21 @@ public class CObject {
         return this == o;
     }
 
+    public CObject printDeep(CObject current) {
+        CObject tmp = current;
+        RuleNode ret;
+        System.out.println("Object:");
+        while(current!=null) {
+            ret = current.getRuleNode();
+            if (ret!=null) {
+                System.out.println("--------");
+                System.out.println(ret);
+            }
+            current = current.getParent();
+        }
+        System.out.println("End");
+        return tmp;
+    }
 
     RuleNode curr;
     int argCount;

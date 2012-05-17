@@ -45,6 +45,10 @@ public class CDefinitionEater extends CObject {
         superClass.addNewRule();
         superClass.addMeta(SymbolTable.getInstance().token);
         superClass.addAction(new NativeFunction("addToken"));
+
+        superClass.addNewRule();
+        superClass.addObject(SymbolTable.getInstance().semi);
+        superClass.addAction(new NativeFunction("addSemi"));
     }
 
 
@@ -53,6 +57,11 @@ public class CDefinitionEater extends CObject {
         this.parent = parent;
         parent.addNewRule();
         setRule(superClass);
+    }
+
+    public CObject addSemi() {
+        this.parent.addObject(SymbolTable.getInstance().semi);
+        return this;
     }
 
     public CObject addToken(CObject arg) {

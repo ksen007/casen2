@@ -1,6 +1,31 @@
 
-def <html> {
-    print "hello"
+def tagParser {
+    var ret = new Object
+
+    ret def <tag1< @expr >/tag1> {|x|
+        print "Tag1"
+        return self
+    }
+
+    ret def <tag2< @expr >/tag2> {|x|
+        print "Tag2"
+        return self
+    }
+
+    ret def > {print "`>"; self}
+
+    ret def @token {|x| print x; self}
+
+    printDeep ret
+    ret prototype = void
+    return ret
 }
 
-<html>
+{
+    print 6
+    prototype = tagParser
+    print 7
+    s er <tag2< a b c <tag2< d e f <tag1< l m o >/tag1> g h i >/tag2>  >/tag2>
+} ()
+print 5
+

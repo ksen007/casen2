@@ -52,7 +52,7 @@ public class OperatorPrecedence {
     private OperatorPrecedence() {
 //       precedenceTable.put(SymbolTable.getInstance().getId(","),90-offset);
 
-        precedenceTable.put(SymbolTable.getInstance().getId("="),-121-offset);
+        precedenceTable.put(SymbolTable.getInstance().assign.symbol,101-offset);
 
 //        precedenceTable.put(SymbolTable.getInstance().getId("?"),-111-offset);
 
@@ -60,12 +60,12 @@ public class OperatorPrecedence {
         precedenceTable.put(SymbolTable.getInstance().getId("&&"),130-offset);
 
 
-        precedenceTable.put(SymbolTable.getInstance().getId("|"),140-offset);
+        precedenceTable.put(SymbolTable.getInstance().bar.symbol,140-offset);
         precedenceTable.put(SymbolTable.getInstance().getId("^"),150-offset);
         precedenceTable.put(SymbolTable.getInstance().getId("&"),160-offset);
 
-        precedenceTable.put(SymbolTable.getInstance().getId("=="),170-offset);
-        precedenceTable.put(SymbolTable.getInstance().getId("!="),170-offset);
+        precedenceTable.put(SymbolTable.getInstance().eq.symbol,170-offset);
+        precedenceTable.put(SymbolTable.getInstance().ne.symbol,170-offset);
 
         precedenceTable.put(SymbolTable.getInstance().getId("<"),180-offset);
         precedenceTable.put(SymbolTable.getInstance().getId("<="),180-offset);
@@ -76,15 +76,17 @@ public class OperatorPrecedence {
         precedenceTable.put(SymbolTable.getInstance().getId("<<"),190-offset);
         
         precedenceTable.put(SymbolTable.getInstance().getId("+"),200-offset);
-        precedenceTable.put(SymbolTable.getInstance().getId("-"),200-offset);
+        precedenceTable.put(SymbolTable.getInstance().minus.symbol,200-offset);
 
         precedenceTable.put(SymbolTable.getInstance().getId("*"),210-offset);
         precedenceTable.put(SymbolTable.getInstance().getId("%"),210-offset);
         precedenceTable.put(SymbolTable.getInstance().getId("/"),210-offset);
 
-        precedenceTable.put(SymbolTable.getInstance().getId("!"),221-offset);
+        precedenceTable.put(SymbolTable.getInstance().not.symbol,221-offset);
         precedenceTable.put(SymbolTable.getInstance().getId("~"),221-offset);
 
+        precedenceTable.put(SymbolTable.getInstance().semi.symbol,81-offset);
+        precedenceTable.put(SymbolTable.getInstance().newline.symbol,81-offset);
 //        precedenceTable.put(SymbolTable.getInstance().getId("."),230-offset);
 //        precedenceTable.put(SymbolTable.getInstance().getId("("),230-offset);
 //        precedenceTable.put(SymbolTable.getInstance().getId("["),230-offset);
@@ -99,6 +101,9 @@ public class OperatorPrecedence {
     }
 
     public boolean isShift(int exprPrecedence, int sym2) {
+//        if (sym2==10) {
+//            System.out.println("Prev ="+exprPrecedence);
+//        }
         if (sym2 > exprPrecedence || (exprPrecedence == sym2 && sym2 % 2 == 1)) {
             return true;
         }

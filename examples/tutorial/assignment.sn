@@ -1,15 +1,16 @@
 def // {
     var ret = new Object
     ret def @token {|x| self}
+    ret def ; {self}
     ret prototype = void
     return ret
 }
 
 
-// I defined the comment operator // so that I can write comments
+// ;
 
 var x = 100
-// defines the variable x in the local scope
+// defines the variable x in the local scope; print "Hello"
 
 var y = 200
 // defines the variable y in the local scope

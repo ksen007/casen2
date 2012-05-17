@@ -111,7 +111,7 @@ public class TokenEater extends CObject {
 
 
     public CObject appendNewLine() {
-        tokens.add(new SymbolToken(null,SymbolTable.getInstance().getId("\n")));
+        tokens.add(SymbolTable.getInstance().newline);
         return this;
     }
 

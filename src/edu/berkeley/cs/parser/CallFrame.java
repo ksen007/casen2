@@ -198,7 +198,7 @@ public class CallFrame {
                 return true;
             }
 
-            if (!matchesToken(t,SymbolTable.getInstance().newline)) {
+            if (!matchesToken(t,SymbolTable.getInstance().newline) && !matchesToken(t,SymbolToken.end)) {
                 if (consumeToken(currentRule,t)) return true;
                 if (consumeExpr(currentRule,t)) return true;
             }
@@ -223,9 +223,9 @@ public class CallFrame {
 
     private static boolean isProgressPossible(RuleNode rn, CObject t) {
         return rn !=null
-                && (rn.getRuleForObject(t)!=null
-                || rn.getRuleForExpr()!=null
-                || rn.getRuleForToken()!=null
+                && (rn.getRuleForObject(t)!=null ||
+                (!matchesToken(t,SymbolToken.end) && !matchesToken(t,SymbolTable.getInstance().newline) && (rn.getRuleForExpr()!=null
+                || rn.getRuleForToken()!=null))
                 || rn.getRuleForAction()!=null);
     }
 
@@ -265,36 +265,38 @@ public class CallFrame {
             }
         }
 
-        current = LS;
-        while(current!=null) {
-            ret = current.getRuleNode();
-            if (ret!=null && (ret2=ret.getRuleForToken())!=null) {
-                return new Pair(ret,ret2.getOptionalPrecedence());
-            }
-            current = current.getParent();
-        }
-        if (extra != null ) {
-            ret = extra.getRuleNode();
-            if (ret!=null && (ret2=ret.getRuleForToken())!=null) {
-                return new Pair(ret,ret2.getOptionalPrecedence());
-            }
-        }
+        if (!matchesToken(t,SymbolTable.getInstance().newline) && !matchesToken(t,SymbolToken.end)) {
 
-        current = LS;
-        while(current!=null) {
-            ret = current.getRuleNode();
-            if (ret!=null && (ret2=ret.getRuleForExpr())!=null) {
-                return new Pair(ret,ret2.getOptionalPrecedence());
+            current = LS;
+            while(current!=null) {
+                ret = current.getRuleNode();
+                if (ret!=null && (ret2=ret.getRuleForToken())!=null) {
+                    return new Pair(ret,ret2.getOptionalPrecedence());
+                }
+                current = current.getParent();
             }
-            current = current.getParent();
-        }
-        if (extra != null ) {
-            ret = extra.getRuleNode();
-            if (ret!=null && (ret2=ret.getRuleForExpr())!=null) {
-                return new Pair(ret,ret2.getOptionalPrecedence());
+            if (extra != null ) {
+                ret = extra.getRuleNode();
+                if (ret!=null && (ret2=ret.getRuleForToken())!=null) {
+                    return new Pair(ret,ret2.getOptionalPrecedence());
+                }
             }
-        }
 
+            current = LS;
+            while(current!=null) {
+                ret = current.getRuleNode();
+                if (ret!=null && (ret2=ret.getRuleForExpr())!=null) {
+                    return new Pair(ret,ret2.getOptionalPrecedence());
+                }
+                current = current.getParent();
+            }
+            if (extra != null ) {
+                ret = extra.getRuleNode();
+                if (ret!=null && (ret2=ret.getRuleForExpr())!=null) {
+                    return new Pair(ret,ret2.getOptionalPrecedence());
+                }
+            }
+        }
         current = LS;
         while(current!=null) {
             ret = current.getRuleNode();

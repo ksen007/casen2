@@ -86,6 +86,7 @@ public class SymbolTable {
     public SymbolToken object = new SymbolToken(null,getId("Object"));
     public SymbolToken tokenToExpr = new SymbolToken(null,getId("tokenToExpr"));
     public SymbolToken Assert = new SymbolToken(null,getId("assert"));
+    public SymbolToken printdeep = new SymbolToken(null,getId("printDeep"));
 //    public int meta = getId("meta");
 //    public int literal = getId("literal");
 //    public int block = getId("block");

@@ -1,6 +1,5 @@
 package edu.berkeley.cs.builtin.objects;
 
-import edu.berkeley.cs.builtin.functions.GetField;
 import edu.berkeley.cs.builtin.functions.NativeFunction;
 import edu.berkeley.cs.parser.SymbolTable;
 
@@ -87,6 +86,11 @@ public class ProtoEnvironmentObject extends CObject {
         instance.addObject(SymbolTable.getInstance().print);
         instance.addMeta(SymbolTable.getInstance().expr);
         instance.addAction(new NativeFunction("print"));
+
+        instance.addNewRule();
+        instance.addObject(SymbolTable.getInstance().printdeep);
+        instance.addMeta(SymbolTable.getInstance().expr);
+        instance.addAction(new NativeFunction("printDeep"));
 
         instance.addNewRule();
         instance.addObject(SymbolTable.getInstance().New);
