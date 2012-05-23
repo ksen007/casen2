@@ -47,8 +47,18 @@ public class CDefinitionEater extends CObject {
         superClass.addAction(new NativeFunction("addToken"));
 
         superClass.addNewRule();
-        superClass.addObject(SymbolTable.getInstance().semi);
-        superClass.addAction(new NativeFunction("addSemi"));
+        superClass.addObject(SymbolTable.getInstance().lcurly);
+        superClass.addAction(new NativeFunction("createNewTokenEater"));
+
+        superClass.addNewRule();
+        superClass.addObject(SymbolTable.getInstance().lcurly);
+        superClass.addObject(SymbolTable.getInstance().bar);
+        superClass.addAction(new NativeFunction("createNewParameterEater"));
+
+        superClass.addNewRule();
+        superClass.addObject(SymbolTable.getInstance().lcurly);
+        superClass.addObject(SymbolTable.getInstance().pound);
+        superClass.addAction(new NativeFunction("createJavaEater"));
     }
 
 
@@ -59,9 +69,16 @@ public class CDefinitionEater extends CObject {
         setRule(superClass);
     }
 
-    public CObject addSemi() {
-        this.parent.addObject(SymbolTable.getInstance().semi);
-        return this;
+    public CObject createJavaEater() {
+        return new JavaEater(this);
+    }
+
+    public CObject createNewParameterEater() {
+        return new CParameterEater(new TokenEater(this));
+    }
+
+    public CObject createNewTokenEater() {
+        return new TokenEater(this);
     }
 
     public CObject addToken(CObject arg) {

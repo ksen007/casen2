@@ -40,19 +40,19 @@ import java.util.Stack;
  */
 public class Action {
     int arguments;
-    Invokable func;
+    public Invokable func;
 
     public Action(int arguments, Invokable func) {
         this.arguments = arguments;
         this.func = func;
     }
 
-    public void apply(Stack<CObject> computationStack) {
+    public void apply(Stack<CObject> computationStack, CallFrame cf) {
         LinkedList<CObject> args = new LinkedList<CObject>();
         for(int i=0; i<=arguments;i++) {
             args.addFirst(computationStack.pop());
         }
-        computationStack.push(func.apply(args));
+        computationStack.push(func.apply(args,cf.LS));
     }
 
     @Override

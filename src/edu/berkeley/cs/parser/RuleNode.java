@@ -38,10 +38,21 @@ import java.util.LinkedList;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+class MetaPair {
+    public int sym;
+    public RuleNode rule;
+
+    MetaPair(int sym, RuleNode rule) {
+        this.sym = sym;
+        this.rule = rule;
+    }
+}
+
 public class RuleNode {
     private HashMap<CObject,RuleNode> next;
     private Action action;
-    private RuleNode expr;
+    private MetaPair expr;
     private RuleNode token;
 
     boolean isNoSpace = false;
@@ -95,9 +106,9 @@ public class RuleNode {
             }
         }
         if (expr !=null) {
-            LinkedList<String> tmp = expr.print();
+            LinkedList<String> tmp = expr.rule.print();
             for(String child:tmp) {
-                ret.add("@expr "+child);
+                ret.add("@"+SymbolTable.getInstance().getSymbol(expr.sym)+" "+child);
             }
         }
         if (token!=null) {
@@ -122,19 +133,30 @@ public class RuleNode {
         if (this==rootRules && metaSymbol==SymbolTable.getInstance().expr && !override) {
             throw new ParseException("First token of a def cannot be @expr.");
         }
-        if (metaSymbol==SymbolTable.getInstance().expr) {
-            if (expr == null) {
-                expr = new RuleNode(this, "@expr");
-            }
-            return  this.expr;
-        }
         if (metaSymbol==SymbolTable.getInstance().token) {
+            if (expr != null || action !=null) {
+                throw new ParseException("Cannot add @token when @expr or action exists");
+            }
             if (token == null) {
                 token = new RuleNode(this, "@token");
             }
             return  this.token;
+        } else {
+            if (token != null || action !=null) {
+                throw new ParseException("Cannot add @expr when @token or action exists");
+            }
+            if (metaSymbol==SymbolTable.getInstance().expr) {
+                metaSymbol = SymbolTable.getInstance().LS.symbol;
+            }
+            if (expr == null) {
+                expr = new MetaPair(metaSymbol,new RuleNode(this, "@"+SymbolTable.getInstance().getSymbol(metaSymbol)));
+            } else {
+                if (expr.sym != metaSymbol) {
+                    throw new ParseException("@"+SymbolTable.getInstance().getSymbol(expr.sym)+" already exists!");
+                }
+            }
+            return expr.rule;
         }
-        throw new ParseException("Bad Meta Token @"+SymbolTable.getInstance().getSymbol(metaSymbol));
     }
 
     public RuleNode addObject(CObject val) {
@@ -156,6 +178,9 @@ public class RuleNode {
     }
 
     public RuleNode addAction(Invokable func, int argCount) {
+        if (expr != null || token !=null) {
+            throw new ParseException("Cannot add action when @expr or @token exists");
+        }
         action = new Action(argCount,func);
         return null;
     }
@@ -177,7 +202,7 @@ public class RuleNode {
         return action;
     }
 
-    public RuleNode getRuleForExpr() {
+    public MetaPair getRuleForExpr() {
         return expr;
     }
 

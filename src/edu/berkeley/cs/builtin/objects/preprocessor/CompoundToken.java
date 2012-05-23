@@ -1,6 +1,7 @@
 package edu.berkeley.cs.builtin.objects.preprocessor;
 
-import edu.berkeley.cs.builtin.functions.*;
+import edu.berkeley.cs.builtin.functions.DirectCall;
+import edu.berkeley.cs.builtin.functions.DirectCallWith;
 import edu.berkeley.cs.builtin.objects.*;
 import edu.berkeley.cs.lexer.BasicScanner;
 import edu.berkeley.cs.lexer.BufferedLexer;

@@ -36,7 +36,7 @@ print (max 7 8)
 // an expression "max 7 3" in the current scope invokes the function associated with the pattern
 // after binding x to 7 and y to 3
 
-// Note that "max(7,3)" will result in exception
+// Note that "max 7,3" will result in exception
 def max (@expr , @expr ) {|x,y|
     if (x > y) then {
         var ret = x

@@ -36,7 +36,7 @@ print (5.4 * 8.9)
 // 48.06
 
 // no automatic conversion
-// print (5.6 * 4)  will throw exception
+// print 5.6 * 4  will throw exception
 
 
 // /////////////////////////////////////
@@ -142,7 +142,7 @@ print null
 // object type
 // everything is object
 // even integral numbers, floating point numbers, strings, Booleans, functions, symbols, meta tokens are objects
-// a scope is an object (more on this later)
+// a scope is an object---more on this later
 // new objects can be created as follows
 print new Object
 

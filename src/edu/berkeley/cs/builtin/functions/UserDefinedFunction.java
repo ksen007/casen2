@@ -44,7 +44,7 @@ public class UserDefinedFunction implements Invokable {
         this.body = body;
     }
 
-    public CObject apply(LinkedList<CObject> args) {
+    public CObject apply(LinkedList<CObject> args, CObject DS) {
         CObject ret = body.execute(args,true);
         return ret;
     }

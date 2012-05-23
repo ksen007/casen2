@@ -55,6 +55,15 @@ public class ProtoEnvironmentObject extends CObject {
         instance.addAction(new NativeFunction("returnToken"));
 
         instance.addNewRule();
+        instance.addObject(SymbolTable.getInstance().lcurly);
+        instance.addAction(new NativeFunction("createNewTokenEater"));
+
+        instance.addNewRule();
+        instance.addObject(SymbolTable.getInstance().lcurly);
+        instance.addObject(SymbolTable.getInstance().bar);
+        instance.addAction(new NativeFunction("createNewParameterEater"));
+
+        instance.addNewRule();
         instance.addObject(SymbolTable.getInstance().lparen);
         instance.addMeta(SymbolTable.getInstance().expr);
         instance.addObject(SymbolTable.getInstance().rparen);

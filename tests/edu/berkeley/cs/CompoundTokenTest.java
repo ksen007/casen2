@@ -1,5 +1,6 @@
 package edu.berkeley.cs;
 
+import edu.berkeley.cs.builtin.objects.CObject;
 import junit.framework.TestCase;
 
 /**
@@ -36,7 +37,7 @@ import junit.framework.TestCase;
  */
 public class CompoundTokenTest extends TestCase {
     public void testAddMul1() throws Exception {
-        Interpreter.interpret("(load \"examples/tutorial/assignment.sn\")()");
+        CObject ret = Interpreter.interpret("def foo {# public CObject apply(LinkedList args, CObject DS){ System.out.println(\"Hello World!\"); return (CObject)args.removeFirst();} #}; foo");
     }
 }
 //(var x = 5000 + 2 * 1156); print x; assert (x== 2688); ");

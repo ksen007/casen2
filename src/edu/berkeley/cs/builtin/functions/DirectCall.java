@@ -1,6 +1,6 @@
 package edu.berkeley.cs.builtin.functions;
 
-import edu.berkeley.cs.builtin.objects.*;
+import edu.berkeley.cs.builtin.objects.CObject;
 import edu.berkeley.cs.builtin.objects.preprocessor.CompoundToken;
 
 import java.util.LinkedList;
@@ -38,7 +38,7 @@ import java.util.LinkedList;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class DirectCall implements Invokable {
-    public CObject apply(LinkedList<CObject> args) {
+    public CObject apply(LinkedList<CObject> args, CObject DS) {
         CompoundToken body = (CompoundToken)args.removeFirst();
         return body.execute(args,false);
     }

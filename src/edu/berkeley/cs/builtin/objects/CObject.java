@@ -154,16 +154,32 @@ public class CObject {
         Lexer lexer = new StandardLexer(in);
         Scanner scnr = new BasicScanner(lexer);
 
-        CObject LS = new TokenEater(null,fname);
+        CObject LS = new TokenEater(null);
         CallFrame cf = new CallFrame(LS,LS,scnr);
         CompoundToken pgm = (CompoundToken)cf.interpret();
         return pgm;
     }
 
-    public CObject eval(String s) {
+    public CObject evalOld(String s) {
         try {
             CompoundToken pgm = parseIt(new StringReader(s),null);
             CObject ret = pgm.execute(this);
+            if (ret.isException()) {
+                throw new RuntimeException("Eval:\n"+ret);
+            }
+            return ret;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public CObject eval(String s) {
+        try {
+            Lexer lexer = new StandardLexer(new StringReader(s));
+            Scanner scnr = new BasicScanner(lexer);
+            CallFrame cf = new CallFrame(this, CStatementEater.instance,scnr);
+            CObject ret = cf.interpret();
             if (ret.isException()) {
                 throw new RuntimeException("Eval:\n"+ret);
             }
@@ -209,6 +225,14 @@ public class CObject {
 
     public CObject ne(CObject ret) {
         return this==ret?BooleanToken.FALSE():BooleanToken.TRUE();
+    }
+
+    public CObject createNewParameterEater() {
+        return new CParameterEater(new TokenEater(null));
+    }
+
+    public CObject createNewTokenEater() {
+        return new TokenEater(null);
     }
 
 
@@ -392,22 +416,22 @@ public class CObject {
     }
 
     public void addMeta(int metaSymbol) {
-        curr = curr.addMeta(rules,metaSymbol);
-        argCount++;
+        addMeta(metaSymbol,false);
     }
 
     public void addMeta(int metaSymbol,boolean override) {
-        curr = curr.addMeta(rules,metaSymbol,override);
+        RuleNode tmp = curr.addMeta(rules,metaSymbol,override);
         argCount++;
+        if (curr == rules && metaSymbol == SymbolTable.getInstance().token) {
+            tmp.addPrecedence(OperatorPrecedence.getInstance().getPrecedence(metaSymbol));
+        }
+        curr = tmp;
     }
 
     public void addObject(CObject object) {
         RuleNode tmp = curr.addObject(object);
         if (curr==rules) {
             tmp.addPrecedence(OperatorPrecedence.getInstance().getPrecedence(object));
-//            if (tmp.getOptionalPrecedence()!=0) {
-//                System.out.println("precedence:"+tmp.getOptionalPrecedence()+":"+object);
-//            }
         }
         curr = tmp;
     }
@@ -420,8 +444,23 @@ public class CObject {
         curr = curr.addPrecedence(prec);
     }
 
-//    public RuleNode getSuperRuleNode() {
-//        if (superC == null) return null;
-//        return superC.getRuleNode();
-//    }
+    public CObject getField(int sym) {
+        if (sym == SymbolTable.getInstance().LS.symbol) {
+            return this;
+        }
+        CObject current = this;
+        RuleNode ret, ret2;
+        CObject t = new SymbolToken(null,sym);
+        while(current!=null) {
+            ret = current.getRuleNode();
+            if (ret!=null && (ret2 = ret.getRuleForObject(t))!=null) {
+                Action a = ret2.getRuleForAction();
+                if (a!=null && a.func instanceof GetField)
+                    return ((GetField)a.func).reference.value;
+            }
+            current = current.getParent();
+        }
+        System.out.println("LS");
+        throw new ParseException("Field "+t+" not found.");
+    }
 }

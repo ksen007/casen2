@@ -38,13 +38,13 @@ import java.util.LinkedList;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class GetField implements Invokable {
-    private Reference reference;
+    public Reference reference;
 
     public GetField(Reference cReference) {
         this.reference = cReference;
     }
 
-    public CObject apply(LinkedList<CObject> args) {
+    public CObject apply(LinkedList<CObject> args, CObject DS) {
         return reference.value;
     }
 

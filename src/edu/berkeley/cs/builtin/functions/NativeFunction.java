@@ -49,13 +49,16 @@ public class NativeFunction implements Invokable {
     }
 
     public static String getStackTrace(Throwable aThrowable) {
-        final Writer result = new StringWriter();
-        final PrintWriter printWriter = new PrintWriter(result);
-        aThrowable.printStackTrace(printWriter);
-        return result.toString();
+        if (aThrowable !=null ){
+            final Writer result = new StringWriter();
+            final PrintWriter printWriter = new PrintWriter(result);
+            aThrowable.printStackTrace(printWriter);
+            return result.toString();
+        }
+        return null;
     }
 
-    public CObject apply(LinkedList<CObject> args) {
+    public CObject apply(LinkedList<CObject> args, CObject DS) {
         CObject self = args.removeFirst();
         Class[] types = new Class[args.size()];
         for(int i=0; i<types.length;i++) {

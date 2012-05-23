@@ -10,11 +10,11 @@ def // {
 // Every function computes in a scope, i.e. all the local variables, functions, and
 // patterned functions defined inside the function are made members of this scope.  A scope
 // is simply an object.  When a function or a patterned function is invoked, it creates
-// a new scope (i.e. creates a new empty object), assigns its arguments to the variables
+// a new scope i.e. creates a new empty object, assigns its arguments to the variables
 // denoted by the parameters of the function.  The variables are defined as members of
 // the scope.  The newly created scope is also assigned to the member variable LS_ of the
-// scope.  The scope inside which the function was defined (i.e. the lexical scope of
-// the function) is assigned to the variable prototype_ of the newly created scope.  When a
+// scope.  The scope inside which the function was defined i.e. the lexical scope of
+// the function is assigned to the variable prototype_ of the newly created scope.  When a
 // variable is accessed in the scope, the function searches the definition of the
 // variable in LS_.  If the search fails, it continues the search in the prototype_ of LS_, prototype_ of prototype_
 // of LS_,  and so on up to the global scope.  Similarly, when a patterned function is
@@ -52,7 +52,7 @@ def foo {
         print y
         y = 7
         print y
-        // (prototype_ y) is not defined
+        // prototype_ y is not defined
         print (prototype prototype y)
 
         return {

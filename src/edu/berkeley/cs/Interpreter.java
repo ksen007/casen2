@@ -37,6 +37,11 @@ import edu.berkeley.cs.builtin.objects.preprocessor.CompoundToken;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class Interpreter {
+    public static CObject interpretOld(String s) {
+        EnvironmentObject tmp = new EnvironmentObject();
+        return tmp.evalOld(s);
+    }
+
     public static CObject interpret(String s) {
         EnvironmentObject tmp = new EnvironmentObject();
         return tmp.eval(s);
@@ -51,7 +56,12 @@ public class Interpreter {
     }
 }
 
-//@todo: void token
+//@todo make shift default
+//@todo make () special case
+//@todo make single pass interpreter
+//@todo implement {{ }} to embed Java code
+//@todo implement multi lookahead for symbols
+
 //@todo: allow creation of CompoundToken from a sequence of tokens
 //@todo: provide undef, isdef, redef, getAction
 //@todo: handle return from blocks

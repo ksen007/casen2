@@ -2,7 +2,6 @@ package edu.berkeley.cs.builtin.objects;
 
 import edu.berkeley.cs.builtin.functions.NativeFunction;
 import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
-import edu.berkeley.cs.parser.OperatorPrecedence;
 import edu.berkeley.cs.parser.SymbolTable;
 
 /**
@@ -45,13 +44,13 @@ public class CStatementEater extends CObject {
 
         this.addNewRule();
         this.addMeta(SymbolTable.getInstance().expr, true);
-        this.addPrecedence(OperatorPrecedence.getInstance().getPrecedence(SymbolTable.getInstance().semi));
+//        this.addPrecedence(OperatorPrecedence.getInstance().getPrecedence(SymbolTable.getInstance().semi));
         this.addObject(SymbolTable.getInstance().semi);
         this.addAction(new NativeFunction("returnSS"));
 
         this.addNewRule();
         this.addMeta(SymbolTable.getInstance().expr, true);
-        this.addPrecedence(OperatorPrecedence.getInstance().getPrecedence(SymbolTable.getInstance().newline));
+//        this.addPrecedence(OperatorPrecedence.getInstance().getPrecedence(SymbolTable.getInstance().newline));
         this.addObject(SymbolTable.getInstance().newline);
         this.addAction(new NativeFunction("returnSS"));
 

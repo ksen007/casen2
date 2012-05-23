@@ -1,12 +1,6 @@
 package edu.berkeley.cs;
 
-import edu.berkeley.cs.Interpreter;
-import edu.berkeley.cs.lexer.*;
-import edu.berkeley.cs.parser.CallFrame;
-import edu.berkeley.cs.parser.ParseException;
 import junit.framework.TestCase;
-
-import java.io.StringReader;
 
 /**
  * Copyright (c) 2006-2011,

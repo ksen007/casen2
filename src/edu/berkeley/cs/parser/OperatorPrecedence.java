@@ -37,11 +37,11 @@ import gnu.trove.map.hash.TIntIntHashMap;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class OperatorPrecedence {
-    public final int offset = 500;
+    public final int offset = 501;
     private static OperatorPrecedence ourInstance = new OperatorPrecedence();
     private TIntIntHashMap precedenceTable = new TIntIntHashMap();
-    // even number => left-associative
-    // odd number => right associative
+    // odd number => left-associative
+    // even number => right associative
     // 0 is the default precedence
 
 
@@ -51,6 +51,8 @@ public class OperatorPrecedence {
 
     private OperatorPrecedence() {
 //       precedenceTable.put(SymbolTable.getInstance().getId(","),90-offset);
+
+        precedenceTable.put(SymbolTable.getInstance().token,50-offset);
 
         precedenceTable.put(SymbolTable.getInstance().assign.symbol,101-offset);
 
@@ -82,11 +84,11 @@ public class OperatorPrecedence {
         precedenceTable.put(SymbolTable.getInstance().getId("%"),210-offset);
         precedenceTable.put(SymbolTable.getInstance().getId("/"),210-offset);
 
-        precedenceTable.put(SymbolTable.getInstance().not.symbol,221-offset);
-        precedenceTable.put(SymbolTable.getInstance().getId("~"),221-offset);
+//        precedenceTable.put(SymbolTable.getInstance().not.symbol,221-offset);
+//        precedenceTable.put(SymbolTable.getInstance().getId("~"),221-offset);
 
-        precedenceTable.put(SymbolTable.getInstance().semi.symbol,81-offset);
-        precedenceTable.put(SymbolTable.getInstance().newline.symbol,81-offset);
+//        precedenceTable.put(SymbolTable.getInstance().semi.symbol,81-offset);
+//        precedenceTable.put(SymbolTable.getInstance().newline.symbol,81-offset);
 //        precedenceTable.put(SymbolTable.getInstance().getId("."),230-offset);
 //        precedenceTable.put(SymbolTable.getInstance().getId("("),230-offset);
 //        precedenceTable.put(SymbolTable.getInstance().getId("["),230-offset);
@@ -104,7 +106,7 @@ public class OperatorPrecedence {
 //        if (sym2==10) {
 //            System.out.println("Prev ="+exprPrecedence);
 //        }
-        if (sym2 > exprPrecedence || (exprPrecedence == sym2 && sym2 % 2 == 1)) {
+        if (sym2 > exprPrecedence || (exprPrecedence == sym2 && sym2 % 2 == 0)) {
             return true;
         }
         return false;
@@ -115,6 +117,10 @@ public class OperatorPrecedence {
             return precedenceTable.get(((SymbolToken)t).symbol);
         }
         return 0;
+    }
+
+    public int getPrecedence(int sym) {
+        return precedenceTable.get(sym);
     }
 
     public boolean isDefined(String op) {
