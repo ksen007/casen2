@@ -1,8 +1,10 @@
 package edu.berkeley.cs.builtin.objects;
 
-import edu.berkeley.cs.builtin.functions.NativeFunction;
+import edu.berkeley.cs.builtin.functions.Invokable;
 import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
 import edu.berkeley.cs.parser.SymbolTable;
+
+import java.util.LinkedList;
 
 /**
  * Copyright (c) 2006-2011,
@@ -40,54 +42,65 @@ public class CStatementEater extends CObject {
     public static CObject instance = new CStatementEater();
 
     private CStatementEater() {
-        //rules = new RuleNode(null);
-
         this.addNewRule();
         this.addMeta(SymbolTable.getInstance().expr, true);
-//        this.addPrecedence(OperatorPrecedence.getInstance().getPrecedence(SymbolTable.getInstance().semi));
         this.addObject(SymbolTable.getInstance().semi);
-        this.addAction(new NativeFunction("returnSS"));
+        this.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                CStatementEater self = (CStatementEater)args.removeFirst();
+                return self;
+            }
+        },this);
 
         this.addNewRule();
         this.addMeta(SymbolTable.getInstance().expr, true);
-//        this.addPrecedence(OperatorPrecedence.getInstance().getPrecedence(SymbolTable.getInstance().newline));
         this.addObject(SymbolTable.getInstance().newline);
-        this.addAction(new NativeFunction("returnSS"));
+        this.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                CStatementEater self = (CStatementEater)args.removeFirst();
+                return self;
+            }
+        },this);
 
         this.addNewRule();
         this.addMeta(SymbolTable.getInstance().expr,true);
         this.addObject(SymbolToken.end);
-        this.addAction(new NativeFunction("signalReturn"));
+        this.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                CStatementEater self = (CStatementEater)args.removeFirst();
+                CObject arg = args.removeFirst();
+                arg.setReturn();
+                return arg;
+            }
+        },this);
 
         this.addNewRule();
         this.addObject(SymbolTable.getInstance().semi);
-        this.addAction(new NativeFunction("returnSS"));
+        this.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                CStatementEater self = (CStatementEater)args.removeFirst();
+                return self;
+            }
+        },this);
 
         this.addNewRule();
         this.addObject(SymbolTable.getInstance().newline);
-        this.addAction(new NativeFunction("returnSS"));
+        this.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                CStatementEater self = (CStatementEater)args.removeFirst();
+                return self;
+            }
+        },this);
 
         this.addNewRule();
         this.addObject(SymbolToken.end);
-        this.addAction(new NativeFunction("signalReturn"));
+        this.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                CStatementEater self = (CStatementEater)args.removeFirst();
+                self.setReturn();
+                return self;
+            }
+        },this);
 
-    }
-
-    public CObject returnSS() {
-        return this;
-    }
-
-    public CObject returnSS(CObject arg) {
-        return this;
-    }
-
-    public CObject signalReturn() {
-        setReturn();
-        return this;
-    }
-
-    public CObject signalReturn(CObject arg) {
-        arg.setReturn();
-        return arg;
     }
 }

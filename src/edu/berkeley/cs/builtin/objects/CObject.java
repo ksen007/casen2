@@ -3,13 +3,11 @@ package edu.berkeley.cs.builtin.objects;
 import edu.berkeley.cs.builtin.functions.GetField;
 import edu.berkeley.cs.builtin.functions.Invokable;
 import edu.berkeley.cs.builtin.functions.PutField;
-import edu.berkeley.cs.builtin.objects.preprocessor.*;
+import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
 import edu.berkeley.cs.lexer.*;
 import edu.berkeley.cs.parser.*;
 
 import java.io.*;
-import java.util.IdentityHashMap;
-import java.util.TreeMap;
 
 /**
  * Copyright (c) 2006-2011,
@@ -103,32 +101,33 @@ public class CObject {
         return position;
     }
 
+    public void setPosition(SourcePosition position) {
+        this.position = position;
+    }
 
     public CObject(SourcePosition position) {
         this.position = position;
     }
 
     public String locationString() {
-        return position==null?"":position.toString();
+        return position==null?" Unknown location ":position.toString();
     }
 
 
-    public CObject() {
-        //rules = new RuleNode(null);
-    }
+    public CObject() {    }
 
     public void assign(SymbolToken var, Reference val) {
         var.clearNoSpace();
 
         this.addNewRule();
         this.addObject(var);
-        this.addAction(new GetField(val));
+        this.addAction(new GetField(val),null);
 
         this.addNewRule();
         this.addObject(var);
         this.addObject(SymbolTable.getInstance().assign);
         this.addMeta(SymbolTable.getInstance().expr);
-        this.addAction(new PutField(val));
+        this.addAction(new PutField(val),null);
     }
 
     public void setRule(CObject methods) {
@@ -150,33 +149,46 @@ public class CObject {
         return rules;
     }
 
-    private static CompoundToken parseIt(Reader in,String fname) throws IOException {
-        Lexer lexer = new StandardLexer(in);
-        Scanner scnr = new BasicScanner(lexer);
+//    private static CompoundToken parseIt(Reader in,String fname) throws IOException {
+//        Lexer lexer = new StandardLexer(in);
+//        Scanner scnr = new BasicScanner(lexer);
+//
+//        CObject LS = new TokenEater(null);
+//        CallFrame cf = new CallFrame(LS,LS,scnr);
+//        CompoundToken pgm = (CompoundToken)cf.interpret();
+//        return pgm;
+//    }
 
-        CObject LS = new TokenEater(null);
-        CallFrame cf = new CallFrame(LS,LS,scnr);
-        CompoundToken pgm = (CompoundToken)cf.interpret();
-        return pgm;
+//    public CObject evalOld(String s) {
+//        try {
+//            CompoundToken pgm = parseIt(new StringReader(s),null);
+//            CObject ret = pgm.execute(this);
+//            if (ret.isException()) {
+//                throw new RuntimeException("Eval:\n"+ret);
+//            }
+//            return ret;
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            throw new RuntimeException(e.getMessage());
+//        }
+//    }
+
+    public CObject evalString(String s) {
+        return eval(new StringReader(s),s,false);
     }
 
-    public CObject evalOld(String s) {
+    public CObject evalFile(String s) {
         try {
-            CompoundToken pgm = parseIt(new StringReader(s),null);
-            CObject ret = pgm.execute(this);
-            if (ret.isException()) {
-                throw new RuntimeException("Eval:\n"+ret);
-            }
-            return ret;
+            return eval(new BufferedReader(new FileReader(s)),s,true);
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e.getMessage());
         }
     }
 
-    public CObject eval(String s) {
+    private CObject eval(Reader in,String s, boolean isFile) {
         try {
-            Lexer lexer = new StandardLexer(new StringReader(s));
+            Lexer lexer = new StandardLexer(in,s,isFile);
             Scanner scnr = new BasicScanner(lexer);
             CallFrame cf = new CallFrame(this, CStatementEater.instance,scnr);
             CObject ret = cf.interpret();
@@ -190,206 +202,36 @@ public class CObject {
         }
     }
 
-    private static TreeMap<String,CompoundToken> codeCache = new TreeMap<String, CompoundToken>();
-    public static String currentFile = null;
-    public static IdentityHashMap<CompoundToken,CObject> staticObjects = new IdentityHashMap<CompoundToken, CObject>();
+//    private static TreeMap<String,CompoundToken> codeCache = new TreeMap<String, CompoundToken>();
+//    public static String currentFile = null;
 
-    public static CObject load(String file, boolean reload) {
-        Reader in = null;
-        CompoundToken pgm;
-        try {
-            if (reload || !codeCache.containsKey(file)) {
-                in = new BufferedReader(new FileReader(file));
-                pgm = parseIt(in,file);
-                codeCache.put(file,pgm);
-            } else {
-                pgm = codeCache.get(file);
-            }
-            return pgm;
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e.getMessage());
-        } finally {
-            if (in!=null)
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
-        }
-    }
+//    public static CObject load(String file, boolean reload) {
+//        Reader in = null;
+//        CompoundToken pgm;
+//        try {
+//            if (reload || !codeCache.containsKey(file)) {
+//                in = new BufferedReader(new FileReader(file));
+//                pgm = parseIt(in,file);
+//                codeCache.put(file,pgm);
+//            } else {
+//                pgm = codeCache.get(file);
+//            }
+//            return pgm;
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            throw new RuntimeException(e.getMessage());
+//        } finally {
+//            if (in!=null)
+//                try {
+//                    in.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//                }
+//        }
+//    }
 
-    public CObject eq(CObject ret) {
-        return this==ret?BooleanToken.TRUE():BooleanToken.FALSE();
-    }
-
-    public CObject ne(CObject ret) {
-        return this==ret?BooleanToken.FALSE():BooleanToken.TRUE();
-    }
-
-    public CObject createNewParameterEater() {
-        return new CParameterEater(new TokenEater(null));
-    }
-
-    public CObject createNewTokenEater() {
-        return new TokenEater(null);
-    }
-
-
-
-    public CObject newDefinitionEater() {
-        return new CDefinitionEater(this);
-    }
-
-
-    public CObject loadFile(CObject file) {
-        File f;
-        if (currentFile != null) {
-            f = new File(currentFile);
-            f = new File(f.getParent(),((StringToken)file).value);
-        } else {
-            f = new File(((StringToken)file).value);
-        }
-        return load(f.getAbsolutePath(),false);
-    }
-
-    public CObject reloadFile(CObject file) {
-        File f = new File(currentFile);
-        f = new File(f.getParent(),((StringToken)file).value);
-        return load(f.getAbsolutePath(),true);
-    }
-
-    public CObject assignment(CObject sym, CObject value) {
-        CObject self = this;
-        SymbolToken symbol = (SymbolToken)sym;
-
-        Reference common = new Reference(value);
-        assign(symbol,common);
-        return value;
-    }
-
-    public CObject print(CObject ret) {
-        System.out.println(ret);
-        return ret;
-    }
-
-
-    public CObject assertEquality(CObject first) {
-        if (!((BooleanToken)first).value)
-            throw new RuntimeException("assert failed");
-        return VoidToken.VOID();
-    }
-
-    public CObject returnArgument(CObject arg) {
-        return arg;
-    }
-
-    public CObject returnToken(CObject tok) {
-        return tok;
-    }
-
-
-    public CObject whileAction(CObject S1, CObject S2) {
-        CompoundToken s1 = (CompoundToken)S1;
-        CompoundToken s2 = (CompoundToken)S2;
-        CObject ret;
-        ret = s1.execute(this);
-        if (ret.isException()) return ret;
-
-        while(((BooleanToken)ret).value) {
-            ret = s2.execute(this);
-            if (ret.isException()) return ret;
-
-            ret = s1.execute(this);
-            if (ret.isException()) return ret;
-        }
-        return VoidToken.VOID();
-    }
-
-
-
-    public CObject onceAction(CObject S) {
-        CompoundToken s = (CompoundToken)S;
-        CObject val;
-        if ((val = CObject.staticObjects.get(s))==null) {
-            val = s.execute(this);
-            if (val.isException()) return val;
-            CObject.staticObjects.put(s,val);
-        }
-        return val;
-    }
-
-    public CObject ifAction(CObject c1, CObject S1, CObject S2) {
-        BooleanToken cond = (BooleanToken) c1;
-        CompoundToken s1 = (CompoundToken)S1;
-        CompoundToken s2 = (CompoundToken)S2;
-        if (cond.value) {
-            CObject ret = s1.execute(this);
-            if (ret.isException()) return ret;
-            return VoidToken.VOID();
-        } else {
-            CObject ret = s2.execute(this);
-            if (ret.isException()) return ret;
-            return VoidToken.VOID();
-        }
-    }
-
-    public CObject unaryNot(CObject operand2) {
-        return ((BooleanToken)operand2).value? BooleanToken.FALSE(): BooleanToken.TRUE();
-    }
-
-    public CObject unaryMinus(CObject operand2) {
-        if (operand2 instanceof LongToken)
-            return new LongToken(null,-((LongToken)operand2).value);
-        return new DoubleToken(null,-((DoubleToken)operand2).value);
-
-    }
-
-    public CObject newObject() {
-        StandardObject ret = new StandardObject();
-        //ret.setParent(this,false);
-        return ret;
-    }
-
-    public CObject cReturn(CObject val) {
-        val.setReturn();
-        return val;
-    }
-
-    public CObject cException(CObject val) {
-        val.setException();
-        return val;
-    }
-
-    public CObject tryCatch(CObject tryAction, CObject var, CObject catchAction) {
-        SymbolToken symbol = (SymbolToken) var;
-        CompoundToken s1 = (CompoundToken)tryAction;
-        CompoundToken s2 = (CompoundToken)catchAction;
-        CObject ret = s1.execute(this);
-        if (ret.isException()) {
-            ret.clearException();
-            Reference common = new Reference(ret);
-            assign(symbol, common);
-
-            ret = s2.execute(this);
-            if (ret.isException()) return ret;
-        }
-        return VoidToken.VOID();
-    }
-
-    @Override
-    public int hashCode() {
-        return System.identityHashCode(this);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof CObject)) return false;
-        return this == o;
-    }
-
-    public CObject printDeep(CObject current) {
-        CObject tmp = current;
+    public CObject printDeep() {
+        CObject current = this;
         RuleNode ret;
         System.out.println("Object:");
         while(current!=null) {
@@ -401,7 +243,19 @@ public class CObject {
             current = current.getParent();
         }
         System.out.println("End");
-        return tmp;
+        return this;
+    }
+
+
+    @Override
+    public int hashCode() {
+        return System.identityHashCode(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof CObject)) return false;
+        return this == o;
     }
 
     RuleNode curr;
@@ -436,8 +290,8 @@ public class CObject {
         curr = tmp;
     }
 
-    public void addAction(Invokable func) {
-        curr = curr.addAction(func,argCount);
+    public void addAction(Invokable func, CObject SS) {
+        curr = curr.addAction(new Action(argCount,func,SS));
     }
 
     public void addPrecedence(int prec) {

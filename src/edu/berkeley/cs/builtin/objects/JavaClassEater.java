@@ -1,12 +1,5 @@
 package edu.berkeley.cs.builtin.objects;
 
-import edu.berkeley.cs.builtin.functions.Invokable;
-import edu.berkeley.cs.builtin.functions.NativeFunction;
-import edu.berkeley.cs.builtin.objects.preprocessor.NullToken;
-import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
-import edu.berkeley.cs.builtin.objects.preprocessor.VoidToken;
-import edu.berkeley.cs.parser.SymbolTable;
-
 /**
  * Copyright (c) 2006-2011,
  * Koushik Sen    <ksen@cs.berkeley.edu>
@@ -39,57 +32,57 @@ import edu.berkeley.cs.parser.SymbolTable;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class JavaClassEater extends CObject {
-    private CObject parent;
-    private StringBuilder symbols;
-    private boolean isNativeFunction;
-
-    public static CObject superClass = new CObject();
-    static {
-        superClass.addNewRule();
-        superClass.addObject(SymbolTable.getInstance().dot);
-        superClass.addMeta(SymbolTable.getInstance().token);
-        superClass.addAction(new NativeFunction("addPackage"));
-
-        superClass.addNewRule();
-        superClass.addObject(SymbolTable.getInstance().endef);
-        superClass.addAction(new NativeFunction("addNative"));
-    }
-
-    public JavaClassEater(CObject parent, String symbol) {
-        super();
-        this.parent = parent;
-        this.symbols = new StringBuilder(symbol);
-        this.isNativeFunction = true;
-
-        setRule(superClass);
-        //rules = new RuleNode(null);
-//        this.addNewRule();
-//        this.addSymbol(SymbolTable.getInstance().getId("."));
-//        this.addMeta(SymbolTable.getInstance().symbol);
-//        this.addAction(new NativeFunction("addPackage"));
+public class JavaClassEater {//extends CObject {
+//    private CObject parent;
+//    private StringBuilder symbols;
+//    private boolean isNativeFunction;
 //
-//        this.addNewRule();
-//        this.addSymbol(SymbolTable.getInstance().getId(":"));
-//        this.addAction(new NativeFunction("addNative"));
-    }
-
-    public CObject addPackage(CObject sym) {
-        symbols.append('.').append(SymbolTable.getInstance().getSymbol(((SymbolToken)sym).symbol));
-        this.isNativeFunction = false;
-        return this;
-    }
-
-    public CObject addNative() {
-        if (isNativeFunction) {
-            parent.addAction(new NativeFunction(symbols.toString()));
-        } else {
-            try {
-                parent.addAction((Invokable)(Class.forName(symbols.toString()).newInstance()));
-            } catch (Exception e) {
-                throw new RuntimeException(e.getMessage());
-            }
-        }
-        return VoidToken.VOID();
-    }
+//    public static CObject superClass = new CObject();
+//    static {
+//        superClass.addNewRule();
+//        superClass.addObject(SymbolTable.getInstance().dot);
+//        superClass.addMeta(SymbolTable.getInstance().token);
+//        superClass.addAction(new NativeFunction("addPackage"));
+//
+//        superClass.addNewRule();
+//        superClass.addObject(SymbolTable.getInstance().endef);
+//        superClass.addAction(new NativeFunction("addNative"));
+//    }
+//
+//    public JavaClassEater(CObject parent, String symbol) {
+//        super();
+//        this.parent = parent;
+//        this.symbols = new StringBuilder(symbol);
+//        this.isNativeFunction = true;
+//
+//        setRule(superClass);
+//        //rules = new RuleNode(null);
+////        this.addNewRule();
+////        this.addSymbol(SymbolTable.getInstance().getId("."));
+////        this.addMeta(SymbolTable.getInstance().symbol);
+////        this.addAction(new NativeFunction("addPackage"));
+////
+////        this.addNewRule();
+////        this.addSymbol(SymbolTable.getInstance().getId(":"));
+////        this.addAction(new NativeFunction("addNative"));
+//    }
+//
+//    public CObject addPackage(CObject sym) {
+//        symbols.append('.').append(SymbolTable.getInstance().getSymbol(((SymbolToken)sym).symbol));
+//        this.isNativeFunction = false;
+//        return this;
+//    }
+//
+//    public CObject addNative() {
+//        if (isNativeFunction) {
+//            parent.addAction(new NativeFunction(symbols.toString()));
+//        } else {
+//            try {
+//                parent.addAction((Invokable)(Class.forName(symbols.toString()).newInstance()));
+//            } catch (Exception e) {
+//                throw new RuntimeException(e.getMessage());
+//            }
+//        }
+//        return VoidToken.VOID();
+//    }
 }

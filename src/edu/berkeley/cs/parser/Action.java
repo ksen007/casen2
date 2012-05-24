@@ -41,10 +41,12 @@ import java.util.Stack;
 public class Action {
     int arguments;
     public Invokable func;
+    CObject SS;
 
-    public Action(int arguments, Invokable func) {
+    public Action(int arguments, Invokable func, CObject SS) {
         this.arguments = arguments;
         this.func = func;
+        this.SS = SS;
     }
 
     public void apply(Stack<CObject> computationStack, CallFrame cf) {
@@ -52,7 +54,7 @@ public class Action {
         for(int i=0; i<=arguments;i++) {
             args.addFirst(computationStack.pop());
         }
-        computationStack.push(func.apply(args,cf.LS));
+        computationStack.push(func.apply(args,SS,cf.LS));
     }
 
     @Override

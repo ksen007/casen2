@@ -2,7 +2,6 @@ package edu.berkeley.cs;
 
 import edu.berkeley.cs.builtin.objects.CObject;
 import edu.berkeley.cs.builtin.objects.EnvironmentObject;
-import edu.berkeley.cs.builtin.objects.preprocessor.CompoundToken;
 
 /**
  * Copyright (c) 2006-2011,
@@ -37,19 +36,14 @@ import edu.berkeley.cs.builtin.objects.preprocessor.CompoundToken;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class Interpreter {
-    public static CObject interpretOld(String s) {
-        EnvironmentObject tmp = new EnvironmentObject();
-        return tmp.evalOld(s);
-    }
-
     public static CObject interpret(String s) {
         EnvironmentObject tmp = new EnvironmentObject();
-        return tmp.eval(s);
+        return tmp.evalString(s);
     }
 
     public static void main(String[] args) {
-        CompoundToken pgm = (CompoundToken)CObject.load(args[0], false);
-        CObject ret = pgm.execute();
+        EnvironmentObject tmp = new EnvironmentObject();
+        CObject ret = tmp.evalFile(args[0]);
         if (ret.isException()) {
             System.err.println(ret);
         }

@@ -1,8 +1,11 @@
 package edu.berkeley.cs.builtin.objects;
 
-import edu.berkeley.cs.builtin.functions.GetField;
-import edu.berkeley.cs.builtin.functions.NativeFunction;
+import edu.berkeley.cs.builtin.functions.Invokable;
+import edu.berkeley.cs.builtin.objects.preprocessor.BooleanToken;
+import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
 import edu.berkeley.cs.parser.SymbolTable;
+
+import java.util.LinkedList;
 
 /**
  * Copyright (c) 2006-2011,
@@ -45,25 +48,49 @@ public class ProtoStandardObject {
         instance.addMeta(SymbolTable.getInstance().token);
         instance.addObject(SymbolTable.getInstance().assign);
         instance.addMeta(SymbolTable.getInstance().expr);
-        instance.addAction(new NativeFunction("assignment"));
+        instance.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                CObject self = args.removeFirst();
+                SymbolToken symbol = (SymbolToken)args.removeFirst();
+                CObject value = args.removeFirst();
+                Reference common = new Reference(value);
+                self.assign(symbol, common);
+                return value;
+
+            }
+        },instance);
 
         instance.addNewRule();
         instance.addObject(SymbolTable.getInstance().def);
-        instance.addAction(new NativeFunction("newDefinitionEater"));
+        instance.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                CObject self = args.removeFirst();
+                return new CDefinitionEater(self);
+            }
+        },instance);
+
 
         instance.addNewRule();
         instance.addObject(SymbolTable.getInstance().eq);
         instance.addMeta(SymbolTable.getInstance().expr);
-        instance.addAction(new NativeFunction("eq"));
+        instance.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                CObject self = args.removeFirst();
+                CObject arg = args.removeFirst();
+                return self==arg? BooleanToken.TRUE():BooleanToken.FALSE();
+            }
+        },instance);
 
         instance.addNewRule();
         instance.addObject(SymbolTable.getInstance().ne);
         instance.addMeta(SymbolTable.getInstance().expr);
-        instance.addAction(new NativeFunction("ne"));
+        instance.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                CObject self = args.removeFirst();
+                CObject arg = args.removeFirst();
+                return self!=arg? BooleanToken.TRUE():BooleanToken.FALSE();
+            }
+        },instance);
 
-//        instance.addNewRule();
-//        instance.addObject(SymbolTable.getInstance().LS);
-//        instance.addAction(new GetField(new Reference(instance)));
-//
     }
 }

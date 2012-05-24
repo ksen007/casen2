@@ -40,7 +40,7 @@ import java.io.StringReader;
  */
 public class BasicScannerTest extends TestCase {
     public void testLex1() throws Exception {
-        Lexer lexer = new StandardLexer(new FileReader("test1"));
+        Lexer lexer = new StandardLexer(new FileReader("test1"),"test1",true);
         BasicScanner scanner = new BasicScanner(lexer);
         CObject token;
         while((token = scanner.nextToken())!=null) {
@@ -50,7 +50,7 @@ public class BasicScannerTest extends TestCase {
     }
 
     public void testString() throws Exception {
-        Lexer lexer = new StandardLexer(new StringReader("y = x + y; def foo @LS {};"));
+        Lexer lexer = new StandardLexer(new StringReader("y = x + y; def foo @LS {};"),"y = x + y; def foo @LS {};",false);
         BasicScanner scanner = new BasicScanner(lexer);
         CObject token;
         while((token = scanner.nextToken())!=null) {

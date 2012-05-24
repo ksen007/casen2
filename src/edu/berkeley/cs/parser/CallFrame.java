@@ -45,13 +45,9 @@ public class CallFrame {
     private Stack<Integer> precedenceStack;
     CObject LS;
     private Scanner scnr;
-    //private CObject environment;
 
 
-    public CallFrame(CObject LS, CObject base, /* CObject environment,*/ Scanner scnr) {
-//        CObject t;
-
-//        this.environment = environment;
+    public CallFrame(CObject LS, CObject base, Scanner scnr) {
         this.LS = LS;
         this.scnr = scnr;
         parseRuleStack = new Stack<RuleNode>();
@@ -69,11 +65,7 @@ public class CallFrame {
 
     private static boolean matchesToken(CObject t, SymbolToken sym) {
         if (t instanceof SymbolToken) {
-            boolean ret = ((SymbolToken)t).symbol == sym.symbol;
-            if (ret) {
-                //System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-            }
-            return ret;
+            return ((SymbolToken)t).symbol == sym.symbol;
         }
         return false;
     }
@@ -91,7 +83,6 @@ public class CallFrame {
                 return top;
             }
         }
-//        return computationStack.peek();
     }
 
     public boolean interpretAux() {
@@ -123,7 +114,6 @@ public class CallFrame {
             computationStack.push(ret);
             return true;
         }
-//        System.out.println(currentRule);
         StringToken ret = new StringToken(null,"Failed to consume "+t+" at "+t.locationString()+" with "+this);
         ret.setException();
         computationStack.push(ret);
@@ -133,6 +123,7 @@ public class CallFrame {
     private boolean consumeSymbol(RuleNode currentRule, CObject t) {
         RuleNode ret = currentRule.getRuleForObject(t);
         if (ret!=null) {
+            LS.setPosition(t.getPosition());
             parseRuleStack.pop();
             parseRuleStack.push(ret);
             if (matchesToken(t,SymbolTable.getInstance().assign)) {

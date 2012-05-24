@@ -40,7 +40,7 @@ import java.util.LinkedList;
 public class CArray extends CObject implements Invokable {
     public CArray() {    }
 
-    public CObject apply(LinkedList<CObject> args, CObject DS) {
+    public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
         args.removeFirst();
         LongToken size = (LongToken)args.removeFirst();
         return new CArray(size.value);

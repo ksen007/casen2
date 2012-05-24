@@ -1,13 +1,8 @@
 package edu.berkeley.cs.builtin.functions;
 
-import edu.berkeley.cs.builtin.objects.CObject;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.LinkedList;
 
 /**
  * Copyright (c) 2006-2011,
@@ -41,13 +36,13 @@ import java.util.LinkedList;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class NativeFunction implements Invokable {
-    private String methodName;
-
-    public NativeFunction(String methodName) {
-        this.methodName = methodName;
-    }
-
+public class NativeFunction {// implements Invokable {
+//    private String methodName;
+//
+//    public NativeFunction(String methodName) {
+//        this.methodName = methodName;
+//    }
+//
     public static String getStackTrace(Throwable aThrowable) {
         if (aThrowable !=null ){
             final Writer result = new StringWriter();
@@ -57,29 +52,29 @@ public class NativeFunction implements Invokable {
         }
         return null;
     }
-
-    public CObject apply(LinkedList<CObject> args, CObject DS) {
-        CObject self = args.removeFirst();
-        Class[] types = new Class[args.size()];
-        for(int i=0; i<types.length;i++) {
-            types[i] = CObject.class;
-
-        }
-        Method method;
-        try {
-            method = self.getClass().getMethod(methodName, types);
-            return (CObject)method.invoke(self,args.toArray());
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException("No such native method "+self+" "+methodName+" because "+getStackTrace(e.getCause()));
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException("Exception in native method "+self+"."+methodName+"("+args+") because "+getStackTrace(e.getCause()));
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException("Illegal access in native method "+self+" "+methodName+" because "+getStackTrace(e));
-        }
-    }
-
-        @Override
-        public String toString() {
-            return "@"+methodName;
-        }
+//
+//    public CObject apply(LinkedList<CObject> args, CObject DS) {
+//        CObject self = args.removeFirst();
+//        Class[] types = new Class[args.size()];
+//        for(int i=0; i<types.length;i++) {
+//            types[i] = CObject.class;
+//
+//        }
+//        Method method;
+//        try {
+//            method = self.getClass().getMethod(methodName, types);
+//            return (CObject)method.invoke(self,args.toArray());
+//        } catch (NoSuchMethodException e) {
+//            throw new RuntimeException("No such native method "+self+" "+methodName+" because "+getStackTrace(e.getCause()));
+//        } catch (InvocationTargetException e) {
+//            throw new RuntimeException("Exception in native method "+self+"."+methodName+"("+args+") because "+getStackTrace(e.getCause()));
+//        } catch (IllegalAccessException e) {
+//            throw new RuntimeException("Illegal access in native method "+self+" "+methodName+" because "+getStackTrace(e));
+//        }
+//    }
+//
+//        @Override
+//        public String toString() {
+//            return "@"+methodName;
+//        }
     }

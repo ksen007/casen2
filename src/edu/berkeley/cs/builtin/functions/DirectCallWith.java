@@ -1,10 +1,5 @@
 package edu.berkeley.cs.builtin.functions;
 
-import edu.berkeley.cs.builtin.objects.CObject;
-import edu.berkeley.cs.builtin.objects.preprocessor.CompoundToken;
-
-import java.util.LinkedList;
-
 /**
  * Copyright (c) 2006-2011,
  * Koushik Sen    <ksen@cs.berkeley.edu>
@@ -37,10 +32,10 @@ import java.util.LinkedList;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class DirectCallWith implements Invokable {
-    public CObject apply(LinkedList<CObject> args, CObject DS) {
-        CompoundToken body = (CompoundToken)args.removeFirst();
-        CObject LS = args.removeFirst();
-        return body.execute(LS,args); //comeback
-    }
+public class DirectCallWith {// implements Invokable {
+//    public CObject apply(LinkedList<CObject> args, CObject DS) {
+//        CompoundToken body = (CompoundToken)args.removeFirst();
+//        CObject LS = args.removeFirst();
+//        return body.execute(LS,args); //comeback
+//    }
 }

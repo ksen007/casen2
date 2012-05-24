@@ -35,10 +35,14 @@ package edu.berkeley.cs.lexer;
 public class SourcePosition {
     private int lineNo;
     private int columnNo;
+    private String id;
+    private boolean isFile;
 
-    public SourcePosition(int lineNumber, int columnNumber) {
+    public SourcePosition(String id,int lineNumber, int columnNumber,boolean isFile) {
         this.lineNo = lineNumber;
         this.columnNo = columnNumber;
+        this.id = id;
+        this.isFile = isFile;
     }
 
     public int getLineNumber() {
@@ -56,12 +60,22 @@ public class SourcePosition {
         if (!(object instanceof SourcePosition))
             return false;
         SourcePosition pos = (SourcePosition) object;
-        return this.lineNo == pos.lineNo && this.columnNo == pos.columnNo;
+        return this.lineNo == pos.lineNo && this.columnNo == pos.columnNo && this.isFile==pos.isFile && this.id.equals(pos.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return lineNo+columnNo+id.hashCode()+(isFile?1:0);
     }
 
     @Override
     public String toString() {
-        return "(line=" + lineNo + ",column=" + columnNo+")";
+        return "(source="+ id+",line=" + lineNo + ",column=" + columnNo+")";
+    }
+
+    public String getFilename() {
+        if (isFile) return id;
+        else return null;
     }
 }
  

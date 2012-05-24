@@ -13,9 +13,13 @@ public class StandardLexer implements Lexer {
 
     private int lineNo = 1;
     private int columnNo = 1;
+    private String id;
+    private boolean isFile;
     private PeekReader in;
 
-    public StandardLexer(Reader in) throws IOException {
+    public StandardLexer(Reader in,String id, boolean isFile) throws IOException {
+        this.id = id;
+        this.isFile = isFile;
         this.in = new PeekReader(in, 2);
     }
 
@@ -33,7 +37,7 @@ public class StandardLexer implements Lexer {
             columnNo++;
             return c;
         } catch (IOException e) {
-            throw new LexerException(e.getMessage(), lineNo, columnNo);
+            throw new LexerException(e.getMessage(), id,lineNo, columnNo,isFile);
         }
     }
 
@@ -53,7 +57,7 @@ public class StandardLexer implements Lexer {
         int input = read();
         if (input != c) {
             String inputChar = (input != END_OF_FILE) ? "" + (char) input : "END_OF_FILE";
-            throw new LexerException("Expected '" + c + "' but got '" + inputChar + "'", lineNo, columnNo);
+            throw new LexerException("Expected '" + c + "' but got '" + inputChar + "'", id,lineNo, columnNo,isFile);
         }
         return c;
     }
@@ -66,13 +70,13 @@ public class StandardLexer implements Lexer {
     }
 
     private CObject createToken(char c, boolean isSpace) {
-        SourcePosition pos = new SourcePosition(lineNo, columnNo);
+        SourcePosition pos = new SourcePosition(id,lineNo, columnNo,isFile);
         match(c);
         return new SymbolToken(pos, isSpace,SymbolTable.getInstance().getId("" + c));
     }
 
     private CObject createToken(String str, boolean isSpace) {
-        SourcePosition pos = new SourcePosition(lineNo, columnNo);
+        SourcePosition pos = new SourcePosition(id,lineNo, columnNo,isFile);
         match(str);
         return new SymbolToken(pos, isSpace, SymbolTable.getInstance().getId(str));
     }
@@ -115,7 +119,7 @@ public class StandardLexer implements Lexer {
             count++;
         }
         if (count == 0) {
-            throw new LexerException("Unexpected '" + ((char) character) + "' character", lineNo, columnNo);
+            throw new LexerException("Unexpected '" + ((char) character) + "' character", id,lineNo, columnNo,isFile);
         }
         return count;
     }
@@ -152,7 +156,7 @@ public class StandardLexer implements Lexer {
             count++;
         }
         if (count == 0) {
-            throw new LexerException("Unexpected '" + ((char) character) + "' character", lineNo, columnNo);
+            throw new LexerException("Unexpected '" + ((char) character) + "' character", id, lineNo, columnNo, isFile);
         }
         return count;
     }
@@ -168,7 +172,7 @@ public class StandardLexer implements Lexer {
             count++;
         }
         if (count == 0) {
-            throw new LexerException("Unexpected '" + ((char) character) + "' character", lineNo, columnNo);
+            throw new LexerException("Unexpected '" + ((char) character) + "' character", id, lineNo, columnNo, isFile);
         }
         return count;
     }
@@ -182,13 +186,13 @@ public class StandardLexer implements Lexer {
             count++;
         }
         if (count == 0) {
-            throw new LexerException("Unexpected '" + ((char) character) + "' character", lineNo, columnNo);
+            throw new LexerException("Unexpected '" + ((char) character) + "' character", id, lineNo, columnNo, isFile);
         }
         return count;
     }
 
     private CObject matchNumber(boolean isSpace) {
-        SourcePosition pos = new SourcePosition(lineNo, columnNo);
+        SourcePosition pos = new SourcePosition(id,lineNo, columnNo,isFile);
         StringBuilder sb = new StringBuilder();
         int digit = lookAhead(1);
         char secondDigit = (char) lookAhead(2);
@@ -211,7 +215,7 @@ public class StandardLexer implements Lexer {
         }
         int character = lookAhead(1);
         if (character == '.' || (character >= '0' && character <= '9')) {
-            throw new LexerException("Unexpected '" + ((char) character) + "' character", lineNo, columnNo);
+            throw new LexerException("Unexpected '" + ((char) character) + "' character", id, lineNo, columnNo, isFile);
         }
         String number = sb.toString();
         if (number.contains(".")) {
@@ -222,7 +226,7 @@ public class StandardLexer implements Lexer {
     }
 
     private CObject matchIdentifier(boolean isMeta, boolean isSpace) {
-        SourcePosition pos = new SourcePosition(lineNo, columnNo);
+        SourcePosition pos = new SourcePosition(id,lineNo, columnNo,isFile);
         StringBuilder sb = new StringBuilder();
         int character = lookAhead(1);
         if ((character >= 'A' && character <= 'Z') ||
@@ -275,7 +279,7 @@ public class StandardLexer implements Lexer {
     }
 
     private CObject matchStringLiteral(char quote, boolean isSpace) {
-        SourcePosition pos = new SourcePosition(lineNo, columnNo);
+        SourcePosition pos = new SourcePosition(id,lineNo, columnNo,isFile);
         match(quote);
         StringBuilder sb = new StringBuilder();
         int character = lookAhead(1);

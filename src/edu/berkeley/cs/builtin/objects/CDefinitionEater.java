@@ -4,6 +4,8 @@ import edu.berkeley.cs.builtin.functions.*;
 import edu.berkeley.cs.builtin.objects.preprocessor.*;
 import edu.berkeley.cs.parser.SymbolTable;
 
+import java.util.LinkedList;
+
 /**
  * Copyright (c) 2006-2011,
  * Koushik Sen    <ksen@cs.berkeley.edu>
@@ -44,21 +46,54 @@ public class CDefinitionEater extends CObject {
     static {
         superClass.addNewRule();
         superClass.addMeta(SymbolTable.getInstance().token);
-        superClass.addAction(new NativeFunction("addToken"));
+        superClass.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                CDefinitionEater self = (CDefinitionEater)args.removeFirst();
+                CObject arg = args.removeFirst();
+                if (arg instanceof MetaToken) {
+                    int argument = ((MetaToken)arg).metaSymbol;
+                    if (argument == SymbolTable.getInstance().nl) {
+                        self.parent.addObject(SymbolTable.getInstance().newline);
+                    } else if (argument == SymbolTable.getInstance().eof) {
+                        self.parent.addObject(SymbolToken.end);
+                    } else {
+                        self.parent.addMeta(argument);
+                    }
+                } else {
+                    self.parent.addObject(arg);
+                }
+                return self;
+            }
+        },superClass);
 
         superClass.addNewRule();
         superClass.addObject(SymbolTable.getInstance().lcurly);
-        superClass.addAction(new NativeFunction("createNewTokenEater"));
+        superClass.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                CDefinitionEater self = (CDefinitionEater)args.removeFirst();
+                return new TokenEater(self);
+            }
+        },superClass);
 
         superClass.addNewRule();
         superClass.addObject(SymbolTable.getInstance().lcurly);
         superClass.addObject(SymbolTable.getInstance().bar);
-        superClass.addAction(new NativeFunction("createNewParameterEater"));
+        superClass.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                CDefinitionEater self = (CDefinitionEater)args.removeFirst();
+                return new CParameterEater(new TokenEater(self));
+            }
+        },superClass);
 
         superClass.addNewRule();
         superClass.addObject(SymbolTable.getInstance().lcurly);
         superClass.addObject(SymbolTable.getInstance().pound);
-        superClass.addAction(new NativeFunction("createJavaEater"));
+        superClass.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                CDefinitionEater self = (CDefinitionEater)args.removeFirst();
+                return new JavaEater(self);
+            }
+        },superClass);
     }
 
 
@@ -68,42 +103,5 @@ public class CDefinitionEater extends CObject {
         parent.addNewRule();
         setRule(superClass);
     }
-
-    public CObject createJavaEater() {
-        return new JavaEater(this);
-    }
-
-    public CObject createNewParameterEater() {
-        return new CParameterEater(new TokenEater(this));
-    }
-
-    public CObject createNewTokenEater() {
-        return new TokenEater(this);
-    }
-
-    public CObject addToken(CObject arg) {
-        CDefinitionEater self = this;
-
-        if (arg instanceof CompoundToken) {
-            self.parent.addAction(new UserDefinedFunction((CompoundToken) arg));
-            return VoidToken.VOID();
-        } else if (arg instanceof MetaToken) {
-            int argument = ((MetaToken)arg).metaSymbol;
-            if (argument == SymbolTable.getInstance().expr
-                    || argument == SymbolTable.getInstance().token) {
-                self.parent.addMeta(argument);
-            } else if (argument == SymbolTable.getInstance().nl) {
-                self.parent.addObject(SymbolTable.getInstance().newline);
-            } else if (argument == SymbolTable.getInstance().eof) {
-                self.parent.addObject(SymbolToken.end);
-            } else {
-                return new JavaClassEater(self.parent,SymbolTable.getInstance().getSymbol(argument));
-            }
-        } else {
-            self.parent.addObject(arg);
-        }
-        return self;
-    }
-
 
 }

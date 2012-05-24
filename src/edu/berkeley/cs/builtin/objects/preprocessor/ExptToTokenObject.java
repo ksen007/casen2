@@ -1,6 +1,5 @@
 package edu.berkeley.cs.builtin.objects.preprocessor;
 
-import edu.berkeley.cs.builtin.functions.NativeFunction;
 import edu.berkeley.cs.builtin.functions.PushResultToScanner;
 import edu.berkeley.cs.builtin.objects.CObject;
 import edu.berkeley.cs.lexer.Scanner;
@@ -46,6 +45,6 @@ public class ExptToTokenObject extends CObject {
         this.addMeta(SymbolTable.getInstance().expr);
         this.addObject(SymbolTable.getInstance().rparen);
 
-        this.addAction(new PushResultToScanner(scnr));
+        this.addAction(new PushResultToScanner(scnr),this);
     }
 }

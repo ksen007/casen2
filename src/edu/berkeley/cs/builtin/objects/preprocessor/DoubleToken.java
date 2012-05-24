@@ -52,50 +52,6 @@ public class DoubleToken extends CObject {
         setParent(ProtoDoubleToken.INSTANCE);
     }
 
-    public CObject add(CObject operand2) {
-        return new DoubleToken(null,value+((DoubleToken)operand2).value);
-    }
-
-    public CObject subtract(CObject operand2) {
-        return new DoubleToken(null,value-((DoubleToken)operand2).value);
-    }
-
-    public CObject multiply(CObject operand2) {
-        return new DoubleToken(null,value*((DoubleToken)operand2).value);
-    }
-
-    public CObject divide(CObject operand2) {
-        return new DoubleToken(null,value/((DoubleToken)operand2).value);
-    }
-
-    public CObject mod(CObject operand2) {
-        return new DoubleToken(null,value%((DoubleToken)operand2).value);
-    }
-
-    public CObject lt(CObject operand2) {
-        return value<((DoubleToken)operand2).value?BooleanToken.TRUE():BooleanToken.FALSE();
-    }
-
-    public CObject gt(CObject operand2) {
-        return value>((DoubleToken)operand2).value?BooleanToken.TRUE():BooleanToken.FALSE();
-    }
-
-    public CObject le(CObject operand2) {
-        return value<=((DoubleToken)operand2).value?BooleanToken.TRUE():BooleanToken.FALSE();
-    }
-
-    public CObject ge(CObject operand2) {
-        return value>=((DoubleToken)operand2).value?BooleanToken.TRUE():BooleanToken.FALSE();
-    }
-
-    public CObject eq(CObject operand2) {
-        return value==((DoubleToken)operand2).value?BooleanToken.TRUE():BooleanToken.FALSE();
-    }
-
-    public CObject ne(CObject operand2) {
-        return value!=((DoubleToken)operand2).value?BooleanToken.TRUE(): BooleanToken.FALSE();
-    }
-
     @Override
     public String toString() {
         return value+"";

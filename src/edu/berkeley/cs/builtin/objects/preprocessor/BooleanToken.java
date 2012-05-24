@@ -62,22 +62,6 @@ public class BooleanToken extends CObject {
         setParent(ProtoBooleanToken.INSTANCE);
     }
 
-    public CObject and(CObject operand2) {
-        return (value && ((BooleanToken)operand2).value)? BooleanToken.TRUE(): BooleanToken.FALSE();
-    }
-
-    public CObject or(CObject operand2) {
-        return (value || ((BooleanToken)operand2).value)? BooleanToken.TRUE(): BooleanToken.FALSE();
-    }
-
-    public CObject eq(CObject operand2) {
-        return (value == ((BooleanToken)operand2).value)? BooleanToken.TRUE(): BooleanToken.FALSE();
-    }
-
-    public CObject ne(CObject operand2) {
-        return (value != ((BooleanToken)operand2).value)? BooleanToken.TRUE(): BooleanToken.FALSE();
-    }
-
     @Override
     public String toString() {
         return value+"";

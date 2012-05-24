@@ -80,10 +80,6 @@ public class CNonPrimitiveObjectTest extends TestCase {
         Interpreter.interpret("(var x = 1156); print (x = 1157);");
     }
 
-    public void testSemiColon4() throws Exception {
-        Interpreter.interpret("print 1156;");
-    }
-
     public void testPrint() throws Exception {
         Interpreter.interpret("print 1156;");
     }

@@ -1,9 +1,5 @@
 package edu.berkeley.cs.builtin.objects;
 
-import edu.berkeley.cs.builtin.functions.*;
-import edu.berkeley.cs.parser.SymbolTable;
-
-
 /**
  * Copyright (c) 2006-2011,
  * Koushik Sen    <ksen@cs.berkeley.edu>
@@ -38,10 +34,6 @@ import edu.berkeley.cs.parser.SymbolTable;
  */
 public class StandardObject extends CObject {
     public StandardObject() {
-//        this.addNewRule();
-//        this.addObject(SymbolTable.getInstance().LS);
-//        this.addAction(new GetField(new Reference(this)));
-
         setParent(ProtoStandardObject.instance);
     }
 }

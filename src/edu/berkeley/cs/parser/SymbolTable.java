@@ -56,6 +56,7 @@ public class SymbolTable {
     public SymbolToken def = new SymbolToken(null,getId("def"));
     public SymbolToken assign = new SymbolToken(null,getId("="));
     public SymbolToken LS = new SymbolToken(null,getId("LS"));
+    public SymbolToken DS = new SymbolToken(null,getId("DS"));
     public SymbolToken lparen = new SymbolToken(null,getId("("));
     public SymbolToken rparen = new SymbolToken(null,getId(")"));
     public SymbolToken dot = new SymbolToken(null,getId("."));

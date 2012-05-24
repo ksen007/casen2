@@ -1,10 +1,11 @@
 package edu.berkeley.cs.builtin.objects.preprocessor;
 
-import edu.berkeley.cs.builtin.functions.NativeFunction;
+import edu.berkeley.cs.builtin.functions.Invokable;
 import edu.berkeley.cs.builtin.objects.CObject;
 import edu.berkeley.cs.parser.SymbolTable;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * Copyright (c) 2006-2011,
@@ -49,34 +50,31 @@ public class CParameterEater extends CObject {
         superClass.addNewRule();
         superClass.addMeta(SymbolTable.getInstance().token);
         superClass.addObject(SymbolTable.getInstance().comma);
-        superClass.addAction(new NativeFunction("appendParameter"));
+        superClass.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                CParameterEater self = (CParameterEater)args.removeFirst();
+                self.parameters.add((SymbolToken) args.removeFirst());
+                return self;
+            }
+        },superClass); //@todo comeback to check superClass
 
         superClass.addNewRule();
         superClass.addMeta(SymbolTable.getInstance().token);
         superClass.addObject(SymbolTable.getInstance().bar);
-        superClass.addAction(new NativeFunction("appendAndReturnParent"));
+        superClass.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                CParameterEater self = (CParameterEater)args.removeFirst();
+                self.parameters.add((SymbolToken) args.removeFirst());
+                self.parent.appendParameters(self.parameters);
+                return self.parent;
+            }
+        },superClass);
     }
 
     public CParameterEater(TokenEater ss) {
         parameters = new ArrayList<SymbolToken>();
         this.parent = ss;
-        setParent(superClass);
-    }
-
-    public CObject appendParameter(CObject arg) {
-        appendParameters((SymbolToken) arg);
-        return this;
-    }
-
-    public CObject appendAndReturnParent(CObject arg) {
-        appendParameters((SymbolToken) arg);
-        parent.appendParameters(parameters);
-        return parent;
-    }
-
-
-    public void appendParameters(SymbolToken token) {
-        parameters.add(token);
+        setRule(superClass);
     }
 
 }

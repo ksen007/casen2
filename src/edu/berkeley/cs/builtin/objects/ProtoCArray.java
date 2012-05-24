@@ -35,11 +35,11 @@ package edu.berkeley.cs.builtin.objects;
 public class ProtoCArray {
     final public static StandardObject INSTANCE =  new StandardObject();
 
-    static {
-        INSTANCE.eval("def [ @expr ] @get endef");
-        INSTANCE.eval("def [ @expr ] = @expr @set endef");
-        INSTANCE.eval("def length @length endef");
-        INSTANCE.eval("def map @expr {|f| var i = 0; while {i< (self length)} { f( self [ i ] ) ; i = i + 1;}; }");
-        INSTANCE.eval("def == @expr @eq endef");
-    }
+//    static {
+//        INSTANCE.eval("def [ @expr ] @get endef");
+//        INSTANCE.eval("def [ @expr ] = @expr @set endef");
+//        INSTANCE.eval("def length @length endef");
+//        INSTANCE.eval("def map @expr {|f| var i = 0; while {i< (self length)} { f( self [ i ] ) ; i = i + 1;}; }");
+//        INSTANCE.eval("def == @expr @eq endef");
+//    }
 }

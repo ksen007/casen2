@@ -37,5 +37,5 @@ import java.util.LinkedList;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public interface Invokable {
-    public CObject apply(LinkedList<CObject> args, CObject DS);
+    public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS);
 }

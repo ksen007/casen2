@@ -46,14 +46,6 @@ public class NullToken extends CObject {
     private static NullToken NULL;
 
 
-    public CObject eq(CObject operand2) {
-        return (operand2 instanceof NullToken)? BooleanToken.TRUE(): BooleanToken.FALSE();
-    }
-
-    public CObject ne(CObject operand2) {
-        return (operand2 instanceof NullToken)? BooleanToken.FALSE(): BooleanToken.TRUE();
-    }
-
     public NullToken(SourcePosition position, boolean isSpace) {
         super(position);
         if (!isSpace) setNoSpace();

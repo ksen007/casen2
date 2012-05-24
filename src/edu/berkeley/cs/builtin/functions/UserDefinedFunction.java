@@ -1,7 +1,10 @@
 package edu.berkeley.cs.builtin.functions;
 
 import edu.berkeley.cs.builtin.objects.CObject;
+import edu.berkeley.cs.builtin.objects.EnvironmentObject;
+import edu.berkeley.cs.builtin.objects.Reference;
 import edu.berkeley.cs.builtin.objects.preprocessor.CompoundToken;
+import edu.berkeley.cs.parser.SymbolTable;
 
 import java.util.LinkedList;
 
@@ -39,14 +42,24 @@ import java.util.LinkedList;
  */
 public class UserDefinedFunction implements Invokable {
     private CompoundToken body;
+    private boolean reuse;
 
-    public UserDefinedFunction(CompoundToken body) {
+    public UserDefinedFunction(CompoundToken body, boolean reuse) {
         this.body = body;
+        this.reuse = reuse;
     }
 
-    public CObject apply(LinkedList<CObject> args, CObject DS) {
-        CObject ret = body.execute(args,true);
-        return ret;
+    public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+        CObject LS;
+        if (!reuse) {
+            LS = new EnvironmentObject();
+            LS.setParent(SS);
+            LS.assign(SymbolTable.getInstance().self,new Reference(args.removeFirst()));
+            LS.assign(SymbolTable.getInstance().DS, new Reference(DS));
+        } else {
+            LS = args.removeFirst();
+        }
+        return body.execute(LS,args);
     }
 
     @Override

@@ -35,8 +35,8 @@ package edu.berkeley.cs.lexer;
 public class LexerException extends RuntimeException {
     private SourcePosition sp;
 
-    public LexerException(String message, int lineNo, int column) {
+    public LexerException(String message, String id, int lineNo, int column, boolean isFile) {
         super(message);
-        sp = new SourcePosition(lineNo, column);
+        sp = new SourcePosition(id,lineNo, column,isFile);
     }
 }

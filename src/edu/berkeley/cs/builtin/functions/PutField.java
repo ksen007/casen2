@@ -44,7 +44,7 @@ public class PutField implements Invokable {
         this.reference = common;
     }
 
-    public CObject apply(LinkedList<CObject> args, CObject DS) {
+    public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
         CObject arg = args.removeLast();
         reference.setCObject(arg);
         return arg;

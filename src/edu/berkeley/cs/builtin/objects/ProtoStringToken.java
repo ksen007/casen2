@@ -1,5 +1,12 @@
 package edu.berkeley.cs.builtin.objects;
 
+import edu.berkeley.cs.builtin.functions.Invokable;
+import edu.berkeley.cs.builtin.objects.preprocessor.StringToken;
+import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
+import edu.berkeley.cs.parser.SymbolTable;
+
+import java.util.LinkedList;
+
 /**
  * Copyright (c) 2006-2011,
  * Koushik Sen    <ksen@cs.berkeley.edu>
@@ -36,9 +43,19 @@ public class ProtoStringToken {
     final public static StandardObject INSTANCE =  new StandardObject();
 
     static {
-        INSTANCE.eval("def + @expr @add endef");
-        INSTANCE.eval("def == @expr @eq endef");
-        INSTANCE.eval("def != @expr @ne endef");
+        INSTANCE.addNewRule();
+        INSTANCE.addObject(new SymbolToken(null, SymbolTable.getInstance().getId("+")));
+        INSTANCE.addMeta(SymbolTable.getInstance().expr);
+        INSTANCE.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                StringToken self = (StringToken)args.removeFirst();
+                StringToken operand2 = (StringToken) args.removeFirst();
+                return new StringToken(null,self.value+operand2.value);
+            }
+        },INSTANCE);
+//        INSTANCE.eval("def + @expr @add endef");
+//        INSTANCE.eval("def == @expr @eq endef");
+//        INSTANCE.eval("def != @expr @ne endef");
     }
 
 }

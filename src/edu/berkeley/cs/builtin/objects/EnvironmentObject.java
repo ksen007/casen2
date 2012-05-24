@@ -36,7 +36,6 @@ import edu.berkeley.cs.parser.SymbolTable;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class EnvironmentObject extends CObject {
-
     public EnvironmentObject() {
         this.assign(SymbolTable.getInstance().LS,new Reference(this));
         setParent(ProtoEnvironmentObject.instance);

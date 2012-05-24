@@ -1,17 +1,15 @@
 package edu.berkeley.cs.builtin.objects.preprocessor;
 
 import edu.berkeley.cs.builtin.functions.Invokable;
-import edu.berkeley.cs.builtin.functions.NativeFunction;
 import edu.berkeley.cs.builtin.objects.CDefinitionEater;
 import edu.berkeley.cs.builtin.objects.CObject;
-import edu.berkeley.cs.lexer.SourcePosition;
 import edu.berkeley.cs.parser.SymbolTable;
-import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtNewMethod;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * Copyright (c) 2006-2011,
@@ -55,19 +53,70 @@ public class JavaEater extends CObject {
         thisClass.addNewRule();
         thisClass.addObject(SymbolTable.getInstance().pound);
         thisClass.addObject(SymbolTable.getInstance().rcurly);
-        thisClass.addAction(new NativeFunction("createJavaClass"));
+        thisClass.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS)  {
+                JavaEater self = (JavaEater) args.removeFirst();
+                StringBuilder sb = new StringBuilder();
+                try {
+                    for(CObject token: self.tokens) {
+                        if (!token.isNoSpace()) {
+                            sb.append(' ');
+                        }
+                        if (token instanceof SymbolToken) {
+                            sb.append(SymbolTable.getInstance().getSymbol(((SymbolToken)token).symbol));
+                        } else if (token instanceof StringToken) {
+                            sb.append('"');
+                            sb.append(((StringToken)token).value);
+                            sb.append('"');
+                        }
+                    }
+
+                    ClassPool pool = ClassPool.getDefault();
+                    pool.importPackage("edu.berkeley.cs.builtin.objects.CObject");
+                    pool.importPackage("edu.berkeley.cs.builtin.objects.preprocessor.*");
+                    pool.importPackage("java.util.LinkedList");
+                    CtClass nativeClass = pool.makeClass("Native"+(++count));
+                    nativeClass.addMethod(CtNewMethod.make(sb.toString(),nativeClass));
+                    nativeClass.setInterfaces(new CtClass[] { pool.makeClass("edu.berkeley.cs.builtin.functions.Invokable") });
+                    Class clazz = nativeClass.toClass();
+                    self.defEater.parent.addAction((Invokable)clazz.newInstance(),DS);
+                    return VoidToken.VOID();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    throw new RuntimeException("Cannot compile native method "+sb.toString());
+                }
+            }
+        },thisClass); //@todo comeback to check thisClass
 
         thisClass.addNewRule();
         thisClass.addMeta(SymbolTable.getInstance().token);
-        thisClass.addAction(new NativeFunction("append"));
+        thisClass.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                JavaEater self = (JavaEater) args.removeFirst();
+                self.tokens.add(args.removeFirst());
+                return self;
+            }
+        },thisClass);
 
         thisClass.addNewRule();
         thisClass.addObject(SymbolTable.getInstance().newline);
-        thisClass.addAction(new NativeFunction("appendNewLine"));
+        thisClass.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                JavaEater self = (JavaEater) args.removeFirst();
+                self.tokens.add(new SymbolToken(DS.getPosition(),SymbolTable.getInstance().getId("\n")));
+                return self;
+            }
+        },thisClass);
 
         thisClass.addNewRule();
         thisClass.addObject(SymbolTable.getInstance().semi);
-        thisClass.addAction(new NativeFunction("appendSemi"));
+        thisClass.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                JavaEater self = (JavaEater) args.removeFirst();
+                self.tokens.add(new SymbolToken(DS.getPosition(),SymbolTable.getInstance().getId(";")));
+                return self;
+            }
+        },thisClass);
     }
 
     public JavaEater(CDefinitionEater defEater) {
@@ -76,46 +125,4 @@ public class JavaEater extends CObject {
         setRule(thisClass);
     }
 
-    public CObject createJavaClass() throws CannotCompileException, IllegalAccessException, InstantiationException {
-        StringBuilder sb = new StringBuilder();
-        for(CObject token: tokens) {
-            if (!token.isNoSpace()) {
-                sb.append(' ');
-            }
-            if (token instanceof SymbolToken) {
-                sb.append(SymbolTable.getInstance().getSymbol(((SymbolToken)token).symbol));
-            } else if (token instanceof StringToken) {
-                sb.append('"');
-                sb.append(((StringToken)token).value);
-                sb.append('"');
-            }
-        }
-
-        ClassPool pool = ClassPool.getDefault();
-        pool.importPackage("edu.berkeley.cs.builtin.objects.CObject");
-        pool.importPackage("java.util.LinkedList");
-        CtClass nativeClass = pool.makeClass("Native"+(++count));
-        nativeClass.addMethod(CtNewMethod.make(sb.toString(),nativeClass));
-        nativeClass.setInterfaces(new CtClass[] { pool.makeClass("edu.berkeley.cs.builtin.functions.Invokable") });
-        Class clazz = nativeClass.toClass();
-        defEater.parent.addAction((Invokable)clazz.newInstance());
-        return VoidToken.VOID();
-    }
-
-    public CObject append(CObject token) {
-        tokens.add(token);
-        return this;
-    }
-
-    public CObject appendNewLine() {
-        SourcePosition pos = tokens.size()>1?tokens.get(tokens.size()-1).getPosition():null;
-        tokens.add(new SymbolToken(pos,SymbolTable.getInstance().getId("\n")));
-        return this;
-    }
-
-    public CObject appendSemi() {
-        SourcePosition pos = tokens.size()>1?tokens.get(tokens.size()-1).getPosition():null;
-        tokens.add(new SymbolToken(pos,SymbolTable.getInstance().getId(";")));
-        return this;
-    }
 }

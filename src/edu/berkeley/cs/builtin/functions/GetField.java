@@ -44,7 +44,7 @@ public class GetField implements Invokable {
         this.reference = cReference;
     }
 
-    public CObject apply(LinkedList<CObject> args, CObject DS) {
+    public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
         return reference.value;
     }
 

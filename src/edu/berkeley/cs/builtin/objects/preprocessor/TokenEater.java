@@ -1,11 +1,14 @@
 package edu.berkeley.cs.builtin.objects.preprocessor;
 
-import edu.berkeley.cs.builtin.functions.NativeFunction;
-import edu.berkeley.cs.builtin.objects.*;
+import edu.berkeley.cs.builtin.functions.Invokable;
+import edu.berkeley.cs.builtin.functions.UserDefinedFunction;
+import edu.berkeley.cs.builtin.objects.CDefinitionEater;
+import edu.berkeley.cs.builtin.objects.CObject;
 import edu.berkeley.cs.lexer.SourcePosition;
 import edu.berkeley.cs.parser.SymbolTable;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * Copyright (c) 2006-2011,
@@ -49,23 +52,68 @@ public class TokenEater extends CObject {
     static {
         thisClass.addNewRule();
         thisClass.addObject(SymbolTable.getInstance().lcurly);
-        thisClass.addAction(new NativeFunction("lcurly"));
+        thisClass.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                TokenEater self = (TokenEater)args.removeFirst();
+                self.curlyCount++;
+                SourcePosition pos = self.tokens.size()>1?self.tokens.get(self.tokens.size()-1).getPosition():null;
+                self.tokens.add(new SymbolToken(pos,SymbolTable.getInstance().getId("{")));
+                return self;
+            }
+        },thisClass); //@todo make sure that the second argument is thisClass
 
         thisClass.addNewRule();
         thisClass.addObject(SymbolTable.getInstance().rcurly);
-        thisClass.addAction(new NativeFunction("rcurly"));
+        thisClass.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                TokenEater self = (TokenEater)args.removeFirst();
+                if (self.curlyCount>0) {
+                    SourcePosition pos = self.tokens.size()>1?self.tokens.get(self.tokens.size()-1).getPosition():null;
+                    self.tokens.add(new SymbolToken(pos,SymbolTable.getInstance().getId("}")));
+                    self.curlyCount--;
+                    return self;
+                } else {
+                    CompoundToken ret= new CompoundToken(self,DS);
+                    if (self.defEater == null) {
+                        return ret;
+                    } else {
+                        self.defEater.parent.addAction(new UserDefinedFunction(ret,false),DS);
+                        return VoidToken.VOID();
+                    }
+                }
+            }
+        },thisClass);
 
         thisClass.addNewRule();
         thisClass.addMeta(SymbolTable.getInstance().token);
-        thisClass.addAction(new NativeFunction("append"));
+        thisClass.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                TokenEater self = (TokenEater)args.removeFirst();
+                self.tokens.add(args.removeFirst());
+                return self;
+            }
+        },thisClass);
 
         thisClass.addNewRule();
         thisClass.addObject(SymbolTable.getInstance().newline);
-        thisClass.addAction(new NativeFunction("appendNewLine"));
+        thisClass.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                TokenEater self = (TokenEater)args.removeFirst();
+                self.tokens.add(new SymbolToken(DS.getPosition(),SymbolTable.getInstance().getId("\n")));
+                return self;
+
+            }
+        },thisClass);
 
         thisClass.addNewRule();
         thisClass.addObject(SymbolTable.getInstance().semi);
-        thisClass.addAction(new NativeFunction("appendSemi"));
+        thisClass.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                TokenEater self = (TokenEater)args.removeFirst();
+                self.tokens.add(new SymbolToken(DS.getPosition(),SymbolTable.getInstance().getId(";")));
+                return self;
+            }
+        },thisClass);
 
     }
 
@@ -74,47 +122,6 @@ public class TokenEater extends CObject {
         parameters = new ArrayList<SymbolToken>();
         this.defEater = defEater;
         setRule(thisClass);
-    }
-
-    public CObject lcurly() {
-        curlyCount++;
-        SourcePosition pos = tokens.size()>1?tokens.get(tokens.size()-1).getPosition():null;
-        tokens.add(new SymbolToken(pos,SymbolTable.getInstance().getId("{")));
-        return this;
-    }
-
-    public CObject rcurly() {
-        if (curlyCount>0) {
-            SourcePosition pos = tokens.size()>1?tokens.get(tokens.size()-1).getPosition():null;
-            tokens.add(new SymbolToken(pos,SymbolTable.getInstance().getId("}")));
-            curlyCount--;
-            return this;
-        } else {
-            CObject ret= new CompoundToken(this,null);
-            if (defEater == null) {
-                return ret;
-            } else {
-                defEater.addToken(ret);
-                return VoidToken.VOID();
-            }
-        }
-    }
-
-    public CObject append(CObject token) {
-        tokens.add(token);
-        return this;
-    }
-
-    public CObject appendNewLine() {
-        SourcePosition pos = tokens.size()>1?tokens.get(tokens.size()-1).getPosition():null;
-        tokens.add(new SymbolToken(pos,SymbolTable.getInstance().getId("\n")));
-        return this;
-    }
-
-    public CObject appendSemi() {
-        SourcePosition pos = tokens.size()>1?tokens.get(tokens.size()-1).getPosition():null;
-        tokens.add(new SymbolToken(pos,SymbolTable.getInstance().getId(";")));
-        return this;
     }
 
     public void appendParameters(ArrayList<SymbolToken> parameters) {

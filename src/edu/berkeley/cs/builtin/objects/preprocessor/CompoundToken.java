@@ -1,8 +1,9 @@
 package edu.berkeley.cs.builtin.objects.preprocessor;
 
-import edu.berkeley.cs.builtin.functions.DirectCall;
-import edu.berkeley.cs.builtin.functions.DirectCallWith;
-import edu.berkeley.cs.builtin.objects.*;
+import edu.berkeley.cs.builtin.functions.UserDefinedFunction;
+import edu.berkeley.cs.builtin.objects.CObject;
+import edu.berkeley.cs.builtin.objects.CStatementEater;
+import edu.berkeley.cs.builtin.objects.Reference;
 import edu.berkeley.cs.lexer.BasicScanner;
 import edu.berkeley.cs.lexer.BufferedLexer;
 import edu.berkeley.cs.lexer.Scanner;
@@ -47,33 +48,17 @@ import java.util.LinkedList;
 public class CompoundToken extends CObject {
     private ArrayList<CObject> tokens;
     public ArrayList<SymbolToken> parameters;
-    private String file;
-    private CObject scope;
-
-//    private CallFrame SS;
 
     public Scanner getScanner() {
         return new BasicScanner(new BufferedLexer(tokens));
-//        return new BufferedScanner(tokens);
     }
 
-    public CompoundToken(CompoundToken cloneMe,CObject prototype) {
-        super(cloneMe.getPosition());
-        tokens = cloneMe.tokens;
-        parameters = cloneMe.parameters;
-        file = cloneMe.file;
-        setRule(cloneMe);
-        scope = prototype;
-    }
-
-    public CompoundToken(TokenEater ss,String file) {
+    public CompoundToken(TokenEater ss,CObject SS) {
         super(null);
 
         tokens = ss.tokens;
         parameters = ss.parameters;
-        this.file = file;
         int N = parameters.size();
-        scope = ProtoEnvironmentObject.instance;
 
         this.addNewRule();
         this.addObject(SymbolTable.getInstance().lparen);
@@ -83,7 +68,7 @@ public class CompoundToken extends CObject {
                 this.addObject(SymbolTable.getInstance().comma);
         }
         this.addObject(SymbolTable.getInstance().rparen);
-        this.addAction(new DirectCall());
+        this.addAction(new UserDefinedFunction(this,false),SS);
 
         this.addNewRule();
         this.addObject(SymbolTable.getInstance().lparen);
@@ -97,51 +82,49 @@ public class CompoundToken extends CObject {
                 this.addObject(SymbolTable.getInstance().comma);
         }
         this.addObject(SymbolTable.getInstance().rparen);
-        this.addAction(new DirectCallWith());
+        this.addAction(new UserDefinedFunction(this,false),SS);
     }
 
 
-    public CObject execute() {
-        CObject LS = new EnvironmentObject();
-        LS.setParent(scope);
-        return execute(LS);
-    }
-
-    public CObject execute(CObject LS) {
-        String tmp = CObject.currentFile;
-        CObject.currentFile = file;
-        try {
-            Scanner scnr = getScanner();
-            CallFrame cf = new CallFrame(LS, CStatementEater.instance,scnr);
-            return cf.interpret();
-        } finally {
-            CObject.currentFile = tmp;
-        }
-    }
-
-    public CObject execute(LinkedList<CObject> args, boolean isInstance) {
-        CObject LS = new EnvironmentObject();
-        LS.setParent(scope);
-        if (isInstance) {
-            LS.assign(SymbolTable.getInstance().self,new Reference(args.removeFirst()));
-//            LS.addNewRule();
-//            LS.addObject(SymbolTable.getInstance().self);
-//            LS.addAction(new GetField(new Reference(args.removeFirst())));
-        }
-        for(SymbolToken param:parameters) {
-            Reference common = new Reference(args.removeFirst());
-            LS.assign(param, common);
-        }
-        return execute(LS);
-    }
+//    public CObject execute() {
+//        CObject LS = new EnvironmentObject();
+//        LS.setParent(scope);
+//        return execute(LS);
+//    }
 
     public CObject execute(CObject LS, LinkedList<CObject> args) {
         for(SymbolToken param:parameters) {
             Reference common = new Reference(args.removeFirst());
             LS.assign(param, common);
         }
-        return execute(LS);
+        Scanner scnr = getScanner();
+        CallFrame cf = new CallFrame(LS, CStatementEater.instance,scnr);
+        return cf.interpret();
     }
+
+//    public CObject execute(LinkedList<CObject> args, boolean isInstance) {
+//        CObject LS = new EnvironmentObject();
+//        LS.setParent(scope);
+//        if (isInstance) {
+//            LS.assign(SymbolTable.getInstance().self,new Reference(args.removeFirst()));
+////            LS.addNewRule();
+////            LS.addObject(SymbolTable.getInstance().self);
+////            LS.addAction(new GetField(new Reference(args.removeFirst())));
+//        }
+//        for(SymbolToken param:parameters) {
+//            Reference common = new Reference(args.removeFirst());
+//            LS.assign(param, common);
+//        }
+//        return execute(LS);
+//    }
+//
+//    public CObject execute(CObject LS, LinkedList<CObject> args) {
+//        for(SymbolToken param:parameters) {
+//            Reference common = new Reference(args.removeFirst());
+//            LS.assign(param, common);
+//        }
+//        return execute(LS);
+//    }
 
     @Override
     public String toString() {

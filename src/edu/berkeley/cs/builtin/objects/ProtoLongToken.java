@@ -1,5 +1,13 @@
 package edu.berkeley.cs.builtin.objects;
 
+import edu.berkeley.cs.builtin.functions.Invokable;
+import edu.berkeley.cs.builtin.objects.preprocessor.BooleanToken;
+import edu.berkeley.cs.builtin.objects.preprocessor.LongToken;
+import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
+import edu.berkeley.cs.parser.SymbolTable;
+
+import java.util.LinkedList;
+
 /**
  * Copyright (c) 2006-2011,
  * Koushik Sen    <ksen@cs.berkeley.edu>
@@ -34,18 +42,188 @@ package edu.berkeley.cs.builtin.objects;
  */
 public class ProtoLongToken {
     final static public StandardObject INSTANCE = new StandardObject();
-    
+
+
     static {
-        INSTANCE.eval("def + @expr @add endef");
-        INSTANCE.eval("def - @expr @subtract endef");
-        INSTANCE.eval("def * @expr @multiply endef");
-        INSTANCE.eval("def / @expr @divide endef");
-        INSTANCE.eval("def % @expr @mod endef");
-        INSTANCE.eval("def < @expr @lt endef");
-        INSTANCE.eval("def > @expr @gt endef");
-        INSTANCE.eval("def <= @expr @le endef");
-        INSTANCE.eval("def >= @expr @ge endef");
-        INSTANCE.eval("def == @expr @eq endef");
-        INSTANCE.eval("def != @expr @ne endef");
+        INSTANCE.addNewRule();
+        INSTANCE.addObject(new SymbolToken(null, SymbolTable.getInstance().getId("+")));
+        INSTANCE.addMeta(SymbolTable.getInstance().expr);
+        INSTANCE.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                LongToken self = (LongToken)args.removeFirst();
+                LongToken operand2 = (LongToken) args.removeFirst();
+                return new LongToken(null,self.value+operand2.value);
+            }
+        },INSTANCE);
+
+        INSTANCE.addNewRule();
+        INSTANCE.addObject(new SymbolToken(null, SymbolTable.getInstance().getId("-")));
+        INSTANCE.addMeta(SymbolTable.getInstance().expr);
+        INSTANCE.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                LongToken self = (LongToken)args.removeFirst();
+                LongToken operand2 = (LongToken) args.removeFirst();
+                return new LongToken(null,self.value-operand2.value);
+            }
+        },INSTANCE);
+
+        INSTANCE.addNewRule();
+        INSTANCE.addObject(new SymbolToken(null, SymbolTable.getInstance().getId("*")));
+        INSTANCE.addMeta(SymbolTable.getInstance().expr);
+        INSTANCE.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                LongToken self = (LongToken)args.removeFirst();
+                LongToken operand2 = (LongToken) args.removeFirst();
+                return new LongToken(null,self.value*operand2.value);
+            }
+        },INSTANCE);
+
+        INSTANCE.addNewRule();
+        INSTANCE.addObject(new SymbolToken(null, SymbolTable.getInstance().getId("/")));
+        INSTANCE.addMeta(SymbolTable.getInstance().expr);
+        INSTANCE.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                LongToken self = (LongToken)args.removeFirst();
+                LongToken operand2 = (LongToken) args.removeFirst();
+                return new LongToken(null,self.value/operand2.value);
+            }
+        },INSTANCE);
+
+        INSTANCE.addNewRule();
+        INSTANCE.addObject(new SymbolToken(null, SymbolTable.getInstance().getId("%")));
+        INSTANCE.addMeta(SymbolTable.getInstance().expr);
+        INSTANCE.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                LongToken self = (LongToken)args.removeFirst();
+                LongToken operand2 = (LongToken) args.removeFirst();
+                return new LongToken(null,self.value%operand2.value);
+            }
+        },INSTANCE);
+
+        INSTANCE.addNewRule();
+        INSTANCE.addObject(new SymbolToken(null, SymbolTable.getInstance().getId("<")));
+        INSTANCE.addMeta(SymbolTable.getInstance().expr);
+        INSTANCE.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                LongToken self = (LongToken)args.removeFirst();
+                LongToken operand2 = (LongToken) args.removeFirst();
+                return self.value<operand2.value? BooleanToken.TRUE():BooleanToken.FALSE();
+            }
+        },INSTANCE);
+
+        INSTANCE.addNewRule();
+        INSTANCE.addObject(new SymbolToken(null, SymbolTable.getInstance().getId(">")));
+        INSTANCE.addMeta(SymbolTable.getInstance().expr);
+        INSTANCE.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                LongToken self = (LongToken)args.removeFirst();
+                LongToken operand2 = (LongToken) args.removeFirst();
+                return self.value>operand2.value? BooleanToken.TRUE():BooleanToken.FALSE();
+            }
+        },INSTANCE);
+
+        INSTANCE.addNewRule();
+        INSTANCE.addObject(new SymbolToken(null, SymbolTable.getInstance().getId("<=")));
+        INSTANCE.addMeta(SymbolTable.getInstance().expr);
+        INSTANCE.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                LongToken self = (LongToken)args.removeFirst();
+                LongToken operand2 = (LongToken) args.removeFirst();
+                return self.value<=operand2.value? BooleanToken.TRUE():BooleanToken.FALSE();
+            }
+        },INSTANCE);
+
+        INSTANCE.addNewRule();
+        INSTANCE.addObject(new SymbolToken(null, SymbolTable.getInstance().getId(">=")));
+        INSTANCE.addMeta(SymbolTable.getInstance().expr);
+        INSTANCE.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                LongToken self = (LongToken)args.removeFirst();
+                LongToken operand2 = (LongToken) args.removeFirst();
+                return self.value>=operand2.value? BooleanToken.TRUE():BooleanToken.FALSE();
+            }
+        },INSTANCE);
+
+        INSTANCE.addNewRule();
+        INSTANCE.addObject(new SymbolToken(null, SymbolTable.getInstance().getId("==")));
+        INSTANCE.addMeta(SymbolTable.getInstance().expr);
+        INSTANCE.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                LongToken self = (LongToken)args.removeFirst();
+                LongToken operand2 = (LongToken) args.removeFirst();
+                return self.value==operand2.value? BooleanToken.TRUE():BooleanToken.FALSE();
+            }
+        },INSTANCE);
+
+        INSTANCE.addNewRule();
+        INSTANCE.addObject(new SymbolToken(null, SymbolTable.getInstance().getId("!=")));
+        INSTANCE.addMeta(SymbolTable.getInstance().expr);
+        INSTANCE.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                LongToken self = (LongToken)args.removeFirst();
+                LongToken operand2 = (LongToken) args.removeFirst();
+                return self.value!=operand2.value? BooleanToken.TRUE():BooleanToken.FALSE();
+            }
+        },INSTANCE);
+
     }
+
+
+//    public CObject add(CObject operand2) {
+//        return new LongToken(null,value+((LongToken)operand2).value);
+//    }
+//
+//    public CObject subtract(CObject operand2) {
+//        return new LongToken(null,value-((LongToken)operand2).value);
+//    }
+//
+//    public CObject multiply(CObject operand2) {
+//        return new LongToken(null,value*((LongToken)operand2).value);
+//    }
+//
+//    public CObject divide(CObject operand2) {
+//        return new LongToken(null,value/((LongToken)operand2).value);
+//    }
+//
+//    public CObject mod(CObject operand2) {
+//        return new LongToken(null,value%((LongToken)operand2).value);
+//    }
+//
+//    public CObject lt(CObject operand2) {
+//        return value<((LongToken)operand2).value?BooleanToken.TRUE():BooleanToken.FALSE();
+//    }
+//
+//    public CObject gt(CObject operand2) {
+//        return value>((LongToken)operand2).value?BooleanToken.TRUE():BooleanToken.FALSE();
+//    }
+//
+//    public CObject le(CObject operand2) {
+//        return value<=((LongToken)operand2).value?BooleanToken.TRUE():BooleanToken.FALSE();
+//    }
+//
+//    public CObject ge(CObject operand2) {
+//        return value>=((LongToken)operand2).value?BooleanToken.TRUE():BooleanToken.FALSE();
+//    }
+//
+//    public CObject eq(CObject operand2) {
+//        return value==((LongToken)operand2).value?BooleanToken.TRUE():BooleanToken.FALSE();
+//    }
+//
+//    public CObject ne(CObject operand2) {
+//        return value!=((LongToken)operand2).value?BooleanToken.TRUE(): BooleanToken.FALSE();
+//    }
+//
+//    static {
+//        INSTANCE.eval("def + @expr @add endef");
+//        INSTANCE.eval("def - @expr @subtract endef");
+//        INSTANCE.eval("def * @expr @multiply endef");
+//        INSTANCE.eval("def / @expr @divide endef");
+//        INSTANCE.eval("def % @expr @mod endef");
+//        INSTANCE.eval("def < @expr @lt endef");
+//        INSTANCE.eval("def > @expr @gt endef");
+//        INSTANCE.eval("def <= @expr @le endef");
+//        INSTANCE.eval("def >= @expr @ge endef");
+//        INSTANCE.eval("def == @expr @eq endef");
+//        INSTANCE.eval("def != @expr @ne endef");
+//    }
 }

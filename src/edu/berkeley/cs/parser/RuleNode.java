@@ -1,6 +1,5 @@
 package edu.berkeley.cs.parser;
 
-import edu.berkeley.cs.builtin.functions.Invokable;
 import edu.berkeley.cs.builtin.objects.CObject;
 
 import java.util.HashMap;
@@ -177,11 +176,11 @@ public class RuleNode {
         return this;
     }
 
-    public RuleNode addAction(Invokable func, int argCount) {
+    public RuleNode addAction(Action a) {
         if (expr != null || token !=null) {
             throw new ParseException("Cannot add action when @expr or @token exists");
         }
-        action = new Action(argCount,func);
+        action = a;
         return null;
     }
 
