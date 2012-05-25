@@ -67,6 +67,20 @@ public class CDefinitionEater extends CObject {
         },superClass);
 
         superClass.addNewRule();
+        superClass.addObject(SymbolTable.getInstance().at);
+        superClass.addObject(SymbolTable.getInstance().lparen);
+        superClass.addMeta(SymbolTable.getInstance().expr);
+        superClass.addObject(SymbolTable.getInstance().rparen);
+        superClass.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                CDefinitionEater self = (CDefinitionEater)args.removeFirst();
+                CObject arg = args.removeFirst();
+                self.parent.addOther(arg);
+                return self;
+            }
+        },superClass);
+
+        superClass.addNewRule();
         superClass.addObject(SymbolTable.getInstance().lcurly);
         superClass.addAction(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {

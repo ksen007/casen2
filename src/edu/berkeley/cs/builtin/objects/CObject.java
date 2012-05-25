@@ -290,6 +290,11 @@ public class CObject {
         curr = tmp;
     }
 
+    public void addOther(CObject object) {
+        curr = curr.addOther(object);
+    }
+
+
     public void addAction(Invokable func, CObject SS) {
         curr = curr.addAction(new Action(argCount,func,SS));
     }

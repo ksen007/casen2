@@ -37,7 +37,7 @@ import gnu.trove.map.hash.TIntIntHashMap;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class OperatorPrecedence {
-    public final int offset = 501;
+    public final int offset = 500;
     private static OperatorPrecedence ourInstance = new OperatorPrecedence();
     private TIntIntHashMap precedenceTable = new TIntIntHashMap();
     // odd number => left-associative
@@ -52,7 +52,7 @@ public class OperatorPrecedence {
     private OperatorPrecedence() {
 //       precedenceTable.put(SymbolTable.getInstance().getId(","),90-offset);
 
-        precedenceTable.put(SymbolTable.getInstance().token,50-offset);
+//        precedenceTable.put(SymbolTable.getInstance().token,50-offset);
 
         precedenceTable.put(SymbolTable.getInstance().assign.symbol,101-offset);
 
@@ -106,7 +106,7 @@ public class OperatorPrecedence {
 //        if (sym2==10) {
 //            System.out.println("Prev ="+exprPrecedence);
 //        }
-        if (sym2 > exprPrecedence || (exprPrecedence == sym2 && sym2 % 2 == 0)) {
+        if (sym2 > exprPrecedence || (exprPrecedence == sym2 && sym2 % 2 == 1)) {
             return true;
         }
         return false;

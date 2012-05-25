@@ -54,7 +54,7 @@ public class SymbolToken extends CObject {
 
     @Override
     public String toString() {
-        return "`"+SymbolTable.getInstance().getSymbol(symbol);
+        return ""+SymbolTable.getInstance().getSymbol(symbol);
     }
 
     @Override

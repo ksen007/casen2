@@ -1,6 +1,6 @@
 package edu.berkeley.cs;
 
-import edu.berkeley.cs.Interpreter;
+import edu.berkeley.cs.builtin.objects.CObject;
 import junit.framework.TestCase;
 
 /**
@@ -37,15 +37,14 @@ import junit.framework.TestCase;
  */
 public class ScratchPad extends TestCase {
 
-
-    public void testArray() throws Exception {
-
-        Interpreter.interpret("def CArray @expr @edu.berkeley.cs.builtin.objects.CArray endef ; var x = (CArray 10); x[1] = 89; print (x[1]); var i =0; while {i < (x length) } { x[i] = i; i = (i+1);}; print (x[3]);");
+    public void test5() throws Exception {
+        CObject ret = Interpreter.interpret("(- 3*5 + 4*5 / 5 - 4)");
+//        assertEquals(((LongToken)ret).value,23);
     }
 
-    public void testArrayMap() throws Exception {
-
-        Interpreter.interpret("def CArray @expr @edu.berkeley.cs.builtin.objects.CArray endef ; var x = (CArray 10); var i = 0; while {i < (x length) } { x[i] = i; i = (i+1);}; x map {|y| print y;};");
+    public void test6() throws Exception {
+        CObject ret = Interpreter.interpret("print (- 5 - 4)");
+//        assertEquals(((LongToken)ret).value,23);
     }
 
 }

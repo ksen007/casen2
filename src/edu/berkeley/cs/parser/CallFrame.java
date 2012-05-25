@@ -45,6 +45,7 @@ public class CallFrame {
     private Stack<Integer> precedenceStack;
     CObject LS;
     private Scanner scnr;
+    public static final boolean DEBUG = true;
 
 
     public CallFrame(CObject LS, CObject base, Scanner scnr) {
@@ -94,13 +95,14 @@ public class CallFrame {
 
             if (matchesToken(t,SymbolTable.getInstance().exprToToken) && !currentRule.isActionOnly()) {
                 parseRuleStack.push((new ExptToTokenObject(scnr)).getRuleNode());
-                precedenceStack.push(-1000);
+                precedenceStack.push(0);
                 return true;
             }
 
             if (!matchesToken(t,SymbolTable.getInstance().newline) && !matchesToken(t,SymbolToken.end)) {
                 if (consumeToken(currentRule,t)) return true;
                 if (consumeExpr(currentRule,t)) return true;
+                if (consumeOther(currentRule,t)) return true;
             }
             if (consumeAction(currentRule,t)) return true;
 
@@ -123,6 +125,12 @@ public class CallFrame {
     private boolean consumeSymbol(RuleNode currentRule, CObject t) {
         RuleNode ret = currentRule.getRuleForObject(t);
         if (ret!=null) {
+
+            if (DEBUG) {
+                if (!t.isNoSpace()) System.out.print(' ');
+                //System.out.print("s:");
+                System.out.print(t);
+            }
             LS.setPosition(t.getPosition());
             parseRuleStack.pop();
             parseRuleStack.push(ret);
@@ -138,6 +146,11 @@ public class CallFrame {
     private boolean consumeToken(RuleNode currentRule, CObject t) {
         RuleNode toBePushed;
         if ((toBePushed = currentRule.getRuleForToken()) !=null) {
+            if (DEBUG) {
+                if (!t.isNoSpace()) System.out.print(' ');
+                //System.out.print("t:");
+                System.out.print(t);
+            }
             parseRuleStack.pop();
             parseRuleStack.push(toBePushed);
             computationStack.push(t);
@@ -148,16 +161,39 @@ public class CallFrame {
 
     private boolean consumeExpr(RuleNode currentRule, CObject t) {
         Pair rn;
-        MetaPair toBePushed;
-        CObject ctxt;
+        RuleNode toBePushed;
 
         if ((toBePushed = currentRule.getRuleForExpr()) !=null) {
-            ctxt = LS.getField(toBePushed.sym);
-            if ((rn = contextLookAhead(ctxt, t))!=null) {
+            if ((rn = contextLookAhead(LS, t))!=null) {
+                if (DEBUG) {
+                    System.out.print('(');
+                }
                 parseRuleStack.pop();
-                parseRuleStack.push(toBePushed.rule);
+                parseRuleStack.push(toBePushed);
 
-                computationStack.push(ctxt);
+                computationStack.push(LS);
+                parseRuleStack.push(rn.fst);
+                precedenceStack.push(rn.snd);
+                scnr.pushBack(t);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean consumeOther(RuleNode currentRule, CObject t) {
+        Pair rn;
+        OtherPair toBePushed;
+
+        if ((toBePushed = currentRule.getRuleForOther()) !=null) {
+            if ((rn = contextLookAhead(toBePushed.fst, t))!=null) {
+                if (DEBUG) {
+                    System.out.print('(');
+                }
+                parseRuleStack.pop();
+                parseRuleStack.push(toBePushed.next);
+
+                computationStack.push(toBePushed.fst);
                 parseRuleStack.push(rn.fst);
                 precedenceStack.push(rn.snd);
                 scnr.pushBack(t);
@@ -201,8 +237,15 @@ public class CallFrame {
 
         Pair rn;
         if ((rn=shift(reduce,nt,tmp,t))!=null) {
+            if (DEBUG) {
+                System.out.print('_');
+            }
             parseRuleStack.push(rn.fst);
             precedenceStack.push(rn.snd);
+        } else {
+            if (DEBUG) {
+                System.out.print(')');
+            }
         }
         scnr.pushBack(t);
     }
@@ -228,6 +271,7 @@ public class CallFrame {
         if (!matchesToken(t,SymbolToken.end) && !matchesToken(t,SymbolTable.getInstance().newline)) {
             if (rn.getRuleForToken()!=null) return true;
             if (rn.getRuleForExpr()!=null) return true;
+            if (rn.getRuleForOther()!=null) return true;
         }
         if (rn.getRuleForAction()!=null) return true;
         return false;
@@ -252,7 +296,7 @@ public class CallFrame {
         if (current!=null) {
             ret = current.getRuleNode();
             if (matchesToken(t,SymbolTable.getInstance().exprToToken) && !ret.isActionOnly()) {
-                return new Pair(ret,-1000);
+                return new Pair(ret,0);
             }
         }
 
@@ -269,13 +313,23 @@ public class CallFrame {
 
             current = LS;
             while(current!=null) {
-                MetaPair pret2;
                 ret = current.getRuleNode();
-                if (ret!=null && (pret2=ret.getRuleForExpr())!=null) {
-                    return new Pair(ret,pret2.rule.getOptionalPrecedence());
+                if (ret!=null && (ret2=ret.getRuleForExpr())!=null) {
+                    return new Pair(ret,ret2.getOptionalPrecedence());
                 }
                 current = current.getParent();
             }
+
+            OtherPair oret2;
+            current = LS;
+            while(current!=null) {
+                ret = current.getRuleNode();
+                if (ret!=null && (oret2=ret.getRuleForOther())!=null) {
+                    return new Pair(ret,oret2.next.getOptionalPrecedence());
+                }
+                current = current.getParent();
+            }
+
         }
         current = LS;
         while(current!=null) {

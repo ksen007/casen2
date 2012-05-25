@@ -38,20 +38,21 @@ import java.util.LinkedList;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-class MetaPair {
-    public int sym;
-    public RuleNode rule;
+class OtherPair {
+    CObject fst;
+    RuleNode next;
 
-    MetaPair(int sym, RuleNode rule) {
-        this.sym = sym;
-        this.rule = rule;
+    OtherPair(CObject fst, RuleNode next) {
+        this.fst = fst;
+        this.next = next;
     }
 }
 
 public class RuleNode {
     private HashMap<CObject,RuleNode> next;
     private Action action;
-    private MetaPair expr;
+    private RuleNode expr;
+    private OtherPair other;
     private RuleNode token;
 
     boolean isNoSpace = false;
@@ -105,9 +106,9 @@ public class RuleNode {
             }
         }
         if (expr !=null) {
-            LinkedList<String> tmp = expr.rule.print();
+            LinkedList<String> tmp = expr.print();
             for(String child:tmp) {
-                ret.add("@"+SymbolTable.getInstance().getSymbol(expr.sym)+" "+child);
+                ret.add("@expr "+child);
             }
         }
         if (token!=null) {
@@ -133,29 +134,30 @@ public class RuleNode {
             throw new ParseException("First token of a def cannot be @expr.");
         }
         if (metaSymbol==SymbolTable.getInstance().token) {
-            if (expr != null || action !=null) {
-                throw new ParseException("Cannot add @token when @expr or action exists");
+            if (expr != null || action !=null || other!=null) {
+                throw new ParseException("Cannot add @token when @expr or other or action exists");
             }
             if (token == null) {
                 token = new RuleNode(this, "@token");
             }
             return  this.token;
         } else {
-            if (token != null || action !=null) {
-                throw new ParseException("Cannot add @expr when @token or action exists");
-            }
-            if (metaSymbol==SymbolTable.getInstance().expr) {
-                metaSymbol = SymbolTable.getInstance().LS.symbol;
+            if (token != null || action !=null || other!=null) {
+                throw new ParseException("Cannot add @expr when @token or other or action exists");
             }
             if (expr == null) {
-                expr = new MetaPair(metaSymbol,new RuleNode(this, "@"+SymbolTable.getInstance().getSymbol(metaSymbol)));
-            } else {
-                if (expr.sym != metaSymbol) {
-                    throw new ParseException("@"+SymbolTable.getInstance().getSymbol(expr.sym)+" already exists!");
-                }
+                expr = new RuleNode(this, "@expr");
             }
-            return expr.rule;
+            return expr;
         }
+    }
+
+    public RuleNode addOther(CObject other) {
+        if (expr != null || token !=null || other!=null || action!=null ) {
+            throw new ParseException("Cannot add other when @expr or @token or other or action exists");
+        }
+        this.other = new OtherPair(other,new RuleNode(this,other.toString()));
+        return this.other.next;
     }
 
     public RuleNode addObject(CObject val) {
@@ -177,8 +179,8 @@ public class RuleNode {
     }
 
     public RuleNode addAction(Action a) {
-        if (expr != null || token !=null) {
-            throw new ParseException("Cannot add action when @expr or @token exists");
+        if (expr != null || token !=null || other!=null) {
+            throw new ParseException("Cannot add action when @expr or @token or other exists");
         }
         action = a;
         return null;
@@ -201,7 +203,7 @@ public class RuleNode {
         return action;
     }
 
-    public MetaPair getRuleForExpr() {
+    public RuleNode getRuleForExpr() {
         return expr;
     }
 
@@ -213,19 +215,11 @@ public class RuleNode {
         return optionalPrecedence;
     }
 
-//    public RuleNode matchSymbol(Token t) {
-//        RuleNode ret;
-//        if (t instanceof SymbolToken) {
-//            SymbolToken st = (SymbolToken)t;
-//            if ((ret = getRuleForSymbol(st.symbol))!=null){
-//                return ret;
-//            }
-//        }
-//        return null;
-//    }
-
-
     public boolean isActionOnly() {
         return (next==null && expr ==null && token == null && action != null);
+    }
+
+    public OtherPair getRuleForOther() {
+        return other;
     }
 }
