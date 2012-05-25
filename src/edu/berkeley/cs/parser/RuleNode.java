@@ -153,7 +153,7 @@ public class RuleNode {
     }
 
     public RuleNode addOther(CObject other) {
-        if (expr != null || token !=null || other!=null || action!=null ) {
+        if (expr != null || token !=null || this.other!=null || action!=null ) {
             throw new ParseException("Cannot add other when @expr or @token or other or action exists");
         }
         this.other = new OtherPair(other,new RuleNode(this,other.toString()));

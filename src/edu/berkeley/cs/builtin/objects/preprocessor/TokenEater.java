@@ -1,10 +1,7 @@
 package edu.berkeley.cs.builtin.objects.preprocessor;
 
 import edu.berkeley.cs.builtin.functions.Invokable;
-import edu.berkeley.cs.builtin.functions.UserDefinedFunction;
-import edu.berkeley.cs.builtin.objects.CDefinitionEater;
 import edu.berkeley.cs.builtin.objects.CObject;
-import edu.berkeley.cs.lexer.SourcePosition;
 import edu.berkeley.cs.parser.SymbolTable;
 
 import java.util.ArrayList;
@@ -44,45 +41,24 @@ import java.util.LinkedList;
  */
 public class TokenEater extends CObject {
     public ArrayList<CObject> tokens;
-    public ArrayList<SymbolToken> parameters;
-    private int curlyCount=0;
-    public CDefinitionEater defEater;
 
     public static CObject thisClass = new CObject();
     static {
         thisClass.addNewRule();
         thisClass.addObject(SymbolTable.getInstance().lcurly);
-        thisClass.addAction(new Invokable() {
-            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
-                TokenEater self = (TokenEater)args.removeFirst();
-                self.curlyCount++;
-                SourcePosition pos = self.tokens.size()>1?self.tokens.get(self.tokens.size()-1).getPosition():null;
-                self.tokens.add(new SymbolToken(pos,SymbolTable.getInstance().getId("{")));
-                return self;
-            }
-        },thisClass); //@todo make sure that the second argument is thisClass
-
-        thisClass.addNewRule();
+        thisClass.addOther(new TokenEater());
         thisClass.addObject(SymbolTable.getInstance().rcurly);
         thisClass.addAction(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
                 TokenEater self = (TokenEater)args.removeFirst();
-                if (self.curlyCount>0) {
-                    SourcePosition pos = self.tokens.size()>1?self.tokens.get(self.tokens.size()-1).getPosition():null;
-                    self.tokens.add(new SymbolToken(pos,SymbolTable.getInstance().getId("}")));
-                    self.curlyCount--;
-                    return self;
-                } else {
-                    CompoundToken ret= new CompoundToken(self,DS);
-                    if (self.defEater == null) {
-                        return ret;
-                    } else {
-                        self.defEater.parent.addAction(new UserDefinedFunction(ret,false),DS);
-                        return VoidToken.VOID();
-                    }
-                }
+                TokenEater arg = (TokenEater)args.removeFirst();
+                self.tokens.add(new SymbolToken(DS.getPosition(),SymbolTable.getInstance().getId("{"))); //@todo not the correct position
+                self.tokens.addAll(arg.tokens);
+                arg.clearAll();
+                self.tokens.add(new SymbolToken(DS.getPosition(),SymbolTable.getInstance().getId("}")));
+                return self;
             }
-        },thisClass);
+        },thisClass); //@todo make sure that the second argument is thisClass
 
         thisClass.addNewRule();
         thisClass.addMeta(SymbolTable.getInstance().token);
@@ -104,27 +80,14 @@ public class TokenEater extends CObject {
 
             }
         },thisClass);
-
-        thisClass.addNewRule();
-        thisClass.addObject(SymbolTable.getInstance().semi);
-        thisClass.addAction(new Invokable() {
-            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
-                TokenEater self = (TokenEater)args.removeFirst();
-                self.tokens.add(new SymbolToken(DS.getPosition(),SymbolTable.getInstance().getId(";")));
-                return self;
-            }
-        },thisClass);
-
     }
 
-    public TokenEater(CDefinitionEater defEater) {
+    public TokenEater() {
         tokens = new ArrayList<CObject>();
-        parameters = new ArrayList<SymbolToken>();
-        this.defEater = defEater;
         setRule(thisClass);
     }
 
-    public void appendParameters(ArrayList<SymbolToken> parameters) {
-        this.parameters.addAll(parameters);
+    public void clearAll() {
+        tokens.clear();
     }
 }

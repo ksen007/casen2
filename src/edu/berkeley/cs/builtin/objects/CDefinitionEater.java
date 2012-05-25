@@ -3,6 +3,9 @@ package edu.berkeley.cs.builtin.objects;
 import edu.berkeley.cs.builtin.functions.*;
 import edu.berkeley.cs.builtin.objects.preprocessor.*;
 import edu.berkeley.cs.parser.SymbolTable;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtNewMethod;
 
 import java.util.LinkedList;
 
@@ -40,6 +43,7 @@ import java.util.LinkedList;
  */
 public class CDefinitionEater extends CObject {
     public CObject parent;
+    public static int count = 0;
 
     private static CObject superClass =  new CObject();
 
@@ -82,32 +86,78 @@ public class CDefinitionEater extends CObject {
 
         superClass.addNewRule();
         superClass.addObject(SymbolTable.getInstance().lcurly);
+        superClass.addOther(new TokenEater());
+        superClass.addObject(SymbolTable.getInstance().rcurly);
         superClass.addAction(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
                 CDefinitionEater self = (CDefinitionEater)args.removeFirst();
-                return new TokenEater(self);
+                TokenEater arg = (TokenEater)args.removeFirst();
+                self.parent.addAction(new UserDefinedFunction(new CompoundToken(null, arg, DS), false), DS);
+                arg.clearAll();
+                return VoidToken.VOID();
             }
         },superClass);
 
         superClass.addNewRule();
         superClass.addObject(SymbolTable.getInstance().lcurly);
         superClass.addObject(SymbolTable.getInstance().bar);
+        superClass.addOther(new CParameterEater());
+        superClass.addObject(SymbolTable.getInstance().bar);
+        superClass.addOther(new TokenEater());
+        superClass.addObject(SymbolTable.getInstance().rcurly);
         superClass.addAction(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
                 CDefinitionEater self = (CDefinitionEater)args.removeFirst();
-                return new CParameterEater(new TokenEater(self));
+                CParameterEater parg = (CParameterEater)args.removeFirst();
+                TokenEater arg = (TokenEater)args.removeFirst();
+                self.parent.addAction(new UserDefinedFunction(new CompoundToken(parg, arg, DS), false), DS);
+                parg.clearAll();
+                arg.clearAll();
+                return VoidToken.VOID();
             }
         },superClass);
 
         superClass.addNewRule();
         superClass.addObject(SymbolTable.getInstance().lcurly);
         superClass.addObject(SymbolTable.getInstance().pound);
+        superClass.addOther(new TokenEater());
+        superClass.addObject(SymbolTable.getInstance().pound);
+        superClass.addObject(SymbolTable.getInstance().rcurly);
         superClass.addAction(new Invokable() {
-            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS)  {
                 CDefinitionEater self = (CDefinitionEater)args.removeFirst();
-                return new JavaEater(self);
+                TokenEater arg = (TokenEater) args.removeFirst();
+                StringBuilder sb = new StringBuilder();
+                try {
+                    for(CObject token: arg.tokens) {
+                        if (!token.isNoSpace()) {
+                            sb.append(' ');
+                        }
+                        if (token instanceof SymbolToken) {
+                            sb.append(SymbolTable.getInstance().getSymbol(((SymbolToken)token).symbol));
+                        } else if (token instanceof StringToken) {
+                            sb.append('"');
+                            sb.append(((StringToken)token).value);
+                            sb.append('"');
+                        }
+                    }
+
+                    ClassPool pool = ClassPool.getDefault();
+                    pool.importPackage("edu.berkeley.cs.builtin.objects.CObject");
+                    pool.importPackage("edu.berkeley.cs.builtin.objects.preprocessor.*");
+                    pool.importPackage("java.util.LinkedList");
+                    CtClass nativeClass = pool.makeClass("Native"+(++count));
+                    nativeClass.addMethod(CtNewMethod.make(sb.toString(), nativeClass));
+                    nativeClass.setInterfaces(new CtClass[] { pool.makeClass("edu.berkeley.cs.builtin.functions.Invokable") });
+                    Class clazz = nativeClass.toClass();
+                    self.parent.addAction((Invokable)clazz.newInstance(),DS);
+                    return VoidToken.VOID();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    throw new RuntimeException("Cannot compile native method "+sb.toString());
+                }
             }
-        },superClass);
+        },superClass); //@todo comeback to check thisClass
     }
 
 

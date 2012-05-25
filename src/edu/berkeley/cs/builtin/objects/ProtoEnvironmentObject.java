@@ -59,20 +59,34 @@ public class ProtoEnvironmentObject extends CObject {
 
         instance.addNewRule();
         instance.addObject(SymbolTable.getInstance().lcurly);
+        instance.addOther(new TokenEater());
+        instance.addObject(SymbolTable.getInstance().rcurly);
         instance.addAction(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
-                return new TokenEater(null);
-
+                CObject self = args.removeFirst();
+                TokenEater arg = (TokenEater)args.removeFirst();
+                CObject ret = new CompoundToken(null,arg,DS);
+                arg.clearAll();
+                return ret;
             }
         },instance);
 
         instance.addNewRule();
         instance.addObject(SymbolTable.getInstance().lcurly);
         instance.addObject(SymbolTable.getInstance().bar);
+        instance.addOther(new CParameterEater());
+        instance.addObject(SymbolTable.getInstance().bar);
+        instance.addOther(new TokenEater());
+        instance.addObject(SymbolTable.getInstance().rcurly);
         instance.addAction(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
-                return new CParameterEater(new TokenEater(null));
-
+                CObject self = args.removeFirst();
+                CParameterEater parg = (CParameterEater)args.removeFirst();
+                TokenEater arg = (TokenEater)args.removeFirst();
+                CObject ret = new CompoundToken(parg,arg,DS);
+                parg.clearAll();
+                arg.clearAll();
+                return ret;
             }
         },instance);
 

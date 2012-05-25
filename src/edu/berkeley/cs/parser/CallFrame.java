@@ -45,7 +45,7 @@ public class CallFrame {
     private Stack<Integer> precedenceStack;
     CObject LS;
     private Scanner scnr;
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
 
 
     public CallFrame(CObject LS, CObject base, Scanner scnr) {

@@ -53,11 +53,15 @@ public class CompoundToken extends CObject {
         return new BasicScanner(new BufferedLexer(tokens));
     }
 
-    public CompoundToken(TokenEater ss,CObject SS) {
+    public CompoundToken(CParameterEater par, TokenEater ss,CObject SS) {
         super(null);
 
-        tokens = ss.tokens;
-        parameters = ss.parameters;
+        tokens = new ArrayList<CObject>(ss.tokens);
+        if (par==null) {
+            parameters = new ArrayList<SymbolToken>();
+        } else {
+            parameters = new ArrayList<SymbolToken>(par.parameters);
+        }
         int N = parameters.size();
 
         this.addNewRule();

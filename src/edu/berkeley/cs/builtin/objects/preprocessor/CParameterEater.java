@@ -40,7 +40,6 @@ import java.util.LinkedList;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class CParameterEater extends CObject {
-    public TokenEater parent;
     public ArrayList<SymbolToken> parameters;
 
 
@@ -59,22 +58,22 @@ public class CParameterEater extends CObject {
         },superClass); //@todo comeback to check superClass
 
         superClass.addNewRule();
-        superClass.addMeta(SymbolTable.getInstance().token);
-        superClass.addObject(SymbolTable.getInstance().bar);
+        superClass.addMeta(SymbolTable.getInstance().token); //@todo comeback what if there is a newline
         superClass.addAction(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
                 CParameterEater self = (CParameterEater)args.removeFirst();
                 self.parameters.add((SymbolToken) args.removeFirst());
-                self.parent.appendParameters(self.parameters);
-                return self.parent;
+                return self;
             }
         },superClass);
     }
 
-    public CParameterEater(TokenEater ss) {
+    public CParameterEater() {
         parameters = new ArrayList<SymbolToken>();
-        this.parent = ss;
         setRule(superClass);
     }
 
+    public void clearAll() {
+        parameters.clear();
+    }
 }

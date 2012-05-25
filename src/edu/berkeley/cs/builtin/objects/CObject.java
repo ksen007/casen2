@@ -292,10 +292,17 @@ public class CObject {
 
     public void addOther(CObject object) {
         curr = curr.addOther(object);
+        argCount++;
+        if (curr==null) {
+            System.out.println(curr);
+        }
     }
 
 
     public void addAction(Invokable func, CObject SS) {
+        if (curr==null) {
+            System.out.println(curr);
+        }
         curr = curr.addAction(new Action(argCount,func,SS));
     }
 

@@ -1,6 +1,5 @@
 package edu.berkeley.cs;
 
-import edu.berkeley.cs.builtin.objects.CObject;
 import junit.framework.TestCase;
 
 /**
@@ -38,12 +37,7 @@ import junit.framework.TestCase;
 public class ScratchPad extends TestCase {
 
     public void test5() throws Exception {
-        CObject ret = Interpreter.interpret("(- 3*5 + 4*5 / 5 - 4)");
-//        assertEquals(((LongToken)ret).value,23);
-    }
-
-    public void test6() throws Exception {
-        CObject ret = Interpreter.interpret("print (- 5 - 4)");
+        Interpreter.interpret("def foo { var x = 1; }");
 //        assertEquals(((LongToken)ret).value,23);
     }
 
