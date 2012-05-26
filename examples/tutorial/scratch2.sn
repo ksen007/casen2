@@ -1,42 +1,6 @@
-var x = 1
-var y = 2
-var z = 3
+def factorial 1 {1}
+def factorial @token {|x| x * factorial exprToToken(x-1)}
 
-def foo {
-    print x
-    var x = 4
-    print x
-    print (prototype x)
+print 20
 
-    print y
-    y = 5
-    print y
-    print (prototype y)
-
-    def bar {
-        print x
-        var x = 6
-        print x
-        print (prototype x)
-        print (prototype prototype x)
-
-        print y
-        y = 7
-        print y
-        print (prototype prototype y)
-
-        return {
-            print x
-            print y
-        }
-    }
-
-    return bar
-}
-
-var fun = foo
-
-fun()
-y = 8
-x = 9
-fun()
+print (factorial 5)

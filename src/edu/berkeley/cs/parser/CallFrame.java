@@ -283,7 +283,7 @@ public class CallFrame {
     private static boolean isProgressPossible(RuleNode rn, CObject t) {
         if (rn ==null) return false;
         if (rn.getRuleForObject(t)!=null) return true;
-        if (matchesToken(t,SymbolTable.getInstance().exprToToken) && !rn.isActionOnly()) return true;
+//        if (matchesToken(t,SymbolTable.getInstance().exprToToken) && !rn.isActionOnly()) return true;
         if (!matchesToken(t,SymbolToken.end) && !matchesToken(t,SymbolTable.getInstance().newline)) {
             if (rn.getRuleForToken()!=null) return true;
             if (rn.getRuleForExpr()!=null) return true;

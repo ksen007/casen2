@@ -84,6 +84,17 @@ public class TokenEater extends CObject {
 
             }
         },thisClass);
+
+        thisClass.addNewRule();
+        thisClass.addObject(SymbolTable.getInstance().exprToToken);
+        thisClass.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                TokenEater self = (TokenEater)args.removeFirst();
+                self.tokens.add(new SymbolToken(DS.getPosition(),SymbolTable.getInstance().exprToToken.symbol));
+                return self;
+
+            }
+        },thisClass);
     }
 
     public TokenEater() {
