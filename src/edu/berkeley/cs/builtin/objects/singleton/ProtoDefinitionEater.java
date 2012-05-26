@@ -97,7 +97,6 @@ public class ProtoDefinitionEater {
                 DefinitionEater self = (DefinitionEater)args.removeFirst();
                 TokenEater arg = (TokenEater)args.removeFirst();
                 self.parent.addAction(new UserFunctionObject(null, arg, DS), false);
-                arg.clearAll();
                 return VoidToken.VOID();
             }
         }, INSTANCE);
@@ -123,8 +122,6 @@ public class ProtoDefinitionEater {
                 ParameterEater parg = (ParameterEater)args.removeFirst();
                 TokenEater arg = (TokenEater)args.removeFirst();
                 self.parent.addAction(new UserFunctionObject(parg, arg, DS), false);
-                parg.clearAll();
-                arg.clearAll();
                 return VoidToken.VOID();
             }
         }, INSTANCE);

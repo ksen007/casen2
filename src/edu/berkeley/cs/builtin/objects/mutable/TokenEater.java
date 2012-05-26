@@ -45,8 +45,4 @@ public class TokenEater extends CObject {
         setPrototype(ProtoTokenEater.INSTANCE);
         hidePrototype();
     }
-
-    public void clearAll() {
-        tokens.clear();
-    }
 }

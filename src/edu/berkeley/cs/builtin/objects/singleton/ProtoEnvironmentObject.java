@@ -71,7 +71,6 @@ public class ProtoEnvironmentObject {
                 CObject self = args.removeFirst();
                 TokenEater arg = (TokenEater)args.removeFirst();
                 CObject ret = new UserFunctionObject(null,arg,DS);
-                arg.clearAll();
                 return ret;
             }
         }, INSTANCE);
@@ -97,8 +96,6 @@ public class ProtoEnvironmentObject {
                 ParameterEater parg = (ParameterEater)args.removeFirst();
                 TokenEater arg = (TokenEater)args.removeFirst();
                 CObject ret = new UserFunctionObject(parg,arg,DS);
-                parg.clearAll();
-                arg.clearAll();
                 return ret;
             }
         }, INSTANCE);

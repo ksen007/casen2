@@ -59,7 +59,6 @@ public class ProtoTokenEater {
                 TokenEater arg = (TokenEater)args.removeFirst();
                 self.tokens.add(new SymbolToken(DS.getPosition(),SymbolTable.getInstance().getId("{"))); //@todo not the correct position
                 self.tokens.addAll(arg.tokens);
-                arg.clearAll();
                 self.tokens.add(new SymbolToken(DS.getPosition(),SymbolTable.getInstance().getId("}")));
                 return self;
             }

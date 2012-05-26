@@ -46,7 +46,4 @@ public class ParameterEater extends CObject {
         hidePrototype();
     }
 
-    public void clearAll() {
-        parameters.clear();
-    }
 }
