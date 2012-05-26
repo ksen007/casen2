@@ -1,7 +1,7 @@
 package edu.berkeley.cs.builtin.functions;
 
-import edu.berkeley.cs.builtin.objects.CObject;
-import edu.berkeley.cs.builtin.objects.Reference;
+import edu.berkeley.cs.builtin.Reference;
+import edu.berkeley.cs.builtin.objects.mutable.CObject;
 
 import java.util.LinkedList;
 

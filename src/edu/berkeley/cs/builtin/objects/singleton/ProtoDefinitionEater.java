@@ -1,7 +1,9 @@
-package edu.berkeley.cs.builtin.objects;
+package edu.berkeley.cs.builtin.objects.singleton;
 
-import edu.berkeley.cs.builtin.functions.*;
-import edu.berkeley.cs.builtin.objects.preprocessor.*;
+import edu.berkeley.cs.builtin.functions.Invokable;
+import edu.berkeley.cs.builtin.objects.mutable.DefinitionEater;
+import edu.berkeley.cs.builtin.objects.mutable.CObject;
+import edu.berkeley.cs.builtin.objects.mutable.*;
 import edu.berkeley.cs.parser.SymbolTable;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -41,18 +43,16 @@ import java.util.LinkedList;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class CDefinitionEater extends CObject {
-    public CObject parent;
+public class ProtoDefinitionEater {
+    final public static CObject INSTANCE =  new CObject();
     public static int count = 0;
 
-    private static CObject superClass =  new CObject();
-
     static {
-        superClass.addNewRule();
-        superClass.addMeta(SymbolTable.getInstance().token);
-        superClass.addAction(new Invokable() {
+        INSTANCE.addNewRule();
+        INSTANCE.addMeta(SymbolTable.getInstance().token);
+        INSTANCE.addAction(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
-                CDefinitionEater self = (CDefinitionEater)args.removeFirst();
+                DefinitionEater self = (DefinitionEater)args.removeFirst();
                 CObject arg = args.removeFirst();
                 if (arg instanceof MetaToken) {
                     int argument = ((MetaToken)arg).metaSymbol;
@@ -68,80 +68,80 @@ public class CDefinitionEater extends CObject {
                 }
                 return self;
             }
-        },superClass);
+        }, INSTANCE);
 
-        superClass.addNewRule();
-        superClass.addObject(SymbolTable.getInstance().at);
-        superClass.addObject(SymbolTable.getInstance().lparen);
-        superClass.addMeta(SymbolTable.getInstance().expr);
-        superClass.addObject(SymbolTable.getInstance().rparen);
-        superClass.addAction(new Invokable() {
+        INSTANCE.addNewRule();
+        INSTANCE.addObject(SymbolTable.getInstance().at);
+        INSTANCE.addObject(SymbolTable.getInstance().lparen);
+        INSTANCE.addMeta(SymbolTable.getInstance().expr);
+        INSTANCE.addObject(SymbolTable.getInstance().rparen);
+        INSTANCE.addAction(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
-                CDefinitionEater self = (CDefinitionEater)args.removeFirst();
+                DefinitionEater self = (DefinitionEater)args.removeFirst();
                 CObject arg = args.removeFirst();
                 self.parent.addOther((FunctionObject)arg);
                 return self;
             }
-        },superClass);
+        }, INSTANCE);
 
-        superClass.addNewRule();
-        superClass.addObject(SymbolTable.getInstance().lcurly);
-        superClass.addOther(new NativeFunctionObject(new Invokable() {
+        INSTANCE.addNewRule();
+        INSTANCE.addObject(SymbolTable.getInstance().lcurly);
+        INSTANCE.addOther(new NativeFunctionObject(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
                 return new TokenEater();
             }
-        },superClass,0));
-        superClass.addObject(SymbolTable.getInstance().rcurly);
-        superClass.addAction(new Invokable() {
+        }, INSTANCE,0));
+        INSTANCE.addObject(SymbolTable.getInstance().rcurly);
+        INSTANCE.addAction(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
-                CDefinitionEater self = (CDefinitionEater)args.removeFirst();
+                DefinitionEater self = (DefinitionEater)args.removeFirst();
                 TokenEater arg = (TokenEater)args.removeFirst();
                 self.parent.addAction(new UserFunctionObject(null, arg, DS), false);
                 arg.clearAll();
                 return VoidToken.VOID();
             }
-        },superClass);
+        }, INSTANCE);
 
-        superClass.addNewRule();
-        superClass.addObject(SymbolTable.getInstance().lcurly);
-        superClass.addObject(SymbolTable.getInstance().bar);
-        superClass.addOther(new NativeFunctionObject(new Invokable() {
+        INSTANCE.addNewRule();
+        INSTANCE.addObject(SymbolTable.getInstance().lcurly);
+        INSTANCE.addObject(SymbolTable.getInstance().bar);
+        INSTANCE.addOther(new NativeFunctionObject(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
-                return new CParameterEater();
+                return new ParameterEater();
             }
-        },superClass,0));
-        superClass.addObject(SymbolTable.getInstance().bar);
-        superClass.addOther(new NativeFunctionObject(new Invokable() {
+        }, INSTANCE,0));
+        INSTANCE.addObject(SymbolTable.getInstance().bar);
+        INSTANCE.addOther(new NativeFunctionObject(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
                 return new TokenEater();
             }
-        },superClass,0));
-        superClass.addObject(SymbolTable.getInstance().rcurly);
-        superClass.addAction(new Invokable() {
+        }, INSTANCE,0));
+        INSTANCE.addObject(SymbolTable.getInstance().rcurly);
+        INSTANCE.addAction(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
-                CDefinitionEater self = (CDefinitionEater)args.removeFirst();
-                CParameterEater parg = (CParameterEater)args.removeFirst();
+                DefinitionEater self = (DefinitionEater)args.removeFirst();
+                ParameterEater parg = (ParameterEater)args.removeFirst();
                 TokenEater arg = (TokenEater)args.removeFirst();
                 self.parent.addAction(new UserFunctionObject(parg, arg, DS), false);
                 parg.clearAll();
                 arg.clearAll();
                 return VoidToken.VOID();
             }
-        },superClass);
+        }, INSTANCE);
 
-        superClass.addNewRule();
-        superClass.addObject(SymbolTable.getInstance().lcurly);
-        superClass.addObject(SymbolTable.getInstance().pound);
-        superClass.addOther(new NativeFunctionObject(new Invokable() {
+        INSTANCE.addNewRule();
+        INSTANCE.addObject(SymbolTable.getInstance().lcurly);
+        INSTANCE.addObject(SymbolTable.getInstance().pound);
+        INSTANCE.addOther(new NativeFunctionObject(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
                 return new TokenEater();
             }
-        },superClass,0));
-        superClass.addObject(SymbolTable.getInstance().pound);
-        superClass.addObject(SymbolTable.getInstance().rcurly);
-        superClass.addAction(new Invokable() {
+        }, INSTANCE,0));
+        INSTANCE.addObject(SymbolTable.getInstance().pound);
+        INSTANCE.addObject(SymbolTable.getInstance().rcurly);
+        INSTANCE.addAction(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS)  {
-                CDefinitionEater self = (CDefinitionEater)args.removeFirst();
+                DefinitionEater self = (DefinitionEater)args.removeFirst();
                 TokenEater arg = (TokenEater) args.removeFirst();
                 StringBuilder sb = new StringBuilder();
                 try {
@@ -159,8 +159,8 @@ public class CDefinitionEater extends CObject {
                     }
 
                     ClassPool pool = ClassPool.getDefault();
-                    pool.importPackage("edu.berkeley.cs.builtin.objects.CObject");
-                    pool.importPackage("edu.berkeley.cs.builtin.objects.preprocessor.*");
+                    pool.importPackage("edu.berkeley.cs.builtin.objects.mutable.CObject");
+                    pool.importPackage("edu.berkeley.cs.builtin.objects.mutable.*");
                     pool.importPackage("java.util.LinkedList");
                     CtClass nativeClass = pool.makeClass("Native"+(++count));
                     nativeClass.addMethod(CtNewMethod.make(sb.toString(), nativeClass));
@@ -173,15 +173,9 @@ public class CDefinitionEater extends CObject {
                     throw new RuntimeException("Cannot compile native method "+sb.toString());
                 }
             }
-        },superClass); //@todo comeback to check thisClass
+        }, INSTANCE); //@todo comeback to check thisClass
     }
 
 
-
-    public CDefinitionEater(CObject parent) {
-        this.parent = parent;
-        parent.addNewRule();
-        setRule(superClass);
-    }
 
 }

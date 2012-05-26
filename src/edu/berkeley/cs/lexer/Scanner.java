@@ -1,7 +1,7 @@
 package edu.berkeley.cs.lexer;
 
 
-import edu.berkeley.cs.builtin.objects.CObject;
+import edu.berkeley.cs.builtin.objects.mutable.CObject;
 
 /**
  * Copyright (c) 2006-2011,

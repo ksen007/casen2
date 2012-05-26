@@ -1,7 +1,7 @@
 package edu.berkeley.cs.parser;
 
-import edu.berkeley.cs.builtin.objects.CObject;
-import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
+import edu.berkeley.cs.builtin.objects.mutable.CObject;
+import edu.berkeley.cs.builtin.objects.mutable.SymbolToken;
 import gnu.trove.map.hash.TIntIntHashMap;
 
 /**

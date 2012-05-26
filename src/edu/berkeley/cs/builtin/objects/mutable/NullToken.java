@@ -1,4 +1,7 @@
-package edu.berkeley.cs.builtin.objects;
+package edu.berkeley.cs.builtin.objects.mutable;
+
+import edu.berkeley.cs.builtin.objects.singleton.ProtoNullToken;
+import edu.berkeley.cs.lexer.SourcePosition;
 
 /**
  * Copyright (c) 2006-2011,
@@ -32,19 +35,35 @@ package edu.berkeley.cs.builtin.objects;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class Reference {
-    public CObject value;
-
-    public Reference(CObject value) {
-        this.value = value;
+public class NullToken extends CObject {
+    public static NullToken NULL() {
+        if (NULL==null)
+            NULL = new NullToken(null,true);
+        return NULL;
     }
 
-    public void setCObject(CObject arg) {
-        this.value = arg;
+    private static NullToken NULL;
+
+
+    public NullToken(SourcePosition position, boolean isSpace) {
+        super(position);
+        if (!isSpace) setNoSpace();
+        setPrototype(ProtoNullToken.INSTANCE);
     }
 
     @Override
     public String toString() {
-        return value.toString();
+        return "null";
+
+    }
+
+    @Override
+    public int hashCode() {
+        return 1024;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+         return (o instanceof NullToken);
     }
 }

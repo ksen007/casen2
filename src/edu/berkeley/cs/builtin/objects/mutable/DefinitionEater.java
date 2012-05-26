@@ -1,4 +1,6 @@
-package edu.berkeley.cs.builtin.objects;
+package edu.berkeley.cs.builtin.objects.mutable;
+
+import edu.berkeley.cs.builtin.objects.singleton.ProtoDefinitionEater;
 
 /**
  * Copyright (c) 2006-2011,
@@ -32,14 +34,14 @@ package edu.berkeley.cs.builtin.objects;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class ProtoCArray {
-    final public static StandardObject INSTANCE =  new StandardObject();
+public class DefinitionEater extends CObject {
+    public CObject parent;
 
-//    static {
-//        INSTANCE.eval("def [ @expr ] @get endef");
-//        INSTANCE.eval("def [ @expr ] = @expr @set endef");
-//        INSTANCE.eval("def length @length endef");
-//        INSTANCE.eval("def map @expr {|f| var i = 0; while {i< (self length)} { f( self [ i ] ) ; i = i + 1;}; }");
-//        INSTANCE.eval("def == @expr @eq endef");
-//    }
+    public DefinitionEater(CObject parent) {
+        this.parent = parent;
+        parent.addNewRule();
+        setPrototype(ProtoDefinitionEater.INSTANCE);
+        hidePrototype();
+    }
+
 }

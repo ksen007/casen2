@@ -1,7 +1,5 @@
-package edu.berkeley.cs.builtin.objects.preprocessor;
+package edu.berkeley.cs.builtin.objects.mutable;
 
-import edu.berkeley.cs.builtin.objects.CObject;
-import edu.berkeley.cs.builtin.objects.ProtoStringToken;
 import edu.berkeley.cs.lexer.SourcePosition;
 
 /**
@@ -36,48 +34,35 @@ import edu.berkeley.cs.lexer.SourcePosition;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class StringToken extends CObject {
-    public String value;
-
-    public StringToken(SourcePosition position, String s) {
-        super(position);
-        this.value = s;
-        setPrototype(ProtoStringToken.INSTANCE);
+public class VoidToken extends CObject {
+    public static VoidToken VOID() {
+        if (VOID==null)
+            VOID = new VoidToken(null,true);
+        return VOID;
     }
 
-    public StringToken(SourcePosition position, boolean isSpace, String s) {
+    private static VoidToken VOID;
+
+
+    public VoidToken(SourcePosition position, boolean isSpace) {
         super(position);
-        this.value = s;
         if (!isSpace) setNoSpace();
-        setPrototype(ProtoStringToken.INSTANCE);
-    }
-
-    public CObject add(CObject operand2) {
-        return new StringToken(null,value+operand2);
-    }
-
-    public CObject eq(CObject operand2) {
-        return this == operand2?BooleanToken.TRUE():BooleanToken.FALSE();
-    }
-
-    public CObject ne(CObject operand2) {
-        return this!=operand2?BooleanToken.TRUE(): BooleanToken.FALSE();
     }
 
     @Override
     public String toString() {
-        return value;
+        return "void";
 
     }
 
     @Override
     public int hashCode() {
-        return value.hashCode();
+        return 512;
     }
-
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof StringToken)) return false;
-        return value.equals(((StringToken)o).value);
-    }}
+         return (o instanceof VoidToken);
+    }
+}
+

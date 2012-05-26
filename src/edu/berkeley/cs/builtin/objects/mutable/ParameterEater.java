@@ -1,10 +1,8 @@
-package edu.berkeley.cs.builtin.objects.preprocessor;
+package edu.berkeley.cs.builtin.objects.mutable;
 
-import edu.berkeley.cs.builtin.functions.Invokable;
-import edu.berkeley.cs.builtin.objects.CObject;
-import edu.berkeley.cs.parser.SymbolTable;
+import edu.berkeley.cs.builtin.objects.singleton.ProtoParameterEater;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 /**
  * Copyright (c) 2006-2011,
@@ -38,27 +36,17 @@ import java.util.LinkedList;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class NativeFunctionObject extends FunctionObject {
-    public Invokable fun;
+public class ParameterEater extends CObject {
+    public ArrayList<SymbolToken> parameters;
 
-    public NativeFunctionObject(Invokable fun, CObject scope, int N) {
-        super(null, scope);
-        this.fun = fun;
 
-        this.addNewRule();
-        this.addObject(SymbolTable.getInstance().lparen);
-        for(int i=0; i<N; i++) {
-            this.addMeta(SymbolTable.getInstance().expr);
-            if (i<N-1)
-                this.addObject(SymbolTable.getInstance().comma);
-        }
-        this.addObject(SymbolTable.getInstance().rparen);
-        this.addAction(this,false);
-
+    public ParameterEater() {
+        parameters = new ArrayList<SymbolToken>();
+        setPrototype(ProtoParameterEater.INSTANCE);
+        hidePrototype();
     }
 
-    @Override
-    public CObject apply(LinkedList<CObject> args, CObject DS, boolean reuse) {
-        return fun.apply(args,scope,DS);
+    public void clearAll() {
+        parameters.clear();
     }
 }

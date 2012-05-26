@@ -1,7 +1,7 @@
 package edu.berkeley.cs.parser;
 
-import edu.berkeley.cs.builtin.objects.CObject;
-import edu.berkeley.cs.builtin.objects.preprocessor.FunctionObject;
+import edu.berkeley.cs.builtin.objects.mutable.CObject;
+import edu.berkeley.cs.builtin.objects.mutable.FunctionObject;
 
 import java.util.LinkedList;
 import java.util.Stack;

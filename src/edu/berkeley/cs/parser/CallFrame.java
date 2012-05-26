@@ -1,9 +1,9 @@
 package edu.berkeley.cs.parser;
 
-import edu.berkeley.cs.builtin.objects.CObject;
-import edu.berkeley.cs.builtin.objects.preprocessor.ExptToTokenObject;
-import edu.berkeley.cs.builtin.objects.preprocessor.StringToken;
-import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
+import edu.berkeley.cs.builtin.objects.mutable.CObject;
+import edu.berkeley.cs.builtin.objects.mutable.ExprToTokenObject;
+import edu.berkeley.cs.builtin.objects.mutable.StringToken;
+import edu.berkeley.cs.builtin.objects.mutable.SymbolToken;
 import edu.berkeley.cs.lexer.Scanner;
 
 import java.io.PrintWriter;
@@ -108,7 +108,7 @@ public class CallFrame {
             if (consumeSymbol(currentRule,t)) return true;
 
             if (matchesToken(t,SymbolTable.getInstance().exprToToken) && !currentRule.isActionOnly()) {
-                parseRuleStack.push((new ExptToTokenObject(scnr)).getRuleNode());
+                parseRuleStack.push((new ExprToTokenObject(scnr)).getRuleNode());
                 precedenceStack.push(0);
                 return true;
             }

@@ -1,7 +1,6 @@
-package edu.berkeley.cs.builtin.objects.preprocessor;
+package edu.berkeley.cs.builtin.objects.mutable;
 
-import edu.berkeley.cs.builtin.objects.CObject;
-import edu.berkeley.cs.builtin.objects.ProtoNullToken;
+import edu.berkeley.cs.builtin.objects.singleton.ProtoDoubleToken;
 import edu.berkeley.cs.lexer.SourcePosition;
 
 /**
@@ -36,35 +35,37 @@ import edu.berkeley.cs.lexer.SourcePosition;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class NullToken extends CObject {
-    public static NullToken NULL() {
-        if (NULL==null)
-            NULL = new NullToken(null,true);
-        return NULL;
+public class DoubleToken extends CObject {
+    public double value;
+
+    public DoubleToken(SourcePosition position, boolean isSpace, double l) {
+        super(position);
+        this.value = l;
+        if (!isSpace) setNoSpace();
+        setPrototype(ProtoDoubleToken.INSTANCE);
     }
 
-    private static NullToken NULL;
-
-
-    public NullToken(SourcePosition position, boolean isSpace) {
+    public DoubleToken(SourcePosition position, double l) {
         super(position);
-        if (!isSpace) setNoSpace();
-        setPrototype(ProtoNullToken.INSTANCE);
+        this.value = l;
+        setPrototype(ProtoDoubleToken.INSTANCE);
     }
 
     @Override
     public String toString() {
-        return "null";
+        return value+"";
 
     }
 
+
     @Override
     public int hashCode() {
-        return 1024;
+        return (int)value;
     }
 
     @Override
     public boolean equals(Object o) {
-         return (o instanceof NullToken);
+        if (!(o instanceof DoubleToken)) return false;
+        return value == ((DoubleToken)o).value;
     }
 }

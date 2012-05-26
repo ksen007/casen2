@@ -1,6 +1,6 @@
 package edu.berkeley.cs.builtin.functions;
 
-import edu.berkeley.cs.builtin.objects.CObject;
+import edu.berkeley.cs.builtin.objects.mutable.CObject;
 import edu.berkeley.cs.lexer.Scanner;
 
 import java.util.LinkedList;

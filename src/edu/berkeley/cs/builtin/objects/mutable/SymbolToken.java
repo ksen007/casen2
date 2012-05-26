@@ -1,11 +1,7 @@
-package edu.berkeley.cs.builtin.objects.preprocessor;
+package edu.berkeley.cs.builtin.objects.mutable;
 
-import edu.berkeley.cs.builtin.functions.Invokable;
-import edu.berkeley.cs.builtin.objects.CObject;
+import edu.berkeley.cs.lexer.SourcePosition;
 import edu.berkeley.cs.parser.SymbolTable;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
 
 /**
  * Copyright (c) 2006-2011,
@@ -39,41 +35,37 @@ import java.util.LinkedList;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class CParameterEater extends CObject {
-    public ArrayList<SymbolToken> parameters;
+public class SymbolToken extends CObject {
+    final public static SymbolToken end = new SymbolToken(null,-1);
 
+    public int symbol;
 
-    private static CObject superClass =  new CObject();
-
-    static {
-        superClass.addNewRule();
-        superClass.addMeta(SymbolTable.getInstance().token);
-        superClass.addObject(SymbolTable.getInstance().comma);
-        superClass.addAction(new Invokable() {
-            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
-                CParameterEater self = (CParameterEater)args.removeFirst();
-                self.parameters.add((SymbolToken) args.removeFirst());
-                return self;
-            }
-        },superClass); //@todo comeback to check superClass
-
-        superClass.addNewRule();
-        superClass.addMeta(SymbolTable.getInstance().token); //@todo comeback what if there is a newline
-        superClass.addAction(new Invokable() {
-            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
-                CParameterEater self = (CParameterEater)args.removeFirst();
-                self.parameters.add((SymbolToken) args.removeFirst());
-                return self;
-            }
-        },superClass);
+    public SymbolToken(SourcePosition position, int symbol) {
+        super(position);
+        this.symbol = symbol;
     }
 
-    public CParameterEater() {
-        parameters = new ArrayList<SymbolToken>();
-        setRule(superClass);
+    public SymbolToken(SourcePosition position, boolean isSpace, int symbol) {
+        super(position);
+        if (!isSpace) setNoSpace();
+        this.symbol = symbol;
     }
 
-    public void clearAll() {
-        parameters.clear();
+    @Override
+    public String toString() {
+        return ""+SymbolTable.getInstance().getSymbol(symbol);
     }
+
+    @Override
+    public int hashCode() {
+        return symbol;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof SymbolToken)) return false;
+        return symbol == ((SymbolToken)o).symbol;
+    }
+
 }

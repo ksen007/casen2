@@ -1,6 +1,6 @@
 package edu.berkeley.cs.lexer;
 
-import edu.berkeley.cs.builtin.objects.CObject;
+import edu.berkeley.cs.builtin.objects.mutable.CObject;
 
 import java.io.FileReader;
 import java.io.IOException;

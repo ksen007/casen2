@@ -1,7 +1,7 @@
 package edu.berkeley.cs.lexer;
 
-import edu.berkeley.cs.builtin.objects.CObject;
-import edu.berkeley.cs.builtin.objects.preprocessor.*;
+import edu.berkeley.cs.builtin.objects.mutable.CObject;
+import edu.berkeley.cs.builtin.objects.mutable.*;
 import edu.berkeley.cs.parser.OperatorPrecedence;
 import edu.berkeley.cs.parser.SymbolTable;
 

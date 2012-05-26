@@ -1,9 +1,8 @@
-package edu.berkeley.cs.builtin.objects.preprocessor;
+package edu.berkeley.cs.builtin.objects.mutable;
 
-import edu.berkeley.cs.builtin.functions.PushResultToScanner;
-import edu.berkeley.cs.builtin.objects.CObject;
-import edu.berkeley.cs.lexer.Scanner;
-import edu.berkeley.cs.parser.SymbolTable;
+import edu.berkeley.cs.builtin.objects.singleton.ProtoTokenEater;
+
+import java.util.ArrayList;
 
 /**
  * Copyright (c) 2006-2011,
@@ -37,14 +36,17 @@ import edu.berkeley.cs.parser.SymbolTable;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class ExptToTokenObject extends CObject {
+public class TokenEater extends CObject {
+    public ArrayList<CObject> tokens;
 
-    public ExptToTokenObject(Scanner scnr) {
-        this.addNewRule();
-        this.addObject(SymbolTable.getInstance().lparen);
-        this.addMeta(SymbolTable.getInstance().expr);
-        this.addObject(SymbolTable.getInstance().rparen);
 
-        this.addAction(new PushResultToScanner(scnr),this);
+    public TokenEater() {
+        tokens = new ArrayList<CObject>();
+        setPrototype(ProtoTokenEater.INSTANCE);
+        hidePrototype();
+    }
+
+    public void clearAll() {
+        tokens.clear();
     }
 }

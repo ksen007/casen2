@@ -1,7 +1,7 @@
-package edu.berkeley.cs.builtin.objects.preprocessor;
+package edu.berkeley.cs.builtin.objects.mutable;
 
-import edu.berkeley.cs.builtin.objects.CObject;
-import edu.berkeley.cs.lexer.SourcePosition;
+import edu.berkeley.cs.builtin.Reference;
+import edu.berkeley.cs.builtin.objects.singleton.ProtoEnvironmentObject;
 import edu.berkeley.cs.parser.SymbolTable;
 
 /**
@@ -36,36 +36,9 @@ import edu.berkeley.cs.parser.SymbolTable;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class MetaToken extends CObject {
-    public int metaSymbol;
-
-    public MetaToken(SourcePosition position, int metaSymbol) {
-        super(position);
-        this.metaSymbol = metaSymbol;
+public class EnvironmentObject extends CObject {
+    public EnvironmentObject() {
+        this.assign(SymbolTable.getInstance().LS,new Reference(this));
+        setPrototype(ProtoEnvironmentObject.INSTANCE);
     }
-
-    public MetaToken(SourcePosition position, boolean isSpace, int metaSymbol) {
-        super(position);
-        if (!isSpace) setNoSpace();
-        this.metaSymbol = metaSymbol;
-    }
-
-
-    @Override
-    public String toString() {
-        return "@"+ SymbolTable.getInstance().getSymbol(metaSymbol);
-
-    }
-
-    @Override
-    public int hashCode() {
-        return metaSymbol;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof MetaToken)) return false;
-        return metaSymbol == ((MetaToken)o).metaSymbol;
-    }
-
 }

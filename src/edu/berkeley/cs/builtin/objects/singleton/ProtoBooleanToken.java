@@ -1,8 +1,10 @@
-package edu.berkeley.cs.builtin.objects;
+package edu.berkeley.cs.builtin.objects.singleton;
 
 import edu.berkeley.cs.builtin.functions.Invokable;
-import edu.berkeley.cs.builtin.objects.preprocessor.BooleanToken;
-import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
+import edu.berkeley.cs.builtin.objects.mutable.CObject;
+import edu.berkeley.cs.builtin.objects.mutable.StandardObject;
+import edu.berkeley.cs.builtin.objects.mutable.BooleanToken;
+import edu.berkeley.cs.builtin.objects.mutable.SymbolToken;
 import edu.berkeley.cs.parser.SymbolTable;
 
 import java.util.LinkedList;

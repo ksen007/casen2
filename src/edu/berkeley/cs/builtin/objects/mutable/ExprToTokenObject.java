@@ -1,8 +1,8 @@
-package edu.berkeley.cs.builtin.objects.preprocessor;
+package edu.berkeley.cs.builtin.objects.mutable;
 
-import edu.berkeley.cs.builtin.objects.CObject;
-import edu.berkeley.cs.builtin.objects.ProtoDoubleToken;
-import edu.berkeley.cs.lexer.SourcePosition;
+import edu.berkeley.cs.builtin.functions.PushResultToScanner;
+import edu.berkeley.cs.lexer.Scanner;
+import edu.berkeley.cs.parser.SymbolTable;
 
 /**
  * Copyright (c) 2006-2011,
@@ -36,37 +36,14 @@ import edu.berkeley.cs.lexer.SourcePosition;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class DoubleToken extends CObject {
-    public double value;
+public class ExprToTokenObject extends CObject {
 
-    public DoubleToken(SourcePosition position, boolean isSpace, double l) {
-        super(position);
-        this.value = l;
-        if (!isSpace) setNoSpace();
-        setPrototype(ProtoDoubleToken.INSTANCE);
-    }
+    public ExprToTokenObject(Scanner scnr) {
+        this.addNewRule();
+        this.addObject(SymbolTable.getInstance().lparen);
+        this.addMeta(SymbolTable.getInstance().expr);
+        this.addObject(SymbolTable.getInstance().rparen);
 
-    public DoubleToken(SourcePosition position, double l) {
-        super(position);
-        this.value = l;
-        setPrototype(ProtoDoubleToken.INSTANCE);
-    }
-
-    @Override
-    public String toString() {
-        return value+"";
-
-    }
-
-
-    @Override
-    public int hashCode() {
-        return (int)value;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof DoubleToken)) return false;
-        return value == ((DoubleToken)o).value;
+        this.addAction(new PushResultToScanner(scnr),this);
     }
 }

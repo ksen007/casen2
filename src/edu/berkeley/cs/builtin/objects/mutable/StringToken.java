@@ -1,9 +1,7 @@
-package edu.berkeley.cs.builtin.objects;
+package edu.berkeley.cs.builtin.objects.mutable;
 
-import edu.berkeley.cs.builtin.functions.Invokable;
-import edu.berkeley.cs.builtin.objects.preprocessor.LongToken;
-
-import java.util.LinkedList;
+import edu.berkeley.cs.builtin.objects.singleton.ProtoStringToken;
+import edu.berkeley.cs.lexer.SourcePosition;
 
 /**
  * Copyright (c) 2006-2011,
@@ -37,33 +35,48 @@ import java.util.LinkedList;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class CArray extends CObject implements Invokable {
-    public CArray() {    }
+public class StringToken extends CObject {
+    public String value;
 
-    public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
-        args.removeFirst();
-        LongToken size = (LongToken)args.removeFirst();
-        return new CArray(size.value);
+    public StringToken(SourcePosition position, String s) {
+        super(position);
+        this.value = s;
+        setPrototype(ProtoStringToken.INSTANCE);
+    }
+
+    public StringToken(SourcePosition position, boolean isSpace, String s) {
+        super(position);
+        this.value = s;
+        if (!isSpace) setNoSpace();
+        setPrototype(ProtoStringToken.INSTANCE);
+    }
+
+    public CObject add(CObject operand2) {
+        return new StringToken(null,value+operand2);
+    }
+
+    public CObject eq(CObject operand2) {
+        return this == operand2?BooleanToken.TRUE():BooleanToken.FALSE();
+    }
+
+    public CObject ne(CObject operand2) {
+        return this!=operand2?BooleanToken.TRUE(): BooleanToken.FALSE();
+    }
+
+    @Override
+    public String toString() {
+        return value;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return value.hashCode();
     }
 
 
-
-    private CObject[] arr;
-
-    public CArray(long size) {
-        arr = new CObject[(int)size];
-        setPrototype(ProtoCArray.INSTANCE);
-    }
-
-    public CObject get(CObject index) {
-        return arr[(int)(((LongToken)index).value)];
-    }
-
-    public CObject set(CObject index, CObject value) {
-        return arr[(int)(((LongToken)index).value)] = value;
-    }
-
-    public CObject length() {
-        return new LongToken(null,(long)arr.length);
-    }
-}
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof StringToken)) return false;
+        return value.equals(((StringToken)o).value);
+    }}

@@ -1,8 +1,12 @@
-package edu.berkeley.cs.builtin.objects.preprocessor;
+package edu.berkeley.cs.builtin.objects.singleton;
 
-import edu.berkeley.cs.builtin.objects.CObject;
-import edu.berkeley.cs.builtin.objects.ProtoBooleanToken;
-import edu.berkeley.cs.lexer.SourcePosition;
+import edu.berkeley.cs.builtin.functions.Invokable;
+import edu.berkeley.cs.builtin.objects.mutable.CObject;
+import edu.berkeley.cs.builtin.objects.mutable.ParameterEater;
+import edu.berkeley.cs.builtin.objects.mutable.SymbolToken;
+import edu.berkeley.cs.parser.SymbolTable;
+
+import java.util.LinkedList;
 
 /**
  * Copyright (c) 2006-2011,
@@ -36,47 +40,30 @@ import edu.berkeley.cs.lexer.SourcePosition;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class BooleanToken extends CObject {
-    public static BooleanToken TRUE() {
-        if (TRUE==null)
-            TRUE = new BooleanToken(null,true,true);
-        return TRUE;
-    }
+public class ProtoParameterEater {
+    final public static CObject INSTANCE =  new CObject();
 
-    public static BooleanToken FALSE() {
-        if (FALSE==null)
-            FALSE = new BooleanToken(null,true,false);
-        return FALSE;
-    }
+    static {
+        INSTANCE.addNewRule();
+        INSTANCE.addMeta(SymbolTable.getInstance().token);
+        INSTANCE.addObject(SymbolTable.getInstance().comma);
+        INSTANCE.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                ParameterEater self = (ParameterEater)args.removeFirst();
+                self.parameters.add((SymbolToken) args.removeFirst());
+                return self;
+            }
+        }, INSTANCE); //@todo comeback to check superClass
 
-    private static BooleanToken TRUE;
-    private static BooleanToken FALSE;
-
-
-    public boolean value;
-
-    public BooleanToken(SourcePosition position, boolean isSpace, boolean value) {
-        super(position);
-        this.value = value;
-        if (!isSpace) setNoSpace();
-        setPrototype(ProtoBooleanToken.INSTANCE);
-    }
-
-    @Override
-    public String toString() {
-        return value+"";
-
-    }
-
-    @Override
-    public int hashCode() {
-        return value?1:0;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof BooleanToken)) return false;
-        return value == ((BooleanToken)o).value;
+        INSTANCE.addNewRule();
+        INSTANCE.addMeta(SymbolTable.getInstance().token); //@todo comeback what if there is a newline
+        INSTANCE.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                ParameterEater self = (ParameterEater)args.removeFirst();
+                self.parameters.add((SymbolToken) args.removeFirst());
+                return self;
+            }
+        }, INSTANCE);
     }
 
 }

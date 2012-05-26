@@ -1,5 +1,5 @@
 .lexer.MetaToken;
-import edu.berkeley.cs.builtin.objects.preprocessor.Token;
+import edu.berkeley.cs.builtin.objects.mutable.Token;
 import edu.berkeley.cs.parser.Action;
 import edu.berkeley.cs.parser.ParseException;
 import edu.berkeley.cs.parser.RuleNode;

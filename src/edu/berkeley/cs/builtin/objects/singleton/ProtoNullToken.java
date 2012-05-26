@@ -1,8 +1,11 @@
-package edu.berkeley.cs.builtin.objects.preprocessor;
+package edu.berkeley.cs.builtin.objects.singleton;
 
-import edu.berkeley.cs.builtin.objects.CObject;
-import edu.berkeley.cs.builtin.objects.ProtoNullToken;
-import edu.berkeley.cs.lexer.SourcePosition;
+import edu.berkeley.cs.builtin.functions.Invokable;
+import edu.berkeley.cs.builtin.objects.mutable.CObject;
+import edu.berkeley.cs.builtin.objects.mutable.*;
+import edu.berkeley.cs.parser.SymbolTable;
+
+import java.util.LinkedList;
 
 /**
  * Copyright (c) 2006-2011,
@@ -36,35 +39,30 @@ import edu.berkeley.cs.lexer.SourcePosition;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class VoidToken extends CObject {
-    public static VoidToken VOID() {
-        if (VOID==null)
-            VOID = new VoidToken(null,true);
-        return VOID;
-    }
+public class ProtoNullToken {
+    final public static StandardObject INSTANCE =  new StandardObject();
 
-    private static VoidToken VOID;
+    static {
+        INSTANCE.addNewRule();
+        INSTANCE.addObject(new SymbolToken(null, SymbolTable.getInstance().getId("==")));
+        INSTANCE.addMeta(SymbolTable.getInstance().expr);
+        INSTANCE.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                CObject self = args.removeFirst();
+                CObject operand2 = args.removeFirst();
+                return (operand2 instanceof NullToken)? BooleanToken.TRUE(): BooleanToken.FALSE();
+            }
+        },INSTANCE);
 
-
-    public VoidToken(SourcePosition position, boolean isSpace) {
-        super(position);
-        if (!isSpace) setNoSpace();
-    }
-
-    @Override
-    public String toString() {
-        return "void";
-
-    }
-
-    @Override
-    public int hashCode() {
-        return 512;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-         return (o instanceof VoidToken);
+        INSTANCE.addNewRule();
+        INSTANCE.addObject(new SymbolToken(null, SymbolTable.getInstance().getId("!=")));
+        INSTANCE.addMeta(SymbolTable.getInstance().expr);
+        INSTANCE.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                CObject self = args.removeFirst();
+                CObject operand2 = args.removeFirst();
+                return (operand2 instanceof NullToken)? BooleanToken.FALSE(): BooleanToken.TRUE();
+            }
+        },INSTANCE);
     }
 }
-

@@ -1,9 +1,6 @@
-package edu.berkeley.cs.builtin.objects;
+package edu.berkeley.cs.builtin.objects.mutable;
 
-import edu.berkeley.cs.builtin.functions.Invokable;
-import edu.berkeley.cs.builtin.objects.preprocessor.StringToken;
-import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
-import edu.berkeley.cs.parser.SymbolTable;
+import edu.berkeley.cs.lexer.SourcePosition;
 
 import java.util.LinkedList;
 
@@ -39,23 +36,19 @@ import java.util.LinkedList;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class ProtoStringToken {
-    final public static StandardObject INSTANCE =  new StandardObject();
+public abstract class FunctionObject extends CObject {
+    CObject scope;
 
-    static {
-        INSTANCE.addNewRule();
-        INSTANCE.addObject(new SymbolToken(null, SymbolTable.getInstance().getId("+")));
-        INSTANCE.addMeta(SymbolTable.getInstance().expr);
-        INSTANCE.addAction(new Invokable() {
-            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
-                StringToken self = (StringToken)args.removeFirst();
-                StringToken operand2 = (StringToken) args.removeFirst();
-                return new StringToken(null,self.value+operand2.value);
-            }
-        },INSTANCE);
-//        INSTANCE.eval("def + @expr @add endef");
-//        INSTANCE.eval("def == @expr @eq endef");
-//        INSTANCE.eval("def != @expr @ne endef");
+    protected FunctionObject(SourcePosition position, CObject scope) {
+        super(position);
+        this.scope = scope;
     }
 
+    abstract public CObject apply(LinkedList<CObject> args, CObject DS, boolean reuse);
+
+    public CObject execute(CObject DS) {
+        LinkedList<CObject> args = new LinkedList<CObject>();
+        args.add(this);
+        return apply(args,DS,false);
+    }
 }

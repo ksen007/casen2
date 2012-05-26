@@ -1,10 +1,12 @@
-package edu.berkeley.cs.builtin.objects.preprocessor;
+package edu.berkeley.cs.builtin.objects.singleton;
 
 import edu.berkeley.cs.builtin.functions.Invokable;
-import edu.berkeley.cs.builtin.objects.CObject;
+import edu.berkeley.cs.builtin.objects.mutable.CObject;
+import edu.berkeley.cs.builtin.objects.mutable.NativeFunctionObject;
+import edu.berkeley.cs.builtin.objects.mutable.SymbolToken;
+import edu.berkeley.cs.builtin.objects.mutable.TokenEater;
 import edu.berkeley.cs.parser.SymbolTable;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
@@ -39,20 +41,19 @@ import java.util.LinkedList;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class TokenEater extends CObject {
-    public ArrayList<CObject> tokens;
+public class ProtoTokenEater {
+    final public static CObject INSTANCE = new CObject();
 
-    public static CObject thisClass = new CObject();
     static {
-        thisClass.addNewRule();
-        thisClass.addObject(SymbolTable.getInstance().lcurly);
-        thisClass.addOther(new NativeFunctionObject(new Invokable() {
+        INSTANCE.addNewRule();
+        INSTANCE.addObject(SymbolTable.getInstance().lcurly);
+        INSTANCE.addOther(new NativeFunctionObject(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
                 return new TokenEater();
             }
-        },thisClass,0));
-        thisClass.addObject(SymbolTable.getInstance().rcurly);
-        thisClass.addAction(new Invokable() {
+        }, INSTANCE,0));
+        INSTANCE.addObject(SymbolTable.getInstance().rcurly);
+        INSTANCE.addAction(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
                 TokenEater self = (TokenEater)args.removeFirst();
                 TokenEater arg = (TokenEater)args.removeFirst();
@@ -62,47 +63,38 @@ public class TokenEater extends CObject {
                 self.tokens.add(new SymbolToken(DS.getPosition(),SymbolTable.getInstance().getId("}")));
                 return self;
             }
-        },thisClass); //@todo make sure that the second argument is thisClass
+        }, INSTANCE); //@todo make sure that the second argument is thisClass
 
-        thisClass.addNewRule();
-        thisClass.addMeta(SymbolTable.getInstance().token);
-        thisClass.addAction(new Invokable() {
+        INSTANCE.addNewRule();
+        INSTANCE.addMeta(SymbolTable.getInstance().token);
+        INSTANCE.addAction(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
                 TokenEater self = (TokenEater)args.removeFirst();
                 self.tokens.add(args.removeFirst());
                 return self;
             }
-        },thisClass);
+        }, INSTANCE);
 
-        thisClass.addNewRule();
-        thisClass.addObject(SymbolTable.getInstance().newline);
-        thisClass.addAction(new Invokable() {
+        INSTANCE.addNewRule();
+        INSTANCE.addObject(SymbolTable.getInstance().newline);
+        INSTANCE.addAction(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
                 TokenEater self = (TokenEater)args.removeFirst();
                 self.tokens.add(new SymbolToken(DS.getPosition(),SymbolTable.getInstance().getId("\n")));
                 return self;
 
             }
-        },thisClass);
+        }, INSTANCE);
 
-        thisClass.addNewRule();
-        thisClass.addObject(SymbolTable.getInstance().exprToToken);
-        thisClass.addAction(new Invokable() {
+        INSTANCE.addNewRule();
+        INSTANCE.addObject(SymbolTable.getInstance().exprToToken);
+        INSTANCE.addAction(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
                 TokenEater self = (TokenEater)args.removeFirst();
                 self.tokens.add(new SymbolToken(DS.getPosition(),SymbolTable.getInstance().exprToToken.symbol));
                 return self;
 
             }
-        },thisClass);
-    }
-
-    public TokenEater() {
-        tokens = new ArrayList<CObject>();
-        setRule(thisClass);
-    }
-
-    public void clearAll() {
-        tokens.clear();
+        }, INSTANCE);
     }
 }

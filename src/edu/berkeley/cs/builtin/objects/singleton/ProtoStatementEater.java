@@ -1,8 +1,9 @@
-package edu.berkeley.cs.builtin.objects;
+package edu.berkeley.cs.builtin.objects.singleton;
 
 import edu.berkeley.cs.builtin.functions.Invokable;
-import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
-import edu.berkeley.cs.builtin.objects.preprocessor.VoidToken;
+import edu.berkeley.cs.builtin.objects.mutable.CObject;
+import edu.berkeley.cs.builtin.objects.mutable.SymbolToken;
+import edu.berkeley.cs.builtin.objects.mutable.VoidToken;
 import edu.berkeley.cs.parser.SymbolTable;
 
 import java.util.LinkedList;
@@ -39,69 +40,69 @@ import java.util.LinkedList;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public final class CStatementEater extends CObject {
-    public static CObject instance = new CStatementEater();
+public final class ProtoStatementEater {
+    public static CObject INSTANCE = new CObject();
 
-    private CStatementEater() {
-        this.addNewRule();
-        this.addMeta(SymbolTable.getInstance().expr, true);
-        this.addObject(SymbolTable.getInstance().semi);
-        this.addAction(new Invokable() {
+    static {
+        INSTANCE.addNewRule();
+        INSTANCE.addMeta(SymbolTable.getInstance().expr, true);
+        INSTANCE.addObject(SymbolTable.getInstance().semi);
+        INSTANCE.addAction(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
-                CStatementEater self = (CStatementEater)args.removeFirst();
+                CObject self = args.removeFirst();
                 return self;
             }
-        },this);
+        }, INSTANCE);
 
-        this.addNewRule();
-        this.addMeta(SymbolTable.getInstance().expr, true);
-        this.addObject(SymbolTable.getInstance().newline);
-        this.addAction(new Invokable() {
+        INSTANCE.addNewRule();
+        INSTANCE.addMeta(SymbolTable.getInstance().expr, true);
+        INSTANCE.addObject(SymbolTable.getInstance().newline);
+        INSTANCE.addAction(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
-                CStatementEater self = (CStatementEater)args.removeFirst();
+                CObject self = args.removeFirst();
                 return self;
             }
-        },this);
+        }, INSTANCE);
 
-        this.addNewRule();
-        this.addMeta(SymbolTable.getInstance().expr,true);
-        this.addObject(SymbolToken.end);
-        this.addAction(new Invokable() {
+        INSTANCE.addNewRule();
+        INSTANCE.addMeta(SymbolTable.getInstance().expr, true);
+        INSTANCE.addObject(SymbolToken.end);
+        INSTANCE.addAction(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
-                CStatementEater self = (CStatementEater)args.removeFirst();
+                CObject self = args.removeFirst();
                 CObject arg = args.removeFirst();
-                    arg.setReturn();
-                    return arg;
+                arg.setReturn();
+                return arg;
             }
-        },this);
+        }, INSTANCE);
 
-        this.addNewRule();
-        this.addObject(SymbolTable.getInstance().semi);
-        this.addAction(new Invokable() {
+        INSTANCE.addNewRule();
+        INSTANCE.addObject(SymbolTable.getInstance().semi);
+        INSTANCE.addAction(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
-                CStatementEater self = (CStatementEater)args.removeFirst();
+                CObject self = args.removeFirst();
                 return self;
             }
-        },this);
+        }, INSTANCE);
 
-        this.addNewRule();
-        this.addObject(SymbolTable.getInstance().newline);
-        this.addAction(new Invokable() {
+        INSTANCE.addNewRule();
+        INSTANCE.addObject(SymbolTable.getInstance().newline);
+        INSTANCE.addAction(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
-                CStatementEater self = (CStatementEater)args.removeFirst();
+                CObject self = args.removeFirst();
                 return self;
             }
-        },this);
+        }, INSTANCE);
 
-        this.addNewRule();
-        this.addObject(SymbolToken.end);
-        this.addAction(new Invokable() {
+        INSTANCE.addNewRule();
+        INSTANCE.addObject(SymbolToken.end);
+        INSTANCE.addAction(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
-                CStatementEater self = (CStatementEater)args.removeFirst();
+                CObject self = args.removeFirst();
                 VoidToken.VOID().setReturn();
                 return VoidToken.VOID();
             }
-        },this);
+        }, INSTANCE);
 
     }
 }

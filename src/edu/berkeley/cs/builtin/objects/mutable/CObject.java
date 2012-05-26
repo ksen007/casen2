@@ -1,11 +1,10 @@
-package edu.berkeley.cs.builtin.objects;
+package edu.berkeley.cs.builtin.objects.mutable;
 
+import edu.berkeley.cs.builtin.Reference;
 import edu.berkeley.cs.builtin.functions.GetField;
 import edu.berkeley.cs.builtin.functions.Invokable;
 import edu.berkeley.cs.builtin.functions.PutField;
-import edu.berkeley.cs.builtin.objects.preprocessor.FunctionObject;
-import edu.berkeley.cs.builtin.objects.preprocessor.NativeFunctionObject;
-import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
+import edu.berkeley.cs.builtin.objects.singleton.ProtoStatementEater;
 import edu.berkeley.cs.lexer.*;
 import edu.berkeley.cs.parser.*;
 
@@ -152,6 +151,11 @@ public class CObject {
         rules.removeObject(SymbolTable.getInstance().prototype);
     }
 
+    public void hidePrototype() {
+        //this.prototype = null;
+        rules.removeObject(SymbolTable.getInstance().prototype);
+    }
+
     public RuleNode getRuleNode() {
         return rules;
     }
@@ -173,7 +177,7 @@ public class CObject {
         try {
             Lexer lexer = new StandardLexer(in,s,isFile);
             Scanner scnr = new BasicScanner(lexer);
-            CallFrame cf = new CallFrame(this, CStatementEater.instance,scnr);
+            CallFrame cf = new CallFrame(this, ProtoStatementEater.INSTANCE,scnr);
             CObject ret = cf.interpret();
             if (ret.isException()) {
                 throw new RuntimeException("Eval:\n"+ret);

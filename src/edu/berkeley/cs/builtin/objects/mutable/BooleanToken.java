@@ -1,8 +1,6 @@
-package edu.berkeley.cs.builtin.objects.preprocessor;
+package edu.berkeley.cs.builtin.objects.mutable;
 
-
-import edu.berkeley.cs.builtin.objects.CObject;
-import edu.berkeley.cs.builtin.objects.ProtoLongToken;
+import edu.berkeley.cs.builtin.objects.singleton.ProtoBooleanToken;
 import edu.berkeley.cs.lexer.SourcePosition;
 
 /**
@@ -37,22 +35,31 @@ import edu.berkeley.cs.lexer.SourcePosition;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class LongToken extends CObject {
-    public long value;
-
-    public LongToken(SourcePosition position, long l) {
-        super(position);
-        this.value = l;
-        setPrototype(ProtoLongToken.INSTANCE);
+public class BooleanToken extends CObject {
+    public static BooleanToken TRUE() {
+        if (TRUE==null)
+            TRUE = new BooleanToken(null,true,true);
+        return TRUE;
     }
 
-    public LongToken(SourcePosition position, boolean isSpace, long l) {
+    public static BooleanToken FALSE() {
+        if (FALSE==null)
+            FALSE = new BooleanToken(null,true,false);
+        return FALSE;
+    }
+
+    private static BooleanToken TRUE;
+    private static BooleanToken FALSE;
+
+
+    public boolean value;
+
+    public BooleanToken(SourcePosition position, boolean isSpace, boolean value) {
         super(position);
-        this.value = l;
+        this.value = value;
         if (!isSpace) setNoSpace();
-        setPrototype(ProtoLongToken.INSTANCE);
+        setPrototype(ProtoBooleanToken.INSTANCE);
     }
-
 
     @Override
     public String toString() {
@@ -62,12 +69,13 @@ public class LongToken extends CObject {
 
     @Override
     public int hashCode() {
-        return (int)value;
+        return value?1:0;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof LongToken)) return false;
-        return value == ((LongToken)o).value;
+        if (!(o instanceof BooleanToken)) return false;
+        return value == ((BooleanToken)o).value;
     }
+
 }

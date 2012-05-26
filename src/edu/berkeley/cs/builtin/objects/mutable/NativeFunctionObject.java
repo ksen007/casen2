@@ -1,4 +1,9 @@
-package edu.berkeley.cs.builtin.objects;
+package edu.berkeley.cs.builtin.objects.mutable;
+
+import edu.berkeley.cs.builtin.functions.Invokable;
+import edu.berkeley.cs.parser.SymbolTable;
+
+import java.util.LinkedList;
 
 /**
  * Copyright (c) 2006-2011,
@@ -32,8 +37,27 @@ package edu.berkeley.cs.builtin.objects;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public final class StandardObject extends CObject {
-    public StandardObject() {
-        setPrototype(ProtoStandardObject.instance);
+public class NativeFunctionObject extends FunctionObject {
+    public Invokable fun;
+
+    public NativeFunctionObject(Invokable fun, CObject scope, int N) {
+        super(null, scope);
+        this.fun = fun;
+
+        this.addNewRule();
+        this.addObject(SymbolTable.getInstance().lparen);
+        for(int i=0; i<N; i++) {
+            this.addMeta(SymbolTable.getInstance().expr);
+            if (i<N-1)
+                this.addObject(SymbolTable.getInstance().comma);
+        }
+        this.addObject(SymbolTable.getInstance().rparen);
+        this.addAction(this,false);
+
+    }
+
+    @Override
+    public CObject apply(LinkedList<CObject> args, CObject DS, boolean reuse) {
+        return fun.apply(args,scope,DS);
     }
 }

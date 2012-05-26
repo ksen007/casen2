@@ -1,6 +1,13 @@
-package edu.berkeley.cs.lexer;
+package edu.berkeley.cs.builtin.objects.singleton;
 
+import edu.berkeley.cs.builtin.functions.Invokable;
 import edu.berkeley.cs.builtin.objects.mutable.CObject;
+import edu.berkeley.cs.builtin.objects.mutable.StandardObject;
+import edu.berkeley.cs.builtin.objects.mutable.StringToken;
+import edu.berkeley.cs.builtin.objects.mutable.SymbolToken;
+import edu.berkeley.cs.parser.SymbolTable;
+
+import java.util.LinkedList;
 
 /**
  * Copyright (c) 2006-2011,
@@ -34,6 +41,23 @@ import edu.berkeley.cs.builtin.objects.mutable.CObject;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public interface Lexer {
-    public CObject getNextToken();
+public class ProtoStringToken {
+    final public static StandardObject INSTANCE =  new StandardObject();
+
+    static {
+        INSTANCE.addNewRule();
+        INSTANCE.addObject(new SymbolToken(null, SymbolTable.getInstance().getId("+")));
+        INSTANCE.addMeta(SymbolTable.getInstance().expr);
+        INSTANCE.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                StringToken self = (StringToken)args.removeFirst();
+                StringToken operand2 = (StringToken) args.removeFirst();
+                return new StringToken(null,self.value+operand2.value);
+            }
+        },INSTANCE);
+//        INSTANCE.eval("def + @expr @add endef");
+//        INSTANCE.eval("def == @expr @eq endef");
+//        INSTANCE.eval("def != @expr @ne endef");
+    }
+
 }

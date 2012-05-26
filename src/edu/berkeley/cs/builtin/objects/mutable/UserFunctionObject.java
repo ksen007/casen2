@@ -1,9 +1,7 @@
-package edu.berkeley.cs.builtin.objects.preprocessor;
+package edu.berkeley.cs.builtin.objects.mutable;
 
-import edu.berkeley.cs.builtin.objects.CObject;
-import edu.berkeley.cs.builtin.objects.CStatementEater;
-import edu.berkeley.cs.builtin.objects.EnvironmentObject;
-import edu.berkeley.cs.builtin.objects.Reference;
+import edu.berkeley.cs.builtin.Reference;
+import edu.berkeley.cs.builtin.objects.singleton.ProtoStatementEater;
 import edu.berkeley.cs.lexer.BasicScanner;
 import edu.berkeley.cs.lexer.BufferedLexer;
 import edu.berkeley.cs.lexer.Scanner;
@@ -53,7 +51,7 @@ public class UserFunctionObject extends FunctionObject {
         return new BasicScanner(new BufferedLexer(tokens));
     }
 
-    public UserFunctionObject(CParameterEater par, TokenEater ss, CObject SS) {
+    public UserFunctionObject(ParameterEater par, TokenEater ss, CObject SS) {
         super(null,SS);
 
         tokens = new ArrayList<CObject>(ss.tokens);
@@ -111,7 +109,7 @@ public class UserFunctionObject extends FunctionObject {
             LS.assign(param, common);
         }
         Scanner scnr = getScanner();
-        CallFrame cf = new CallFrame(LS, CStatementEater.instance,scnr);
+        CallFrame cf = new CallFrame(LS, ProtoStatementEater.INSTANCE,scnr);
         return cf.interpret();
     }
 

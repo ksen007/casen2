@@ -1,6 +1,6 @@
 package edu.berkeley.cs.parser;
 
-import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
+import edu.berkeley.cs.builtin.objects.mutable.SymbolToken;
 
 import java.util.ArrayList;
 import java.util.TreeMap;
@@ -90,7 +90,8 @@ public class SymbolTable {
     public SymbolToken printdeep = new SymbolToken(null,getId("printDeep"));
     public SymbolToken pound = new SymbolToken(null,getId("#"));
     public SymbolToken at = new SymbolToken(null,getId("@"));
-    public SymbolToken orphan = new SymbolToken(null,getId("orphan"));
+    public SymbolToken delete = new SymbolToken(null,getId("delete"));
+    public SymbolToken hide = new SymbolToken(null,getId("hide"));
 //    public int meta = getId("meta");
 //    public int literal = getId("literal");
 //    public int block = getId("block");

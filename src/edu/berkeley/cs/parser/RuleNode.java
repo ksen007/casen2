@@ -1,8 +1,8 @@
 package edu.berkeley.cs.parser;
 
-import edu.berkeley.cs.builtin.objects.CObject;
-import edu.berkeley.cs.builtin.objects.preprocessor.FunctionObject;
-import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
+import edu.berkeley.cs.builtin.objects.mutable.CObject;
+import edu.berkeley.cs.builtin.objects.mutable.FunctionObject;
+import edu.berkeley.cs.builtin.objects.mutable.SymbolToken;
 
 import java.util.HashMap;
 import java.util.LinkedList;

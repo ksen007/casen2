@@ -1,12 +1,6 @@
-package edu.berkeley.cs.builtin.objects;
+package edu.berkeley.cs.builtin;
 
-import edu.berkeley.cs.builtin.functions.Invokable;
-import edu.berkeley.cs.builtin.objects.preprocessor.BooleanToken;
-import edu.berkeley.cs.builtin.objects.preprocessor.NullToken;
-import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
-import edu.berkeley.cs.parser.SymbolTable;
-
-import java.util.LinkedList;
+import edu.berkeley.cs.builtin.objects.mutable.CObject;
 
 /**
  * Copyright (c) 2006-2011,
@@ -40,30 +34,19 @@ import java.util.LinkedList;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class ProtoNullToken {
-    final public static StandardObject INSTANCE =  new StandardObject();
+public class Reference {
+    public CObject value;
 
-    static {
-        INSTANCE.addNewRule();
-        INSTANCE.addObject(new SymbolToken(null, SymbolTable.getInstance().getId("==")));
-        INSTANCE.addMeta(SymbolTable.getInstance().expr);
-        INSTANCE.addAction(new Invokable() {
-            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
-                CObject self = args.removeFirst();
-                CObject operand2 = args.removeFirst();
-                return (operand2 instanceof NullToken)? BooleanToken.TRUE(): BooleanToken.FALSE();
-            }
-        },INSTANCE);
+    public Reference(CObject value) {
+        this.value = value;
+    }
 
-        INSTANCE.addNewRule();
-        INSTANCE.addObject(new SymbolToken(null, SymbolTable.getInstance().getId("!=")));
-        INSTANCE.addMeta(SymbolTable.getInstance().expr);
-        INSTANCE.addAction(new Invokable() {
-            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
-                CObject self = args.removeFirst();
-                CObject operand2 = args.removeFirst();
-                return (operand2 instanceof NullToken)? BooleanToken.FALSE(): BooleanToken.TRUE();
-            }
-        },INSTANCE);
+    public void setCObject(CObject arg) {
+        this.value = arg;
+    }
+
+    @Override
+    public String toString() {
+        return value.toString();
     }
 }

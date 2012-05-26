@@ -1,9 +1,8 @@
-package edu.berkeley.cs.builtin.objects.preprocessor;
+package edu.berkeley.cs.builtin.objects.mutable;
 
-import edu.berkeley.cs.builtin.objects.CObject;
+
+import edu.berkeley.cs.builtin.objects.singleton.ProtoLongToken;
 import edu.berkeley.cs.lexer.SourcePosition;
-
-import java.util.LinkedList;
 
 /**
  * Copyright (c) 2006-2011,
@@ -37,19 +36,37 @@ import java.util.LinkedList;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public abstract class FunctionObject extends CObject {
-    CObject scope;
+public class LongToken extends CObject {
+    public long value;
 
-    protected FunctionObject(SourcePosition position, CObject scope) {
+    public LongToken(SourcePosition position, long l) {
         super(position);
-        this.scope = scope;
+        this.value = l;
+        setPrototype(ProtoLongToken.INSTANCE);
     }
 
-    abstract public CObject apply(LinkedList<CObject> args, CObject DS, boolean reuse);
+    public LongToken(SourcePosition position, boolean isSpace, long l) {
+        super(position);
+        this.value = l;
+        if (!isSpace) setNoSpace();
+        setPrototype(ProtoLongToken.INSTANCE);
+    }
 
-    public CObject execute(CObject DS) {
-        LinkedList<CObject> args = new LinkedList<CObject>();
-        args.add(this);
-        return apply(args,DS,false);
+
+    @Override
+    public String toString() {
+        return value+"";
+
+    }
+
+    @Override
+    public int hashCode() {
+        return (int)value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof LongToken)) return false;
+        return value == ((LongToken)o).value;
     }
 }
