@@ -45,7 +45,7 @@ import java.util.TreeMap;
 public class ProtoEnvironmentObject extends CObject {
     final public static CObject instance =  new StandardObject();
     private static HashMap<SourcePosition,CObject> staticObjects = new HashMap<SourcePosition, CObject>();
-    private static TreeMap<String,CompoundToken> codeCache = new TreeMap<String, CompoundToken>();
+    private static TreeMap<String,UserFunctionObject> codeCache = new TreeMap<String, UserFunctionObject>();
 
     static {
         instance.addNewRule();
@@ -59,13 +59,17 @@ public class ProtoEnvironmentObject extends CObject {
 
         instance.addNewRule();
         instance.addObject(SymbolTable.getInstance().lcurly);
-        instance.addOther(new TokenEater());
+        instance.addOther(new NativeFunctionObject(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                return new TokenEater();
+            }
+        },instance,0));
         instance.addObject(SymbolTable.getInstance().rcurly);
         instance.addAction(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
                 CObject self = args.removeFirst();
                 TokenEater arg = (TokenEater)args.removeFirst();
-                CObject ret = new CompoundToken(null,arg,DS);
+                CObject ret = new UserFunctionObject(null,arg,DS);
                 arg.clearAll();
                 return ret;
             }
@@ -74,16 +78,24 @@ public class ProtoEnvironmentObject extends CObject {
         instance.addNewRule();
         instance.addObject(SymbolTable.getInstance().lcurly);
         instance.addObject(SymbolTable.getInstance().bar);
-        instance.addOther(new CParameterEater());
+        instance.addOther(new NativeFunctionObject(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                return new CParameterEater();
+            }
+        },instance,0));
         instance.addObject(SymbolTable.getInstance().bar);
-        instance.addOther(new TokenEater());
+        instance.addOther(new NativeFunctionObject(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                return new TokenEater();
+            }
+        },instance,0));
         instance.addObject(SymbolTable.getInstance().rcurly);
         instance.addAction(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
                 CObject self = args.removeFirst();
                 CParameterEater parg = (CParameterEater)args.removeFirst();
                 TokenEater arg = (TokenEater)args.removeFirst();
-                CObject ret = new CompoundToken(parg,arg,DS);
+                CObject ret = new UserFunctionObject(parg,arg,DS);
                 parg.clearAll();
                 arg.clearAll();
                 return ret;
@@ -217,14 +229,14 @@ public class ProtoEnvironmentObject extends CObject {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
                 CObject self = args.removeFirst();
                 BooleanToken cond = (BooleanToken) args.removeFirst();
-                CompoundToken s1 = (CompoundToken)args.removeFirst();
-                CompoundToken s2 = (CompoundToken)args.removeFirst();
+                UserFunctionObject s1 = (UserFunctionObject)args.removeFirst();
+                UserFunctionObject s2 = (UserFunctionObject)args.removeFirst();
                 if (cond.value) {
-                    CObject ret = s1.execute(self,null);
+                    CObject ret = s1.executeInScope();
                     if (ret.isException()) return ret;
                     return VoidToken.VOID();
                 } else {
-                    CObject ret = s2.execute(self,null);
+                    CObject ret = s2.executeInScope();
                     if (ret.isException()) return ret;
                     return VoidToken.VOID();
                 }
@@ -241,16 +253,16 @@ public class ProtoEnvironmentObject extends CObject {
         instance.addAction(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
                 CObject self = args.removeFirst();
-                CompoundToken s1 = (CompoundToken)args.removeFirst();
+                UserFunctionObject s1 = (UserFunctionObject)args.removeFirst();
                 SymbolToken symbol = (SymbolToken)args.removeFirst();
-                CompoundToken s2 = (CompoundToken)args.removeFirst();
-                CObject ret = s1.execute(self,null);
+                UserFunctionObject s2 = (UserFunctionObject)args.removeFirst();
+                CObject ret = s1.executeInScope();
                 if (ret.isException()) {
                     ret.clearException();
                     Reference common = new Reference(ret);
                     self.assign(symbol, common);
 
-                    ret = s2.execute(self,null);
+                    ret = s2.executeInScope();
                     if (ret.isException()) return ret;
                 }
                 return VoidToken.VOID();
@@ -265,17 +277,17 @@ public class ProtoEnvironmentObject extends CObject {
         instance.addAction(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
                 CObject self = args.removeFirst();
-                CompoundToken s1 = (CompoundToken)args.removeFirst();
-                CompoundToken s2 = (CompoundToken)args.removeFirst();
+                UserFunctionObject s1 = (UserFunctionObject)args.removeFirst();
+                UserFunctionObject s2 = (UserFunctionObject)args.removeFirst();
                 CObject ret;
-                ret = s1.execute(self,null);
+                ret = s1.executeInScope();
                 if (ret.isException()) return ret;
 
                 while(((BooleanToken)ret).value) {
-                    ret = s2.execute(self, null);
+                    ret = s2.executeInScope();
                     if (ret.isException()) return ret;
 
-                    ret = s1.execute(self, null);
+                    ret = s1.executeInScope();
                     if (ret.isException()) return ret;
                 }
                 return VoidToken.VOID();
@@ -289,10 +301,10 @@ public class ProtoEnvironmentObject extends CObject {
         instance.addAction(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
                 CObject self = args.removeFirst();
-                CompoundToken func = (CompoundToken)args.removeFirst();
+                FunctionObject func = (FunctionObject)args.removeFirst();
                 CObject val;
                 if ((val = staticObjects.get(DS.getPosition()))==null) {
-                    val = func.execute(self,null);
+                    val = func.execute(DS);
                     if (val.isException()) return val;
                     staticObjects.put(DS.getPosition(),val);
                 }

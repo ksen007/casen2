@@ -46,7 +46,11 @@ public class TokenEater extends CObject {
     static {
         thisClass.addNewRule();
         thisClass.addObject(SymbolTable.getInstance().lcurly);
-        thisClass.addOther(new TokenEater());
+        thisClass.addOther(new NativeFunctionObject(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                return new TokenEater();
+            }
+        },thisClass,0));
         thisClass.addObject(SymbolTable.getInstance().rcurly);
         thisClass.addAction(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {

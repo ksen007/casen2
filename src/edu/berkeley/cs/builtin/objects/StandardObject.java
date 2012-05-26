@@ -32,8 +32,8 @@ package edu.berkeley.cs.builtin.objects;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class StandardObject extends CObject {
+public final class StandardObject extends CObject {
     public StandardObject() {
-        setParent(ProtoStandardObject.instance);
+        setPrototype(ProtoStandardObject.instance);
     }
 }

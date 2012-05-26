@@ -1,7 +1,7 @@
 package edu.berkeley.cs.parser;
 
 import edu.berkeley.cs.builtin.objects.CObject;
-import edu.berkeley.cs.builtin.functions.Invokable;
+import edu.berkeley.cs.builtin.objects.preprocessor.FunctionObject;
 
 import java.util.LinkedList;
 import java.util.Stack;
@@ -40,13 +40,13 @@ import java.util.Stack;
  */
 public class Action {
     int arguments;
-    public Invokable func;
-    CObject SS;
+    public FunctionObject func;
+    boolean reuse;
 
-    public Action(int arguments, Invokable func, CObject SS) {
+    public Action(int arguments, FunctionObject func, boolean reuse) {
         this.arguments = arguments;
         this.func = func;
-        this.SS = SS;
+        this.reuse = reuse;
     }
 
     public void apply(Stack<CObject> computationStack, CallFrame cf) {
@@ -54,7 +54,7 @@ public class Action {
         for(int i=0; i<=arguments;i++) {
             args.addFirst(computationStack.pop());
         }
-        computationStack.push(func.apply(args,SS,cf.LS));
+        computationStack.push(func.apply(args,cf.LS,reuse));
     }
 
     @Override

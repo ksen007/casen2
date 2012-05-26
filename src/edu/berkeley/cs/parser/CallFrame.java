@@ -1,10 +1,14 @@
 package edu.berkeley.cs.parser;
 
-import edu.berkeley.cs.builtin.functions.NativeFunction;
 import edu.berkeley.cs.builtin.objects.CObject;
-import edu.berkeley.cs.builtin.objects.preprocessor.*;
+import edu.berkeley.cs.builtin.objects.preprocessor.ExptToTokenObject;
+import edu.berkeley.cs.builtin.objects.preprocessor.StringToken;
+import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
 import edu.berkeley.cs.lexer.Scanner;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Stack;
 
 /**
@@ -64,6 +68,16 @@ public class CallFrame {
 
     }
 
+    public static String getStackTrace(Throwable aThrowable) {
+        if (aThrowable !=null ){
+            final Writer result = new StringWriter();
+            final PrintWriter printWriter = new PrintWriter(result);
+            aThrowable.printStackTrace(printWriter);
+            return result.toString();
+        }
+        return null;
+    }
+
     private static boolean matchesToken(CObject t, SymbolToken sym) {
         if (t instanceof SymbolToken) {
             return ((SymbolToken)t).symbol == sym.symbol;
@@ -111,7 +125,7 @@ public class CallFrame {
             }
         } catch (Exception e) {
             StringToken ret = new StringToken(null,"Failed to consume "+t+" at "+t.locationString()
-                    +" with "+this+ " because "+ NativeFunction.getStackTrace(e));
+                    +" with "+this+ " because "+ getStackTrace(e));
             ret.setException();
             computationStack.push(ret);
             return true;
@@ -184,16 +198,18 @@ public class CallFrame {
     private boolean consumeOther(RuleNode currentRule, CObject t) {
         Pair rn;
         OtherPair toBePushed;
+        CObject ctxt;
 
         if ((toBePushed = currentRule.getRuleForOther()) !=null) {
-            if ((rn = contextLookAhead(toBePushed.fst, t))!=null) {
+            ctxt = toBePushed.fst.execute(LS);
+            if ((rn = contextLookAhead(ctxt, t))!=null) {
                 if (DEBUG) {
                     System.out.print('(');
                 }
                 parseRuleStack.pop();
                 parseRuleStack.push(toBePushed.next);
 
-                computationStack.push(toBePushed.fst);
+                computationStack.push(ctxt);
                 parseRuleStack.push(rn.fst);
                 precedenceStack.push(rn.snd);
                 scnr.pushBack(t);
@@ -289,7 +305,7 @@ public class CallFrame {
             if (ret!=null && (ret2 = ret.getRuleForObject(t))!=null) {
                 return new Pair(ret,ret2.getOptionalPrecedence());
             }
-            current = current.getParent();
+            current = current.getPrototype();
         }
 
         current = LS;
@@ -308,7 +324,7 @@ public class CallFrame {
                 if (ret!=null && (ret2=ret.getRuleForToken())!=null) {
                     return new Pair(ret,ret2.getOptionalPrecedence());
                 }
-                current = current.getParent();
+                current = current.getPrototype();
             }
 
             current = LS;
@@ -317,7 +333,7 @@ public class CallFrame {
                 if (ret!=null && (ret2=ret.getRuleForExpr())!=null) {
                     return new Pair(ret,ret2.getOptionalPrecedence());
                 }
-                current = current.getParent();
+                current = current.getPrototype();
             }
 
             OtherPair oret2;
@@ -327,7 +343,7 @@ public class CallFrame {
                 if (ret!=null && (oret2=ret.getRuleForOther())!=null) {
                     return new Pair(ret,oret2.next.getOptionalPrecedence());
                 }
-                current = current.getParent();
+                current = current.getPrototype();
             }
 
         }
@@ -337,7 +353,7 @@ public class CallFrame {
             if (ret!=null && ret.getRuleForAction()!=null) {
                 return new Pair(ret,0);
             }
-            current = current.getParent();
+            current = current.getPrototype();
         }
         return null;
     }
@@ -350,7 +366,7 @@ public class CallFrame {
         while(current != null) {
             sb.append(current.getRuleNode());
             sb.append("---\n");
-            current = current.getParent();
+            current = current.getPrototype();
         }
         sb.append(LS.getRuleNode());
         sb.append("Computation Stack:\n");

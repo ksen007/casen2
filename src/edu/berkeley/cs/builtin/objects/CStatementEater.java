@@ -2,6 +2,7 @@ package edu.berkeley.cs.builtin.objects;
 
 import edu.berkeley.cs.builtin.functions.Invokable;
 import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
+import edu.berkeley.cs.builtin.objects.preprocessor.VoidToken;
 import edu.berkeley.cs.parser.SymbolTable;
 
 import java.util.LinkedList;
@@ -38,7 +39,7 @@ import java.util.LinkedList;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class CStatementEater extends CObject {
+public final class CStatementEater extends CObject {
     public static CObject instance = new CStatementEater();
 
     private CStatementEater() {
@@ -69,8 +70,8 @@ public class CStatementEater extends CObject {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
                 CStatementEater self = (CStatementEater)args.removeFirst();
                 CObject arg = args.removeFirst();
-                arg.setReturn();
-                return arg;
+                    arg.setReturn();
+                    return arg;
             }
         },this);
 
@@ -97,8 +98,8 @@ public class CStatementEater extends CObject {
         this.addAction(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
                 CStatementEater self = (CStatementEater)args.removeFirst();
-                self.setReturn();
-                return self;
+                VoidToken.VOID().setReturn();
+                return VoidToken.VOID();
             }
         },this);
 

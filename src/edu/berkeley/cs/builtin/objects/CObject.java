@@ -3,6 +3,8 @@ package edu.berkeley.cs.builtin.objects;
 import edu.berkeley.cs.builtin.functions.GetField;
 import edu.berkeley.cs.builtin.functions.Invokable;
 import edu.berkeley.cs.builtin.functions.PutField;
+import edu.berkeley.cs.builtin.objects.preprocessor.FunctionObject;
+import edu.berkeley.cs.builtin.objects.preprocessor.NativeFunctionObject;
 import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
 import edu.berkeley.cs.lexer.*;
 import edu.berkeley.cs.parser.*;
@@ -134,44 +136,25 @@ public class CObject {
         this.rules = methods.rules;
     }
 
-    public CObject getParent() {
+    public CObject getPrototype() {
         return prototype==null?null:prototype.value;
     }
 
-    public void setParent(CObject obj) {
+    public void setPrototype(CObject obj) {
         this.prototype = new Reference(obj);
         if (obj !=null) {
             assign(SymbolTable.getInstance().prototype, prototype);
         }
     }
 
+    public void delPrototype() {
+        this.prototype = null;
+        rules.removeObject(SymbolTable.getInstance().prototype);
+    }
+
     public RuleNode getRuleNode() {
         return rules;
     }
-
-//    private static CompoundToken parseIt(Reader in,String fname) throws IOException {
-//        Lexer lexer = new StandardLexer(in);
-//        Scanner scnr = new BasicScanner(lexer);
-//
-//        CObject LS = new TokenEater(null);
-//        CallFrame cf = new CallFrame(LS,LS,scnr);
-//        CompoundToken pgm = (CompoundToken)cf.interpret();
-//        return pgm;
-//    }
-
-//    public CObject evalOld(String s) {
-//        try {
-//            CompoundToken pgm = parseIt(new StringReader(s),null);
-//            CObject ret = pgm.execute(this);
-//            if (ret.isException()) {
-//                throw new RuntimeException("Eval:\n"+ret);
-//            }
-//            return ret;
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            throw new RuntimeException(e.getMessage());
-//        }
-//    }
 
     public CObject evalString(String s) {
         return eval(new StringReader(s),s,false);
@@ -202,34 +185,6 @@ public class CObject {
         }
     }
 
-//    private static TreeMap<String,CompoundToken> codeCache = new TreeMap<String, CompoundToken>();
-//    public static String currentFile = null;
-
-//    public static CObject load(String file, boolean reload) {
-//        Reader in = null;
-//        CompoundToken pgm;
-//        try {
-//            if (reload || !codeCache.containsKey(file)) {
-//                in = new BufferedReader(new FileReader(file));
-//                pgm = parseIt(in,file);
-//                codeCache.put(file,pgm);
-//            } else {
-//                pgm = codeCache.get(file);
-//            }
-//            return pgm;
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            throw new RuntimeException(e.getMessage());
-//        } finally {
-//            if (in!=null)
-//                try {
-//                    in.close();
-//                } catch (IOException e) {
-//                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//                }
-//        }
-//    }
-
     public CObject printDeep() {
         CObject current = this;
         RuleNode ret;
@@ -240,7 +195,7 @@ public class CObject {
                 System.out.println("--------");
                 System.out.println(ret);
             }
-            current = current.getParent();
+            current = current.getPrototype();
         }
         System.out.println("End");
         return this;
@@ -290,7 +245,7 @@ public class CObject {
         curr = tmp;
     }
 
-    public void addOther(CObject object) {
+    public void addOther(FunctionObject object) {
         curr = curr.addOther(object);
         argCount++;
         if (curr==null) {
@@ -299,34 +254,18 @@ public class CObject {
     }
 
 
-    public void addAction(Invokable func, CObject SS) {
+    public void addAction(FunctionObject func, boolean reuse) {
         if (curr==null) {
             System.out.println(curr);
         }
-        curr = curr.addAction(new Action(argCount,func,SS));
+        curr = curr.addAction(new Action(argCount,func,reuse));
     }
 
-    public void addPrecedence(int prec) {
-        curr = curr.addPrecedence(prec);
+    public void addAction(Invokable func, CObject scope) {
+        if (curr==null) {
+            System.out.println(curr);
+        }
+        curr = curr.addAction(new Action(argCount,new NativeFunctionObject(func,scope,argCount),false));
     }
 
-    public CObject getField(int sym) {
-        if (sym == SymbolTable.getInstance().LS.symbol) {
-            return this;
-        }
-        CObject current = this;
-        RuleNode ret, ret2;
-        CObject t = new SymbolToken(null,sym);
-        while(current!=null) {
-            ret = current.getRuleNode();
-            if (ret!=null && (ret2 = ret.getRuleForObject(t))!=null) {
-                Action a = ret2.getRuleForAction();
-                if (a!=null && a.func instanceof GetField)
-                    return ((GetField)a.func).reference.value;
-            }
-            current = current.getParent();
-        }
-        System.out.println("LS");
-        throw new ParseException("Field "+t+" not found.");
-    }
 }

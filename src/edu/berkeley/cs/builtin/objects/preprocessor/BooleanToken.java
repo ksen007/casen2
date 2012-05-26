@@ -59,7 +59,7 @@ public class BooleanToken extends CObject {
         super(position);
         this.value = value;
         if (!isSpace) setNoSpace();
-        setParent(ProtoBooleanToken.INSTANCE);
+        setPrototype(ProtoBooleanToken.INSTANCE);
     }
 
     @Override

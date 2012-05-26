@@ -36,9 +36,8 @@ import junit.framework.TestCase;
  */
 public class ScratchPad extends TestCase {
 
-    public void test5() throws Exception {
-        Interpreter.interpret("def foo { var x = 1; }");
-//        assertEquals(((LongToken)ret).value,23);
+    public void testClosure() throws Exception {
+        Interpreter.interpret("load \"examples/tutorial/scratch2.sn\"");
     }
 
 }

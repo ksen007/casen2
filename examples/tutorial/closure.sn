@@ -1,6 +1,7 @@
 def // {
     var ret = new Object
     ret def @token {|x| self}
+    ret orphan
     return ret
 }
 
@@ -16,8 +17,8 @@ def // {
 // scope.  The scope inside which the function was defined i.e. the lexical scope of
 // the function is assigned to the variable prototype_ of the newly created scope.  When a
 // variable is accessed in the scope, the function searches the definition of the
-// variable in LS_.  If the search fails, it continues the search in the prototype_ of LS_, prototype_ of prototype_
-// of LS_,  and so on up to the global scope.  Similarly, when a patterned function is
+// variable in LS.  If the search fails, it continues the search in the prototype of LS, prototype of prototype
+// of LS,  and so on up to the global scope.  Similarly, when a patterned function is
 // invoked in the function, its definition is searched is a similar way. When a function
 // or a patterned function is called, normally a new scope is created.  However, one can
 // ask a simple function to compute in an existing scope.  In order to ask a function

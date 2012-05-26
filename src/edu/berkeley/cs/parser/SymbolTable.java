@@ -90,6 +90,7 @@ public class SymbolTable {
     public SymbolToken printdeep = new SymbolToken(null,getId("printDeep"));
     public SymbolToken pound = new SymbolToken(null,getId("#"));
     public SymbolToken at = new SymbolToken(null,getId("@"));
+    public SymbolToken orphan = new SymbolToken(null,getId("orphan"));
 //    public int meta = getId("meta");
 //    public int literal = getId("literal");
 //    public int block = getId("block");

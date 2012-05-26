@@ -1,6 +1,8 @@
 package edu.berkeley.cs.parser;
 
 import edu.berkeley.cs.builtin.objects.CObject;
+import edu.berkeley.cs.builtin.objects.preprocessor.FunctionObject;
+import edu.berkeley.cs.builtin.objects.preprocessor.SymbolToken;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -39,10 +41,10 @@ import java.util.LinkedList;
  */
 
 class OtherPair {
-    CObject fst;
+    FunctionObject fst;
     RuleNode next;
 
-    OtherPair(CObject fst, RuleNode next) {
+    OtherPair(FunctionObject fst, RuleNode next) {
         this.fst = fst;
         this.next = next;
     }
@@ -152,7 +154,7 @@ public class RuleNode {
         }
     }
 
-    public RuleNode addOther(CObject other) {
+    public RuleNode addOther(FunctionObject other) {
         if (expr != null || token !=null || this.other!=null || action!=null ) {
             throw new ParseException("Cannot add other when @expr or @token or other or action exists");
         }
@@ -221,5 +223,11 @@ public class RuleNode {
 
     public OtherPair getRuleForOther() {
         return other;
+    }
+
+    public void removeObject(SymbolToken prototype) {
+        if (next!=null) {
+            next.remove(prototype);
+        }
     }
 }

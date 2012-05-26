@@ -43,13 +43,13 @@ public class DoubleToken extends CObject {
         super(position);
         this.value = l;
         if (!isSpace) setNoSpace();
-        setParent(ProtoDoubleToken.INSTANCE);
+        setPrototype(ProtoDoubleToken.INSTANCE);
     }
 
     public DoubleToken(SourcePosition position, double l) {
         super(position);
         this.value = l;
-        setParent(ProtoDoubleToken.INSTANCE);
+        setPrototype(ProtoDoubleToken.INSTANCE);
     }
 
     @Override

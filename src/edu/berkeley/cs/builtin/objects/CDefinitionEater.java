@@ -79,20 +79,24 @@ public class CDefinitionEater extends CObject {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
                 CDefinitionEater self = (CDefinitionEater)args.removeFirst();
                 CObject arg = args.removeFirst();
-                self.parent.addOther(arg);
+                self.parent.addOther((FunctionObject)arg);
                 return self;
             }
         },superClass);
 
         superClass.addNewRule();
         superClass.addObject(SymbolTable.getInstance().lcurly);
-        superClass.addOther(new TokenEater());
+        superClass.addOther(new NativeFunctionObject(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                return new TokenEater();
+            }
+        },superClass,0));
         superClass.addObject(SymbolTable.getInstance().rcurly);
         superClass.addAction(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
                 CDefinitionEater self = (CDefinitionEater)args.removeFirst();
                 TokenEater arg = (TokenEater)args.removeFirst();
-                self.parent.addAction(new UserDefinedFunction(new CompoundToken(null, arg, DS), false), DS);
+                self.parent.addAction(new UserFunctionObject(null, arg, DS), false);
                 arg.clearAll();
                 return VoidToken.VOID();
             }
@@ -101,16 +105,24 @@ public class CDefinitionEater extends CObject {
         superClass.addNewRule();
         superClass.addObject(SymbolTable.getInstance().lcurly);
         superClass.addObject(SymbolTable.getInstance().bar);
-        superClass.addOther(new CParameterEater());
+        superClass.addOther(new NativeFunctionObject(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                return new CParameterEater();
+            }
+        },superClass,0));
         superClass.addObject(SymbolTable.getInstance().bar);
-        superClass.addOther(new TokenEater());
+        superClass.addOther(new NativeFunctionObject(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                return new TokenEater();
+            }
+        },superClass,0));
         superClass.addObject(SymbolTable.getInstance().rcurly);
         superClass.addAction(new Invokable() {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
                 CDefinitionEater self = (CDefinitionEater)args.removeFirst();
                 CParameterEater parg = (CParameterEater)args.removeFirst();
                 TokenEater arg = (TokenEater)args.removeFirst();
-                self.parent.addAction(new UserDefinedFunction(new CompoundToken(parg, arg, DS), false), DS);
+                self.parent.addAction(new UserFunctionObject(parg, arg, DS), false);
                 parg.clearAll();
                 arg.clearAll();
                 return VoidToken.VOID();
@@ -120,7 +132,11 @@ public class CDefinitionEater extends CObject {
         superClass.addNewRule();
         superClass.addObject(SymbolTable.getInstance().lcurly);
         superClass.addObject(SymbolTable.getInstance().pound);
-        superClass.addOther(new TokenEater());
+        superClass.addOther(new NativeFunctionObject(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                return new TokenEater();
+            }
+        },superClass,0));
         superClass.addObject(SymbolTable.getInstance().pound);
         superClass.addObject(SymbolTable.getInstance().rcurly);
         superClass.addAction(new Invokable() {

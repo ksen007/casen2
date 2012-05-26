@@ -1,6 +1,5 @@
 package edu.berkeley.cs.builtin.objects;
 
-import edu.berkeley.cs.builtin.functions.GetField;
 import edu.berkeley.cs.parser.SymbolTable;
 
 /**
@@ -38,6 +37,6 @@ import edu.berkeley.cs.parser.SymbolTable;
 public class EnvironmentObject extends CObject {
     public EnvironmentObject() {
         this.assign(SymbolTable.getInstance().LS,new Reference(this));
-        setParent(ProtoEnvironmentObject.instance);
+        setPrototype(ProtoEnvironmentObject.instance);
     }
 }

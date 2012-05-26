@@ -1,6 +1,7 @@
 def // {
     var ret = new Object
     ret def @token {|x| self}
+    ret orphan
     return ret
 }
 
@@ -112,6 +113,7 @@ def list @expr {|data|
 
 var ret = list 8, 9, 10, 11, 12
 ret print
+
 
 def factorial 1 {1}
 def factorial @token {|x| x * factorial exprToToken(x-1)}

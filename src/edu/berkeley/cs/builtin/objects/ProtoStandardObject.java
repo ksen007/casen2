@@ -71,6 +71,17 @@ public class ProtoStandardObject {
 
 
         instance.addNewRule();
+        instance.addObject(SymbolTable.getInstance().orphan);
+        instance.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                CObject self = args.removeFirst();
+                self.delPrototype();
+                return self;
+            }
+        },instance);
+
+
+        instance.addNewRule();
         instance.addObject(SymbolTable.getInstance().eq);
         instance.addMeta(SymbolTable.getInstance().expr);
         instance.addAction(new Invokable() {

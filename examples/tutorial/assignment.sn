@@ -1,8 +1,7 @@
 def // {
     var ret = new Object
     ret def @token {|x| self}
-    ret def ; {self}
-    ret prototype = void
+    ret orphan
     return ret
 }
 

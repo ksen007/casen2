@@ -36,7 +36,7 @@ import junit.framework.TestCase;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class CompoundTokenTest extends TestCase {
+public class AllTests extends TestCase {
     public void testNative1() throws Exception {
         CObject ret = Interpreter.interpret("def foo {# public CObject apply(LinkedList args, CObject SS, CObject DS){ System.out.println(\"Hello World!\"); return (CObject)args.removeFirst();} #}; foo");
     }
@@ -160,7 +160,7 @@ public class CompoundTokenTest extends TestCase {
     public void test16() throws Exception {
         System.out.println("16.");
         CObject ret = Interpreter.interpret("print {1 + 2}");
-        assertTrue(ret instanceof CompoundToken);
+        assertTrue(ret instanceof UserFunctionObject);
         System.out.println(ret);
     }
 
@@ -170,9 +170,27 @@ public class CompoundTokenTest extends TestCase {
                 "x = x + 1\n" +
                 "return x + y\n" +
                 "}");
-        assertTrue(ret instanceof CompoundToken);
+        assertTrue(ret instanceof UserFunctionObject);
         System.out.println(ret);
     }
+
+    public void testClosure() throws Exception {
+        Interpreter.interpret("load \"examples/tutorial/closure.sn\"");
+    }
+
+    public void testTypes() throws Exception {
+        Interpreter.interpret("load \"examples/tutorial/types.sn\"");
+    }
+
+    public void testPatterns() throws Exception {
+        Interpreter.interpret("load \"examples/tutorial/patterns.sn\"");
+    }
+
+    public void testAssignment() throws Exception {
+        Interpreter.interpret("load \"examples/tutorial/assignment.sn\"");
+    }
+
+
 //    public void test200() throws Exception {
 //        CObject ret = Interpreter.interpret("");
 //    }

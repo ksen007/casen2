@@ -1,8 +1,8 @@
 package edu.berkeley.cs.builtin.objects.preprocessor;
 
-import edu.berkeley.cs.builtin.functions.UserDefinedFunction;
 import edu.berkeley.cs.builtin.objects.CObject;
 import edu.berkeley.cs.builtin.objects.CStatementEater;
+import edu.berkeley.cs.builtin.objects.EnvironmentObject;
 import edu.berkeley.cs.builtin.objects.Reference;
 import edu.berkeley.cs.lexer.BasicScanner;
 import edu.berkeley.cs.lexer.BufferedLexer;
@@ -45,7 +45,7 @@ import java.util.LinkedList;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class CompoundToken extends CObject {
+public class UserFunctionObject extends FunctionObject {
     private ArrayList<CObject> tokens;
     public ArrayList<SymbolToken> parameters;
 
@@ -53,8 +53,8 @@ public class CompoundToken extends CObject {
         return new BasicScanner(new BufferedLexer(tokens));
     }
 
-    public CompoundToken(CParameterEater par, TokenEater ss,CObject SS) {
-        super(null);
+    public UserFunctionObject(CParameterEater par, TokenEater ss, CObject SS) {
+        super(null,SS);
 
         tokens = new ArrayList<CObject>(ss.tokens);
         if (par==null) {
@@ -72,7 +72,7 @@ public class CompoundToken extends CObject {
                 this.addObject(SymbolTable.getInstance().comma);
         }
         this.addObject(SymbolTable.getInstance().rparen);
-        this.addAction(new UserDefinedFunction(this,false),SS);
+        this.addAction(this,false);
 
         this.addNewRule();
         this.addObject(SymbolTable.getInstance().lparen);
@@ -86,17 +86,26 @@ public class CompoundToken extends CObject {
                 this.addObject(SymbolTable.getInstance().comma);
         }
         this.addObject(SymbolTable.getInstance().rparen);
-        this.addAction(new UserDefinedFunction(this,false),SS);
+        this.addAction(this,true);
+
+        // System.out.println("Function:"+this);
     }
 
 
-//    public CObject execute() {
-//        CObject LS = new EnvironmentObject();
-//        LS.setParent(scope);
-//        return execute(LS);
-//    }
+    @Override
+    public CObject apply(LinkedList<CObject> args, CObject DS, boolean reuse) {
+        CObject LS;
+        CObject self = args.removeFirst();
 
-    public CObject execute(CObject LS, LinkedList<CObject> args) {
+        if (!reuse) {
+            LS = new EnvironmentObject();
+            LS.setPrototype(scope);
+            LS.assign(SymbolTable.getInstance().self,new Reference(self));
+            LS.assign(SymbolTable.getInstance().DS, new Reference(DS));
+        } else {
+            LS = args.removeFirst();
+        }
+
         for(SymbolToken param:parameters) {
             Reference common = new Reference(args.removeFirst());
             LS.assign(param, common);
@@ -105,30 +114,6 @@ public class CompoundToken extends CObject {
         CallFrame cf = new CallFrame(LS, CStatementEater.instance,scnr);
         return cf.interpret();
     }
-
-//    public CObject execute(LinkedList<CObject> args, boolean isInstance) {
-//        CObject LS = new EnvironmentObject();
-//        LS.setParent(scope);
-//        if (isInstance) {
-//            LS.assign(SymbolTable.getInstance().self,new Reference(args.removeFirst()));
-////            LS.addNewRule();
-////            LS.addObject(SymbolTable.getInstance().self);
-////            LS.addAction(new GetField(new Reference(args.removeFirst())));
-//        }
-//        for(SymbolToken param:parameters) {
-//            Reference common = new Reference(args.removeFirst());
-//            LS.assign(param, common);
-//        }
-//        return execute(LS);
-//    }
-//
-//    public CObject execute(CObject LS, LinkedList<CObject> args) {
-//        for(SymbolToken param:parameters) {
-//            Reference common = new Reference(args.removeFirst());
-//            LS.assign(param, common);
-//        }
-//        return execute(LS);
-//    }
 
     @Override
     public String toString() {
@@ -151,4 +136,10 @@ public class CompoundToken extends CObject {
         return sb.toString();
     }
 
+    public CObject executeInScope() {
+        LinkedList<CObject> args = new LinkedList<CObject>();
+        args.add(this);
+        args.add(scope);
+        return apply(args,null,true);
+    }
 }

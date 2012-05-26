@@ -1,4 +1,9 @@
-package edu.berkeley.cs.builtin.functions;
+package edu.berkeley.cs.builtin.objects.preprocessor;
+
+import edu.berkeley.cs.builtin.objects.CObject;
+import edu.berkeley.cs.lexer.SourcePosition;
+
+import java.util.LinkedList;
 
 /**
  * Copyright (c) 2006-2011,
@@ -32,10 +37,19 @@ package edu.berkeley.cs.builtin.functions;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class DirectCall { //implements Invokable {
-//    public CObject apply(LinkedList<CObject> args, CObject DS) {
-//        CompoundToken body = (CompoundToken)args.removeFirst();
-//        return body.execute(args,false);
-//    }
+public abstract class FunctionObject extends CObject {
+    CObject scope;
 
+    protected FunctionObject(SourcePosition position, CObject scope) {
+        super(position);
+        this.scope = scope;
+    }
+
+    abstract public CObject apply(LinkedList<CObject> args, CObject DS, boolean reuse);
+
+    public CObject execute(CObject DS) {
+        LinkedList<CObject> args = new LinkedList<CObject>();
+        args.add(this);
+        return apply(args,DS,false);
+    }
 }

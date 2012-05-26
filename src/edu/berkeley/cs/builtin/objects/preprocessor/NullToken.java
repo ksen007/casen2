@@ -49,7 +49,7 @@ public class NullToken extends CObject {
     public NullToken(SourcePosition position, boolean isSpace) {
         super(position);
         if (!isSpace) setNoSpace();
-        setParent(ProtoNullToken.INSTANCE);
+        setPrototype(ProtoNullToken.INSTANCE);
     }
 
     @Override
