@@ -49,6 +49,8 @@ public class CallFrame {
     private Stack<Integer> precedenceStack;
     CObject LS;
     private Scanner scnr;
+    private boolean tryShifting;
+
     public static final boolean DEBUG = false;
 
 
@@ -61,9 +63,9 @@ public class CallFrame {
 
         if (scnr!=null){
             computationStack.push(base);
-            parseRuleStack.push(base.getRuleNode());
-
-            precedenceStack.push(0);
+            tryShifting = true;
+//            parseRuleStack.push(base.getRuleNode());
+//            precedenceStack.push(0);
         }
 
     }
@@ -86,7 +88,6 @@ public class CallFrame {
     }
 
     public CObject interpret() {
-        if (RuleNode.DEBUG) System.out.println("Interpretation start.");
         while(true) {
             interpretAux();
             CObject top = computationStack.peek();
@@ -101,39 +102,43 @@ public class CallFrame {
     }
 
     public boolean interpretAux() {
-        CObject t = scnr.nextToken();
-        RuleNode currentRule = parseRuleStack.peek();
+        if (!tryShifting) {
+            CObject t = scnr.nextToken();
+            RuleNode currentRule = parseRuleStack.peek();
 
-        try {
-            if (consumeSymbol(currentRule,t)) return true;
+            try {
+                if (consumeSymbol(currentRule,t)) return true;
 
-            if (matchesToken(t,SymbolTable.getInstance().exprToToken) && !currentRule.isActionOnly()) {
-                parseRuleStack.push((new ExprToTokenObject(scnr)).getRuleNode());
-                precedenceStack.push(0);
+                if (matchesToken(t,SymbolTable.getInstance().exprToToken) && !currentRule.isActionOnly()) {
+                    parseRuleStack.push((new ExprToTokenObject(scnr)).getRuleNode());
+                    precedenceStack.push(0);
+                    return true;
+                }
+
+                if (!matchesToken(t,SymbolTable.getInstance().newline) && !matchesToken(t,SymbolToken.end)) {
+                    if (consumeToken(currentRule,t)) return true;
+                    if (consumeExpr(currentRule,t)) return true;
+                    if (consumeOther(currentRule,t)) return true;
+                }
+                if (consumeAction(currentRule,t)) return true;
+
+                if (matchesToken(t,SymbolTable.getInstance().newline)) {
+                    return true;
+                }
+            } catch (Exception e) {
+                StringToken ret = new StringToken(null,"Failed to consume "+t+" at "+t.locationString()
+                        +" with "+this+ " because "+ getStackTrace(e));
+                ret.setException();
+                computationStack.push(ret);
                 return true;
             }
-
-            if (!matchesToken(t,SymbolTable.getInstance().newline) && !matchesToken(t,SymbolToken.end)) {
-                if (consumeToken(currentRule,t)) return true;
-                if (consumeExpr(currentRule,t)) return true;
-                if (consumeOther(currentRule,t)) return true;
-            }
-            if (consumeAction(currentRule,t)) return true;
-
-            if (matchesToken(t,SymbolTable.getInstance().newline)) {
-                return true;
-            }
-        } catch (Exception e) {
-            StringToken ret = new StringToken(null,"Failed to consume "+t+" at "+t.locationString()
-                    +" with "+this+ " because "+ getStackTrace(e));
+            StringToken ret = new StringToken(null,"Failed to consume "+t+" at "+t.locationString()+" with "+this);
             ret.setException();
             computationStack.push(ret);
             return true;
+        } else {
+            tryShifting(); return true;
         }
-        StringToken ret = new StringToken(null,"Failed to consume "+t+" at "+t.locationString()+" with "+this);
-        ret.setException();
-        computationStack.push(ret);
-        return true;
     }
 
     private boolean consumeSymbol(RuleNode currentRule, CObject t) {
@@ -221,24 +226,18 @@ public class CallFrame {
 
     private boolean consumeAction(RuleNode currentRule, CObject t) {
         if (currentRule.getRuleForAction() != null) {
-            doAction(currentRule,t);
+            scnr.pushBack(t);
+            parseRuleStack.pop();
+            precedenceStack.pop();
+            currentRule.getRuleForAction().apply(computationStack,this);
 
-            if (computationStack.peek().isException()) return true;
-
-            tryShifting(currentRule);
+            tryShifting = true;
             return true;
         }
         return false;
     }
 
-    private void doAction(RuleNode currentRule, CObject t) {
-        scnr.pushBack(t);
-        parseRuleStack.pop();
-        precedenceStack.pop();
-        currentRule.getRuleForAction().apply(computationStack,this);
-    }
-
-    private void tryShifting(RuleNode currentRule) {
+    private void tryShifting() {
         CObject nt = computationStack.peek();
         CObject t = scnr.nextToken();
         RuleNode reduce;
@@ -264,6 +263,7 @@ public class CallFrame {
             }
         }
         scnr.pushBack(t);
+        tryShifting = false;
     }
 
 
