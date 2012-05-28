@@ -1,7 +1,5 @@
 package edu.berkeley.cs;
 
-import edu.berkeley.cs.builtin.objects.mutable.CObject;
-import edu.berkeley.cs.builtin.objects.mutable.LongToken;
 import junit.framework.TestCase;
 
 /**
@@ -39,8 +37,8 @@ import junit.framework.TestCase;
 public class ScratchPad extends TestCase {
 
     public void testClosure() throws Exception {
-        CObject ret = Interpreter.interpret("print (2 + 2)");
-        assertEquals(((LongToken) ret).value, 4);
+        Interpreter.interpret("def foo @expr @expr {|x, y| return (x + y) }\n" +
+                "print (foo 3 4)");
     }
 
 }

@@ -4,8 +4,14 @@ import edu.berkeley.cs.builtin.Reference;
 import edu.berkeley.cs.builtin.functions.Invokable;
 import edu.berkeley.cs.builtin.objects.mutable.*;
 import edu.berkeley.cs.lexer.SourcePosition;
+import edu.berkeley.cs.lexer.StandardLexer;
 import edu.berkeley.cs.parser.*;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -108,26 +114,34 @@ public class ProtoEnvironmentObject {
             }
         }, INSTANCE);
 
-//        INSTANCE.addNewRule();
-//        INSTANCE.addObject(SymbolTable.getInstance().load);
-//        INSTANCE.addMeta(SymbolTable.getInstance().expr);
-//        INSTANCE.addAction(new Invokable() {
-//            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
-//                CObject self = args.removeFirst();
-//                CObject fobj = args.removeFirst();
-//                File f;
-//                String currentFile = DS.getPosition().getFilename();
-//
-//                if (currentFile != null) {
-//                    f = new File(currentFile);
-//                    f = new File(f.getParent(),((StringToken)fobj).value);
-//                } else {
-//                    f = new File(((StringToken)fobj).value);
-//                }
-//                String file = f.getAbsolutePath();
-//                return self.evalFile(file);
-//            }
-//        }, INSTANCE);
+        INSTANCE.addNewRule();
+        INSTANCE.addObject(SymbolTable.getInstance().load);
+        INSTANCE.addMeta(SymbolTable.getInstance().expr);
+        INSTANCE.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                CObject self = args.removeFirst();
+                CObject fobj = args.removeFirst();
+                File f;
+                String currentFile = DS.getPosition().getFilename();
+
+                if (currentFile != null) {
+                    f = new File(currentFile);
+                    f = new File(f.getParent(),((StringToken)fobj).value);
+                } else {
+                    f = new File(((StringToken)fobj).value);
+                }
+                String file = f.getAbsolutePath();
+
+                ArrayList<CObject> tokens = null;
+                try {
+                    tokens = new StandardLexer(new BufferedReader(new FileReader(file)),file,false).getTokens();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                UserFunctionObject fun = new UserFunctionObject(null,tokens,DS);
+                return fun;
+            }
+        }, INSTANCE);
 
         INSTANCE.addNewRule();
         INSTANCE.addObject(SymbolTable.getInstance().tokenToExpr);

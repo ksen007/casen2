@@ -6,7 +6,10 @@ import edu.berkeley.cs.lexer.StandardLexer;
 import edu.berkeley.cs.parser.Continuation;
 import edu.berkeley.cs.parser.UserFunctionObject;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.StringReader;
+import java.util.ArrayList;
 
 /**
  * Copyright (c) 2006-2011,
@@ -41,44 +44,39 @@ import java.io.StringReader;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class Interpreter {
-    public static CObject interpret(String s) {
-        try {
+    private static CObject interpretAux(ArrayList<CObject> tokens) {
             EnvironmentObject granny = new EnvironmentObject();
             Continuation grannyContinuation = new Continuation(granny, null,null,null);
             granny.thisContinuation = grannyContinuation;
 
-            UserFunctionObject fun = new UserFunctionObject(null,(new StandardLexer(new StringReader(s),s,false)).getTokens(),granny);
+            UserFunctionObject fun = new UserFunctionObject(null,tokens,granny);
             Continuation continuation;
             continuation = fun.execute(grannyContinuation);
             do {
                 continuation = continuation.step();
             } while(continuation != grannyContinuation);
             return grannyContinuation.computationStack.pop();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
-//    public static void main(String[] args) {
-//        EnvironmentObject tmp = new EnvironmentObject();
-//        CObject ret = tmp.evalFile(args[0]);
-//        if (ret.isException()) {
-//            System.err.println(ret);
-//        }
-//    }
+    public static CObject interpret(String s) {
+        try {
+            return interpretAux(new StandardLexer(new StringReader(s), s, false).getTokens());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void main(String[] args) {
+        try {
+            interpretAux(new StandardLexer(new BufferedReader(new FileReader(args[0])),args[0],false).getTokens());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
 
-//@todo make shift default
-//@todo make () special case
-//@todo make single pass interpreter
-//@todo implement {{ }} to embed Java code
 //@todo implement multi lookahead for symbols
-
 //@todo: allow creation of CompoundToken from a sequence of tokens
 //@todo: provide undef, isdef, redef, getAction
-//@todo: handle return from blocks
 //@todo: provide support for reflection
-//@todo: coroutine
-//@todo: eliminate NativeFunction
 

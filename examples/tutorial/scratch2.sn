@@ -1,6 +1,2 @@
-def factorial 1 {1}
-def factorial @token {|x| x * factorial exprToToken(x-1)}
-
-print 20
-
-print (factorial 5)
+def foo @expr @expr {|x, y| return (x + y) }
+print (foo 3 4)

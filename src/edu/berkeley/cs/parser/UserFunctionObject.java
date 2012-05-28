@@ -73,7 +73,7 @@ public class UserFunctionObject extends FunctionObject {
         
         TokenList scnr = getTokenList();
         Continuation ret = new Continuation(LS, ProtoStatementEater.INSTANCE,scnr,cf);
-        LS.thisContinuation = cf;
+        LS.thisContinuation = ret;
         return ret;
     }
 

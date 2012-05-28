@@ -173,19 +173,19 @@ public class AllTests extends TestCase {
     }
 
     public void testClosure() throws Exception {
-        Interpreter.interpret("load \"examples/tutorial/closure.sn\"");
+        Interpreter.interpret("(load \"examples/tutorial/closure.sn\")()");
     }
 
     public void testTypes() throws Exception {
-        Interpreter.interpret("load \"examples/tutorial/types.sn\"");
+        Interpreter.interpret("(load \"examples/tutorial/types.sn\")()");
     }
 
     public void testPatterns() throws Exception {
-        Interpreter.interpret("load \"examples/tutorial/patterns.sn\"");
+        Interpreter.interpret("(load \"examples/tutorial/patterns.sn\")()");
     }
 
     public void testAssignment() throws Exception {
-        Interpreter.interpret("load \"examples/tutorial/assignment.sn\"");
+        Interpreter.interpret("(load \"examples/tutorial/assignment.sn\")()");
     }
 
 

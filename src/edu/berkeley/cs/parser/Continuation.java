@@ -64,10 +64,7 @@ public class Continuation {
         if (scnr!=null){
             computationStack.push(base);
             state = 1;
-//            parseRuleStack.push(base.getRuleNode());
-//            precedenceStack.push(0);
         }
-
     }
 
     public static String getStackTrace(Throwable aThrowable) {
@@ -87,20 +84,6 @@ public class Continuation {
         return false;
     }
 
-//    public CObject interpret() {
-//        while(true) {
-//            interpretAux();
-//            CObject top = computationStack.peek();
-//            if (top.isReturn()) {
-//                top.clearReturn();
-//                return top;
-//            }
-//            if (top.isException()) {
-//                return top;
-//            }
-//        }
-//    }
-
     public Continuation step() {
         if (state == 0) {
             CObject t = scnr.nextToken();
@@ -115,51 +98,59 @@ public class Continuation {
                     return this;
                 }
 
+                Continuation tmp;
                 if (!matchesToken(t,SymbolTable.getInstance().newline) && !matchesToken(t,SymbolToken.end)) {
                     if (consumeToken(currentRule,t)) return this;
                     if (consumeExpr(currentRule,t)) return this;
-                    OtherPair toBePushed;
-                    if ((toBePushed = currentRule.getRuleForOther()) !=null) {
-                        scnr.pushBack(t);
-                        computationStack.push(toBePushed.fst);
-                        Continuation tmpContinuation = toBePushed.fst.apply(computationStack,this);
-                        state = 2;
-                        return tmpContinuation;
-                    }
+                    if ((tmp = consumeOther1(currentRule,t))!=null) return tmp;
                 }
-                if (currentRule.getRuleForAction() != null) {
-                    scnr.pushBack(t);
-                    parseRuleStack.pop();
-                    precedenceStack.pop();
-                    Continuation tmpContinuation = currentRule.getRuleForAction().apply(computationStack,this);
-
-                    state = 1;
-                    return tmpContinuation;
-                }
-
-//                if (consumeAction(currentRule,t)) return true;
-
-                if (matchesToken(t,SymbolTable.getInstance().newline)) {
-                    return this;
-                }
+                if ((tmp = consumeAction(currentRule, t))!=null) return tmp;
+                if (matchesToken(t,SymbolTable.getInstance().newline)) return this;
             } catch (Exception e) {
-                StringToken ret = new StringToken(null,"Failed to consume "+t+" at "+t.locationString()
+//                StringToken ret = new StringToken(null,"Failed to consume "+t+" at "+t.locationString()
+//                        +" with "+this+ " because "+ getStackTrace(e));
+//                ret.setException();
+//                computationStack.push(ret);
+//                return this;
+                throw new RuntimeException("Failed to consume "+t+" at "+t.locationString()
                         +" with "+this+ " because "+ getStackTrace(e));
-                ret.setException();
-                computationStack.push(ret);
-                return this;
             }
-            StringToken ret = new StringToken(null,"Failed to consume "+t+" at "+t.locationString()+" with "+this);
-            ret.setException();
-            computationStack.push(ret);
-            return this;
+//            StringToken ret = new StringToken(null,"Failed to consume "+t+" at "+t.locationString()+" with "+this);
+//            ret.setException();
+//            computationStack.push(ret);
+//            return this;
+            throw new RuntimeException("Failed to consume "+t+" at "+t.locationString()+" with "+this);
         } else if (state == 1){
             state = 0;
             tryShifting(); return this;
         } else {
             state = 0;
-            consumeOther(); return this;
+            consumeOther2(); return this;
         }
+    }
+
+    private Continuation consumeAction(RuleNode currentRule, CObject t) {
+        if (currentRule.getRuleForAction() != null) {
+            scnr.pushBack(t);
+            parseRuleStack.pop();
+            precedenceStack.pop();
+            Continuation tmpContinuation = currentRule.getRuleForAction().apply(computationStack,this);
+            state = 1;
+            return tmpContinuation;
+        }
+        return null;
+    }
+
+    private Continuation consumeOther1(RuleNode currentRule, CObject t) {
+        OtherPair toBePushed;
+        if ((toBePushed = currentRule.getRuleForOther()) !=null) {
+            scnr.pushBack(t);
+            computationStack.push(toBePushed.fst);
+            Continuation tmpContinuation = toBePushed.fst.apply(computationStack,this);
+            state = 2;
+            return tmpContinuation;
+        }
+        return null;
     }
 
     private boolean consumeSymbol(RuleNode currentRule, CObject t) {
@@ -168,7 +159,6 @@ public class Continuation {
 
             if (DEBUG) {
                 if (!t.isNoSpace()) System.out.print(' ');
-                //System.out.print("s:");
                 System.out.print(t);
             }
             LS.setPosition(t.getPosition());
@@ -188,7 +178,6 @@ public class Continuation {
         if ((toBePushed = currentRule.getRuleForToken()) !=null) {
             if (DEBUG) {
                 if (!t.isNoSpace()) System.out.print(' ');
-                //System.out.print("t:");
                 System.out.print(t);
             }
             parseRuleStack.pop();
@@ -200,7 +189,7 @@ public class Continuation {
     }
 
     private boolean consumeExpr(RuleNode currentRule, CObject t) {
-        Pair rn;
+        RuleNodeIntPair rn;
         RuleNode toBePushed;
 
         if ((toBePushed = currentRule.getRuleForExpr()) !=null) {
@@ -221,8 +210,8 @@ public class Continuation {
         return false;
     }
 
-    private void consumeOther() {
-        Pair rn;
+    private void consumeOther2() {
+        RuleNodeIntPair rn;
         OtherPair toBePushed;
         CObject ctxt ;
 
@@ -258,7 +247,7 @@ public class Continuation {
             tmp = precedenceStack.peek();
         }
 
-        Pair rn;
+        RuleNodeIntPair rn;
         if ((rn=shift(reduce,nt,tmp,t))!=null) {
             if (DEBUG) {
                 System.out.print('_');
@@ -274,9 +263,9 @@ public class Continuation {
     }
 
 
-    private Pair shift(RuleNode reduce, CObject shift, int exprPrecedence, CObject shiftOperator) {
+    private RuleNodeIntPair shift(RuleNode reduce, CObject shift, int exprPrecedence, CObject shiftOperator) {
         boolean first = isProgressPossible(reduce,shiftOperator);
-        Pair ret;
+        RuleNodeIntPair ret;
         boolean second = (ret = contextLookAhead(shift,shiftOperator))!=null;
         if (!second) return null;
         if (!first) return ret;
@@ -301,7 +290,7 @@ public class Continuation {
     }
 
 
-    private static Pair contextLookAhead(CObject LS, CObject t) {
+    private static RuleNodeIntPair contextLookAhead(CObject LS, CObject t) {
         CObject current;
         RuleNode ret, ret2;
 
@@ -310,7 +299,7 @@ public class Continuation {
         while(current!=null) {
             ret = current.getRuleNode();
             if (ret!=null && (ret2 = ret.getRuleForObject(t))!=null) {
-                return new Pair(ret,ret2.getOptionalPrecedence());
+                return new RuleNodeIntPair(ret,ret2.getOptionalPrecedence());
             }
             current = current.getPrototype();
         }
@@ -319,7 +308,7 @@ public class Continuation {
         if (current!=null) {
             ret = current.getRuleNode();
             if (matchesToken(t,SymbolTable.getInstance().exprToToken) && !ret.isActionOnly()) {
-                return new Pair(ret,0);
+                return new RuleNodeIntPair(ret,0);
             }
         }
 
@@ -329,7 +318,7 @@ public class Continuation {
             while(current!=null) {
                 ret = current.getRuleNode();
                 if (ret!=null && (ret2=ret.getRuleForToken())!=null) {
-                    return new Pair(ret,ret2.getOptionalPrecedence());
+                    return new RuleNodeIntPair(ret,ret2.getOptionalPrecedence());
                 }
                 current = current.getPrototype();
             }
@@ -338,7 +327,7 @@ public class Continuation {
             while(current!=null) {
                 ret = current.getRuleNode();
                 if (ret!=null && (ret2=ret.getRuleForExpr())!=null) {
-                    return new Pair(ret,ret2.getOptionalPrecedence());
+                    return new RuleNodeIntPair(ret,ret2.getOptionalPrecedence());
                 }
                 current = current.getPrototype();
             }
@@ -348,7 +337,7 @@ public class Continuation {
             while(current!=null) {
                 ret = current.getRuleNode();
                 if (ret!=null && (oret2=ret.getRuleForOther())!=null) {
-                    return new Pair(ret,oret2.next.getOptionalPrecedence());
+                    return new RuleNodeIntPair(ret,oret2.next.getOptionalPrecedence());
                 }
                 current = current.getPrototype();
             }
@@ -358,7 +347,7 @@ public class Continuation {
         while(current!=null) {
             ret = current.getRuleNode();
             if (ret!=null && ret.getRuleForAction()!=null) {
-                return new Pair(ret,0);
+                return new RuleNodeIntPair(ret,0);
             }
             current = current.getPrototype();
         }
@@ -395,11 +384,11 @@ public class Continuation {
 
 }
 
-class Pair {
+class RuleNodeIntPair {
     RuleNode fst;
     int snd;
 
-    Pair(RuleNode fst, int snd) {
+    RuleNodeIntPair(RuleNode fst, int snd) {
         this.fst = fst;
         this.snd = snd;
     }
