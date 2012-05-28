@@ -1,6 +1,8 @@
-package edu.berkeley.cs;
+package edu.berkeley.cs.parser;
 
-import junit.framework.TestCase;
+import edu.berkeley.cs.builtin.objects.mutable.CObject;
+
+import java.util.Stack;
 
 /**
  * Copyright (c) 2006-2011,
@@ -34,15 +36,15 @@ import junit.framework.TestCase;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class ScratchPad extends TestCase {
+public class LoopAction implements Action {
+    public Continuation apply(Stack<CObject> computationStack, Continuation cf) {
+        CObject arg = computationStack.pop();
+        cf.reset();
+        return cf;
+    }
 
-    public void testClosure() throws Exception {
-        int r = 100000000;
-        while (r > 0) {
-//            System.out.println(r);
-            r--;
-        }
+    public int getArgCount() {
+        return 0;
     }
 
 }
-

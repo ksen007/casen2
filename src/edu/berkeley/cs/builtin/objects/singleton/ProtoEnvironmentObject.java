@@ -340,6 +340,10 @@ public class ProtoEnvironmentObject {
         INSTANCE.addAction(new ReturnToDSAction());
 
         INSTANCE.addNewRule();
+        INSTANCE.addObject(SymbolTable.getInstance().loop);
+        INSTANCE.addAction(new LoopAction());
+
+        INSTANCE.addNewRule();
         INSTANCE.addObject(SymbolTable.getInstance().Return);
         INSTANCE.addMeta(SymbolTable.getInstance().expr);
         INSTANCE.addObject(SymbolTable.getInstance().to);

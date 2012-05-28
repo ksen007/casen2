@@ -1,10 +1,8 @@
 package edu.berkeley.cs.parser;
 
 import edu.berkeley.cs.builtin.Reference;
-import edu.berkeley.cs.builtin.objects.mutable.CObject;
-import edu.berkeley.cs.builtin.objects.mutable.EnvironmentObject;
-import edu.berkeley.cs.builtin.objects.mutable.FunctionObject;
-import edu.berkeley.cs.builtin.objects.mutable.SymbolToken;
+import edu.berkeley.cs.builtin.functions.Invokable;
+import edu.berkeley.cs.builtin.objects.mutable.*;
 import edu.berkeley.cs.builtin.objects.singleton.ProtoStatementEater;
 import edu.berkeley.cs.lexer.TokenList;
 
@@ -91,6 +89,15 @@ public class UserFunctionObject extends FunctionObject {
         this.tokens = tokens;
         this.parameters = par;
         int N = parameters==null?0:parameters.size();
+
+        this.addNewRule();
+        this.addObject(SymbolTable.getInstance().scope);
+        this.addAction(new Invokable() {
+            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+                UserFunctionObject self = (UserFunctionObject)args.removeFirst();
+                return self.scope;
+            }
+        },this);
 
         this.addNewRule();
         this.addObject(SymbolTable.getInstance().lparen);

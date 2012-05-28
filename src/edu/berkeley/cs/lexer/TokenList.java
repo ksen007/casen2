@@ -61,7 +61,10 @@ public class TokenList {
         tokenQueue.addFirst(t);
     }
 
-
+    public void reset() {
+        tokenQueue.clear();
+        iter = 0;
+    }
 
 
     private CObject getNextToken() {
@@ -70,7 +73,7 @@ public class TokenList {
             return tokens.get(iter-1);
         }
         iter++;
-        return SymbolToken.end;  //@todo: fails if I return null.  Fix this!
+        return SymbolToken.end; 
     }
 
 }

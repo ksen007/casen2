@@ -93,6 +93,8 @@ public class SymbolTable {
     public SymbolToken delete = new SymbolToken(null,getId("delete"));
     public SymbolToken hide = new SymbolToken(null,getId("hide"));
     public SymbolToken to = new SymbolToken(null,getId("to"));
+    public SymbolToken scope = new SymbolToken(null,getId("scope"));
+    public SymbolToken loop = new SymbolToken(null,getId("loop"));
 //    public int meta = getId("meta");
 //    public int literal = getId("literal");
 //    public int block = getId("block");

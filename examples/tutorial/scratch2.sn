@@ -1,2 +1,8 @@
-def foo @expr @expr {|x, y| return (x + y) }
-print (foo 3 4)
+def IF true @expr @expr {|S1, S2| S1(S1 scope); }
+def IF false @expr @expr {|S1, S2| S2(S2 scope); }
+def if @expr then @expr else @expr {|C, S1, S2| IF exprToToken(C) S1 S2; }
+
+def while @expr @expr {|C, B| if (C(C scope)) then {B(B scope)} else {return void}; loop}
+
+var  r = 100000000
+while {r > 0} {r = r - 1}

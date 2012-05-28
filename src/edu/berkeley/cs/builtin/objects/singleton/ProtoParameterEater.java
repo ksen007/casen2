@@ -53,7 +53,7 @@ public class ProtoParameterEater {
                 self.parameters.add((SymbolToken) args.removeFirst());
                 return self;
             }
-        }, INSTANCE); //@todo comeback to check superClass
+        }, INSTANCE);
 
         INSTANCE.addNewRule();
         INSTANCE.addMeta(SymbolTable.getInstance().token); //@todo comeback what if there is a newline

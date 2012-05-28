@@ -47,6 +47,7 @@ public class Continuation {
     EnvironmentObject LS;
     public Continuation parentContinuation;
     private TokenList scnr;
+    private CObject base;
     private int state;
 
 
@@ -57,11 +58,23 @@ public class Continuation {
         this.LS = LS;
         this.scnr = scnr;
         this.parentContinuation = parentContinuation;
+        this.base = base;
         parseRuleStack = new Stack<RuleNode>();
         computationStack = new Stack<CObject>();
         precedenceStack = new Stack<Integer>();
 
         if (scnr!=null){
+            computationStack.push(base);
+            state = 1;
+        }
+    }
+
+    public void reset() {
+        parseRuleStack.clear();
+        computationStack.clear();
+        precedenceStack.clear();
+        if (scnr!=null){
+            scnr.reset();
             computationStack.push(base);
             state = 1;
         }

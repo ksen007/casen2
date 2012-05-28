@@ -5,14 +5,28 @@ def // {
     return ret
 }
 
+def IF true @expr @expr {|S1, S2| S1(S1 scope); }
+def IF false @expr @expr {|S1, S2| S2(S2 scope); }
+
+def if @expr then @expr else @expr {|C, S1, S2| IF exprToToken(C) S1 S2; }
+def while @expr @expr {|C, B| if (C(C scope)) then {B(B scope)} else {return void}; loop}
+
+var  r = 5
+if r > 3 then {print "then"} else {print "else"}
+
+while {r > 0} {print r; r = r-1}
+
+def factorial 1 {1}
+def factorial @token {|x| x * factorial exprToToken(x-1)}
+print (factorial 5)
+
 
 def fac @expr {|n|
     if (n <= 1) then {
-        var ret = 1
+        return 1
     } else {
-        var ret = n * fac (n - 1)
+        return (n * fac (n - 1))
     }
-    return ret
 }
 
 print (fac 5)
@@ -115,17 +129,3 @@ var ret = list 8, 9, 10, 11, 12
 ret print
 
 
-def factorial 1 {1}
-def factorial @token {|x| x * factorial exprToToken(x-1)}
-
-
-def IF true @expr @expr {|S1, S2| S1(LS); }
-def IF false @expr @expr {|S1, S2| S2(LS); }
-
-def myif @expr then @expr else @expr {|C, S1, S2| IF exprToToken(C) S1 S2; }
-
-var  r = 4
-myif r > 3 then {print "then"} else {print "else"}
-
-
-print (factorial 5)

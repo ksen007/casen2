@@ -170,7 +170,7 @@ public class ProtoDefinitionEater {
                     throw new RuntimeException("Cannot compile native method "+sb.toString());
                 }
             }
-        }, INSTANCE); //@todo comeback to check thisClass
+        }, INSTANCE); 
     }
 
 

@@ -48,6 +48,15 @@ public class NativeFunctionObject extends FunctionObject {
         this.fun = fun;
         this.arguments = argCount;
 
+//        this.addNewRule();
+//        this.addObject(SymbolTable.getInstance().scope);
+//        this.addAction(new Invokable() {
+//            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+//                NativeFunctionObject self = (NativeFunctionObject)args.removeFirst();
+//                return self.scope;
+//            }
+//        },this);
+
         this.addNewRule();
         this.addObject(SymbolTable.getInstance().lparen);
         for(int i=0; i<argCount; i++) {
@@ -72,11 +81,4 @@ public class NativeFunctionObject extends FunctionObject {
     public int getArgCount() {
         return arguments;
     }
-
-    public Continuation execute(Continuation DS) {
-        Stack<CObject> args = new Stack<CObject>();
-        args.push(this);
-        return apply(args,DS);
-    }
-
 }
