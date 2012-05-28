@@ -1,10 +1,6 @@
 package edu.berkeley.cs.lexer;
 
-import edu.berkeley.cs.builtin.objects.mutable.CObject;
 import junit.framework.TestCase;
-
-import java.io.FileReader;
-import java.io.StringReader;
 
 /**
  * Copyright (c) 2006-2011,
@@ -39,23 +35,23 @@ import java.io.StringReader;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class BasicScannerTest extends TestCase {
-    public void testLex1() throws Exception {
-        Lexer lexer = new StandardLexer(new FileReader("test1"),"test1",true);
-        BasicScanner scanner = new BasicScanner(lexer);
-        CObject token;
-        while((token = scanner.nextToken())!=null) {
-            System.out.println(token);
-        }
-
-    }
-
-    public void testString() throws Exception {
-        Lexer lexer = new StandardLexer(new StringReader("y = x + y; def foo @LS {};"),"y = x + y; def foo @LS {};",false);
-        BasicScanner scanner = new BasicScanner(lexer);
-        CObject token;
-        while((token = scanner.nextToken())!=null) {
-            System.out.println(token);
-        }
-
-    }
+//    public void testLex1() throws Exception {
+//        Lexer lexer = new StandardLexer(new FileReader("test1"),"test1",true);
+//        TokenList scanner = new TokenList(lexer);
+//        CObject token;
+//        while((token = scanner.nextToken())!=null) {
+//            System.out.println(token);
+//        }
+//
+//    }
+//
+//    public void testString() throws Exception {
+//        Lexer lexer = new StandardLexer(new StringReader("y = x + y; def foo @LS {};"),"y = x + y; def foo @LS {};",false);
+//        TokenList scanner = new TokenList(lexer);
+//        CObject token;
+//        while((token = scanner.nextToken())!=null) {
+//            System.out.println(token);
+//        }
+//
+//    }
 }

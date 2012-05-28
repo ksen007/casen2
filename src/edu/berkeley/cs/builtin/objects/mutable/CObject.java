@@ -4,11 +4,8 @@ import edu.berkeley.cs.builtin.Reference;
 import edu.berkeley.cs.builtin.functions.GetField;
 import edu.berkeley.cs.builtin.functions.Invokable;
 import edu.berkeley.cs.builtin.functions.PutField;
-import edu.berkeley.cs.builtin.objects.singleton.ProtoStatementEater;
-import edu.berkeley.cs.lexer.*;
+import edu.berkeley.cs.lexer.SourcePosition;
 import edu.berkeley.cs.parser.*;
-
-import java.io.*;
 
 /**
  * Copyright (c) 2006-2011,
@@ -71,18 +68,18 @@ public class CObject {
         return (flags & EXCEPTION_FLAG) > 0;
     }
 
-    public void setReturn() {
-        flags = flags | RETURN_FLAG;
-    }
-
-    public void clearReturn() {
-        flags = flags & (~RETURN_FLAG);
-    }
-
-    public boolean isReturn() {
-        return (flags & RETURN_FLAG) > 0;
-    }
-
+//    public void setReturn() {
+//        flags = flags | RETURN_FLAG;
+//    }
+//
+//    public void clearReturn() {
+//        flags = flags & (~RETURN_FLAG);
+//    }
+//
+//    public boolean isReturn() {
+//        return (flags & RETURN_FLAG) > 0;
+//    }
+//
     public void setNoSpace() {
         flags = flags | NO_SPACE_FLAG;
     }
@@ -122,13 +119,13 @@ public class CObject {
 
         this.addNewRule();
         this.addObject(var);
-        this.addAction(new GetField(val),null);
+        this.addAction(new GetField(val),this);
 
         this.addNewRule();
         this.addObject(var);
         this.addObject(SymbolTable.getInstance().assign);
         this.addMeta(SymbolTable.getInstance().expr);
-        this.addAction(new PutField(val),null);
+        this.addAction(new PutField(val),this);
     }
 
     public void setRule(CObject methods) {
@@ -140,8 +137,8 @@ public class CObject {
     }
 
     public void setPrototype(CObject obj) {
-        this.prototype = new Reference(obj);
         if (obj !=null) {
+            this.prototype = new Reference(obj);
             assign(SymbolTable.getInstance().prototype, prototype);
         }
     }
@@ -160,34 +157,34 @@ public class CObject {
         return rules;
     }
 
-    public CObject evalString(String s) {
-        return eval(new StringReader(s),s,false);
-    }
-
-    public CObject evalFile(String s) {
-        try {
-            return eval(new BufferedReader(new FileReader(s)),s,true);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e.getMessage());
-        }
-    }
-
-    private CObject eval(Reader in,String s, boolean isFile) {
-        try {
-            Lexer lexer = new StandardLexer(in,s,isFile);
-            Scanner scnr = new BasicScanner(lexer);
-            CallFrame cf = new CallFrame(this, ProtoStatementEater.INSTANCE,scnr);
-            CObject ret = cf.interpret();
-            if (ret.isException()) {
-                throw new RuntimeException("Eval:\n"+ret);
-            }
-            return ret;
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e.getMessage());
-        }
-    }
+//    public CObject evalString(String s) {
+//        return eval(new StringReader(s),s,false);
+//    }
+//
+//    public CObject evalFile(String s) {
+//        try {
+//            return eval(new BufferedReader(new FileReader(s)),s,true);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            throw new RuntimeException(e.getMessage());
+//        }
+//    }
+//
+//    private CObject eval(Reader in,String s, boolean isFile) {
+//        try {
+//            Lexer lexer = new StandardLexer(in,s,isFile);
+//            TokenList scnr = new TokenList(lexer);
+//            Continuation cf = new Continuation(this, ProtoStatementEater.INSTANCE,scnr);
+//            CObject ret = cf.interpret();
+//            if (ret.isException()) {
+//                throw new RuntimeException("Eval:\n"+ret);
+//            }
+//            return ret;
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            throw new RuntimeException(e.getMessage());
+//        }
+//    }
 
     public CObject printDeep() {
         CObject current = this;
@@ -258,18 +255,23 @@ public class CObject {
     }
 
 
-    public void addAction(FunctionObject func, boolean reuse) {
+    public void addAction(Action action) {
         if (curr==null) {
             System.out.println(curr);
         }
-        curr = curr.addAction(new Action(argCount,func,reuse));
+        int c = action.getArgCount();
+
+        if (c != 0 && argCount != c) {
+            throw new RuntimeException("Pattern has different number of parameters than the function");
+        }
+        curr = curr.addAction(action);
     }
 
     public void addAction(Invokable func, CObject scope) {
         if (curr==null) {
             System.out.println(curr);
         }
-        curr = curr.addAction(new Action(argCount,new NativeFunctionObject(func,scope,argCount),false));
+        curr = curr.addAction(new NativeFunctionObject(func,scope,argCount));
     }
 
 }

@@ -36,8 +36,16 @@ import java.util.Stack;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public interface Action {
-    public Continuation apply(Stack<CObject> computationStack, Continuation cf);
+public class ReturnAction implements Action{
+    public Continuation apply(Stack<CObject> computationStack, Continuation cf) {
+        CObject arg = computationStack.pop();
+        computationStack.pop();
+        cf.parentContinuation.computationStack.push(arg);
+        return cf.parentContinuation;
+    }
 
-    public int getArgCount();
+    public int getArgCount() {
+        return 1;
+    }
+
 }

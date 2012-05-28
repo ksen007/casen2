@@ -1,10 +1,10 @@
 package edu.berkeley.cs.builtin.objects.singleton;
 
 import edu.berkeley.cs.builtin.functions.Invokable;
-import edu.berkeley.cs.builtin.objects.mutable.DefinitionEater;
-import edu.berkeley.cs.builtin.objects.mutable.CObject;
 import edu.berkeley.cs.builtin.objects.mutable.*;
+import edu.berkeley.cs.parser.NativeFunctionObject;
 import edu.berkeley.cs.parser.SymbolTable;
+import edu.berkeley.cs.parser.UserFunctionObject;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtNewMethod;
@@ -96,7 +96,7 @@ public class ProtoDefinitionEater {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
                 DefinitionEater self = (DefinitionEater)args.removeFirst();
                 TokenEater arg = (TokenEater)args.removeFirst();
-                self.parent.addAction(new UserFunctionObject(null, arg, DS), false);
+                self.parent.addAction(new UserFunctionObject(null, arg.tokens, DS));
                 return VoidToken.VOID();
             }
         }, INSTANCE);
@@ -121,7 +121,7 @@ public class ProtoDefinitionEater {
                 DefinitionEater self = (DefinitionEater)args.removeFirst();
                 ParameterEater parg = (ParameterEater)args.removeFirst();
                 TokenEater arg = (TokenEater)args.removeFirst();
-                self.parent.addAction(new UserFunctionObject(parg, arg, DS), false);
+                self.parent.addAction(new UserFunctionObject(parg.parameters, arg.tokens, DS));
                 return VoidToken.VOID();
             }
         }, INSTANCE);

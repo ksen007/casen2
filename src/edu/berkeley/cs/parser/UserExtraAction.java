@@ -1,7 +1,14 @@
-package edu.berkeley.cs.lexer;
+package edu.berkeley.cs.parser;
 
-
+import edu.berkeley.cs.builtin.Reference;
 import edu.berkeley.cs.builtin.objects.mutable.CObject;
+import edu.berkeley.cs.builtin.objects.mutable.EnvironmentObject;
+import edu.berkeley.cs.builtin.objects.mutable.SymbolToken;
+import edu.berkeley.cs.builtin.objects.singleton.ProtoStatementEater;
+import edu.berkeley.cs.lexer.TokenList;
+
+import java.util.LinkedList;
+import java.util.Stack;
 
 /**
  * Copyright (c) 2006-2011,
@@ -35,8 +42,38 @@ import edu.berkeley.cs.builtin.objects.mutable.CObject;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public abstract class Scanner {
-    abstract public CObject nextToken();
-    abstract public void pushBack(CObject t);
+public class UserExtraAction implements Action {
+    UserFunctionObject child;
+
+    public UserExtraAction(UserFunctionObject child) {
+        this.child = child;
+    }
+
+    public Continuation apply(Stack<CObject> computationStack, Continuation cf) {
+        int arguments = child.getArgCount()+1;
+
+        LinkedList<CObject> args = new LinkedList<CObject>();
+        for(int i=0; i<=arguments;i++) {
+            args.addFirst(computationStack.pop());
+        }
+
+        EnvironmentObject LS;
+        CObject self = args.removeFirst();
+        LS = (EnvironmentObject)args.removeFirst();
+
+        if (child.parameters !=null ) {
+            for(SymbolToken param:child.parameters) {
+                Reference common = new Reference(args.removeFirst());
+                LS.assign(param, common);
+            }
+        }
+        TokenList scnr = child.getTokenList();
+        Continuation ret = new Continuation(LS, ProtoStatementEater.INSTANCE,scnr,cf);
+        return ret;
+    }
+
+    public int getArgCount() {
+        return child.getArgCount()+1;
+    }
 
 }

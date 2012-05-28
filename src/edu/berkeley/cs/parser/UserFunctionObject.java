@@ -1,15 +1,16 @@
-package edu.berkeley.cs.builtin.objects.mutable;
+package edu.berkeley.cs.parser;
 
 import edu.berkeley.cs.builtin.Reference;
+import edu.berkeley.cs.builtin.objects.mutable.CObject;
+import edu.berkeley.cs.builtin.objects.mutable.EnvironmentObject;
+import edu.berkeley.cs.builtin.objects.mutable.FunctionObject;
+import edu.berkeley.cs.builtin.objects.mutable.SymbolToken;
 import edu.berkeley.cs.builtin.objects.singleton.ProtoStatementEater;
-import edu.berkeley.cs.lexer.BasicScanner;
-import edu.berkeley.cs.lexer.BufferedLexer;
-import edu.berkeley.cs.lexer.Scanner;
-import edu.berkeley.cs.parser.CallFrame;
-import edu.berkeley.cs.parser.SymbolTable;
+import edu.berkeley.cs.lexer.TokenList;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Stack;
 
 /**
  * Copyright (c) 2006-2011,
@@ -44,23 +45,52 @@ import java.util.LinkedList;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class UserFunctionObject extends FunctionObject {
-    private ArrayList<CObject> tokens;
+    public ArrayList<CObject> tokens;
     public ArrayList<SymbolToken> parameters;
 
-    public Scanner getScanner() {
-        return new BasicScanner(new BufferedLexer(tokens));
+    public Continuation apply(Stack<CObject> computationStack, Continuation cf) {
+        int arguments = parameters==null?0:parameters.size();
+
+        LinkedList<CObject> args = new LinkedList<CObject>();
+        for(int i=0; i<=arguments;i++) {
+            args.addFirst(computationStack.pop());
+        }
+
+        EnvironmentObject LS;
+        CObject self = args.removeFirst();
+
+        LS = new EnvironmentObject();
+        LS.setPrototype(scope);
+        LS.assign(SymbolTable.getInstance().self,new Reference(self));
+        LS.assign(SymbolTable.getInstance().DS, new Reference(cf.LS));
+
+        if (parameters!=null) {
+            for(SymbolToken param:parameters) {
+                Reference common = new Reference(args.removeFirst());
+                LS.assign(param, common);
+            }
+        }
+        
+        TokenList scnr = getTokenList();
+        Continuation ret = new Continuation(LS, ProtoStatementEater.INSTANCE,scnr,cf);
+        LS.thisContinuation = cf;
+        return ret;
     }
 
-    public UserFunctionObject(ParameterEater par, TokenEater ss, CObject SS) {
-        super(null,SS);
+    public int getArgCount() {
+        return parameters==null?0:parameters.size();
+    }
 
-        tokens = new ArrayList<CObject>(ss.tokens);
-        if (par==null) {
-            parameters = new ArrayList<SymbolToken>();
-        } else {
-            parameters = new ArrayList<SymbolToken>(par.parameters);
-        }
-        int N = parameters.size();
+
+    public TokenList getTokenList() {
+        return new TokenList(tokens);
+    }
+
+    public UserFunctionObject(ArrayList<SymbolToken> par, ArrayList<CObject> tokens, CObject SS) {
+        super(null,SS);
+        this.tokens = tokens;
+        this.parameters = par;
+        int N = parameters==null?0:parameters.size();
 
         this.addNewRule();
         this.addObject(SymbolTable.getInstance().lparen);
@@ -70,7 +100,7 @@ public class UserFunctionObject extends FunctionObject {
                 this.addObject(SymbolTable.getInstance().comma);
         }
         this.addObject(SymbolTable.getInstance().rparen);
-        this.addAction(this,false);
+        this.addAction(this);
 
         this.addNewRule();
         this.addObject(SymbolTable.getInstance().lparen);
@@ -84,47 +114,20 @@ public class UserFunctionObject extends FunctionObject {
                 this.addObject(SymbolTable.getInstance().comma);
         }
         this.addObject(SymbolTable.getInstance().rparen);
-        this.addAction(this,true);
-
-        // System.out.println("Function:"+this);
+        this.addAction(new UserExtraAction(this));
     }
 
-
-    @Override
-    public CObject apply(LinkedList<CObject> args, CObject DS, boolean reuse) {
-        CObject LS;
-        CObject self = args.removeFirst();
-
-        if (!reuse) {
-            LS = new EnvironmentObject();
-            LS.setPrototype(scope);
-            LS.assign(SymbolTable.getInstance().self,new Reference(self));
-            LS.assign(SymbolTable.getInstance().DS, new Reference(DS));
-        } else {
-            LS = args.removeFirst();
-        }
-
-        for(SymbolToken param:parameters) {
-            Reference common = new Reference(args.removeFirst());
-            LS.assign(param, common);
-        }
-        Scanner scnr = getScanner();
-        CallFrame cf = new CallFrame(LS, ProtoStatementEater.INSTANCE,scnr);
-        return cf.interpret();
-    }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append('{').append(' ');
-        if (!parameters.isEmpty()) {
+        if (parameters!=null) {
             sb.append('|');
-        }
-        for(SymbolToken param:parameters) {
-            sb.append(param);
-            sb.append(',');
-        }
-        if (!parameters.isEmpty()) {
+            for(SymbolToken param:parameters) {
+                sb.append(param);
+                sb.append(',');
+            }
             sb.append("|\n");
         }
         for(CObject t:tokens) {
@@ -134,10 +137,17 @@ public class UserFunctionObject extends FunctionObject {
         return sb.toString();
     }
 
-    public CObject executeInScope() {
-        LinkedList<CObject> args = new LinkedList<CObject>();
-        args.add(this);
-        args.add(scope);
-        return apply(args,null,true);
+    public Continuation execute(Continuation DS) {
+        Stack<CObject> args = new Stack<CObject>();
+        args.push(this);
+        return apply(args,DS);
     }
+
+//    public CObject executeInScope() {
+//        LinkedList<CObject> args = new LinkedList<CObject>();
+//        args.add(this);
+//        args.add(scope);
+//        return apply(args,null,true);
+//    }
+
 }

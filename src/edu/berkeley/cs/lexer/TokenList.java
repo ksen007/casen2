@@ -1,9 +1,9 @@
 package edu.berkeley.cs.lexer;
 
 import edu.berkeley.cs.builtin.objects.mutable.CObject;
+import edu.berkeley.cs.builtin.objects.mutable.SymbolToken;
 
-import java.io.FileReader;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
@@ -38,20 +38,22 @@ import java.util.LinkedList;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class BasicScanner extends Scanner{
+public class TokenList {
     private LinkedList<CObject> tokenQueue;
-    private Lexer lexer;
+    private ArrayList<CObject> tokens;
+    private int iter;
 
-    public BasicScanner(Lexer lexer) {
-        this.lexer = lexer;
+    public TokenList(ArrayList<CObject> tokens) {
+        this.tokens = tokens;
         tokenQueue = new LinkedList<CObject>();
+        iter = 0;
     }
 
     public CObject nextToken() {
         if (!tokenQueue.isEmpty()) {
             return tokenQueue.removeFirst();
         } else {
-            return lexer.getNextToken();
+            return getNextToken();
         }
     }
 
@@ -59,12 +61,16 @@ public class BasicScanner extends Scanner{
         tokenQueue.addFirst(t);
     }
 
-    public static void main(String[] args) throws IOException {
-        Lexer lexer = new StandardLexer(new FileReader("test1"),"test1",true);
-        BasicScanner scanner = new BasicScanner(lexer);
-        CObject token;
-        while((token = scanner.nextToken())!=null) {
-            System.out.println(token);
+
+
+
+    private CObject getNextToken() {
+        if (iter < tokens.size()) {
+            iter++;
+            return tokens.get(iter-1);
         }
+        iter++;
+        return SymbolToken.end;  //@todo: fails if I return null.  Fix this!
     }
+
 }

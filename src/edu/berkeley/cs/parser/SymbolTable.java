@@ -92,6 +92,7 @@ public class SymbolTable {
     public SymbolToken at = new SymbolToken(null,getId("@"));
     public SymbolToken delete = new SymbolToken(null,getId("delete"));
     public SymbolToken hide = new SymbolToken(null,getId("hide"));
+    public SymbolToken to = new SymbolToken(null,getId("to"));
 //    public int meta = getId("meta");
 //    public int literal = getId("literal");
 //    public int block = getId("block");

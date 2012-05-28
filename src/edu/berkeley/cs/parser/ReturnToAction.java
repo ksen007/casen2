@@ -1,9 +1,9 @@
-package edu.berkeley.cs.lexer;
+package edu.berkeley.cs.parser;
 
 import edu.berkeley.cs.builtin.objects.mutable.CObject;
-import edu.berkeley.cs.builtin.objects.mutable.SymbolToken;
+import edu.berkeley.cs.builtin.objects.mutable.EnvironmentObject;
 
-import java.util.ArrayList;
+import java.util.Stack;
 
 /**
  * Copyright (c) 2006-2011,
@@ -37,22 +37,18 @@ import java.util.ArrayList;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class BufferedLexer implements Lexer {
-    private ArrayList<CObject> tokens;
-    private int iter;
-
-
-    public BufferedLexer(ArrayList<CObject> tokens) {
-        this.tokens = tokens;
-        iter = 0;
+public class ReturnToAction implements Action {
+    public Continuation apply(Stack<CObject> computationStack, Continuation cf) {
+        Continuation ret = ((EnvironmentObject)computationStack.pop()).thisContinuation;
+        CObject arg = computationStack.pop();
+        computationStack.pop();
+        if (ret!=null)
+            ret.computationStack.push(arg);
+        return ret;
     }
 
-    public CObject getNextToken() {
-        if (iter < tokens.size()) {
-            iter++;
-            return tokens.get(iter-1);
-        }
-        iter++;
-        return SymbolToken.end;  //@todo: fails if I return null.  Fix this!
+    public int getArgCount() {
+        return 2;
     }
+
 }

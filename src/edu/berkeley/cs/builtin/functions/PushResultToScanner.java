@@ -1,7 +1,7 @@
 package edu.berkeley.cs.builtin.functions;
 
 import edu.berkeley.cs.builtin.objects.mutable.CObject;
-import edu.berkeley.cs.lexer.Scanner;
+import edu.berkeley.cs.lexer.TokenList;
 
 import java.util.LinkedList;
 
@@ -38,9 +38,9 @@ import java.util.LinkedList;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class PushResultToScanner implements Invokable {
-    Scanner scnr;
+    TokenList scnr;
 
-    public PushResultToScanner(Scanner scnr) {
+    public PushResultToScanner(TokenList scnr) {
         this.scnr = scnr;
     }
 

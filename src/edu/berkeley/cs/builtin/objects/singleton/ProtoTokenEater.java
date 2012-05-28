@@ -2,9 +2,9 @@ package edu.berkeley.cs.builtin.objects.singleton;
 
 import edu.berkeley.cs.builtin.functions.Invokable;
 import edu.berkeley.cs.builtin.objects.mutable.CObject;
-import edu.berkeley.cs.builtin.objects.mutable.NativeFunctionObject;
 import edu.berkeley.cs.builtin.objects.mutable.SymbolToken;
 import edu.berkeley.cs.builtin.objects.mutable.TokenEater;
+import edu.berkeley.cs.parser.NativeFunctionObject;
 import edu.berkeley.cs.parser.SymbolTable;
 
 import java.util.LinkedList;

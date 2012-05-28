@@ -1,7 +1,7 @@
 package edu.berkeley.cs.builtin.objects.mutable;
 
 import edu.berkeley.cs.builtin.functions.PushResultToScanner;
-import edu.berkeley.cs.lexer.Scanner;
+import edu.berkeley.cs.lexer.TokenList;
 import edu.berkeley.cs.parser.SymbolTable;
 
 /**
@@ -38,7 +38,7 @@ import edu.berkeley.cs.parser.SymbolTable;
  */
 public class ExprToTokenObject extends CObject {
 
-    public ExprToTokenObject(Scanner scnr) {
+    public ExprToTokenObject(TokenList scnr) {
         this.addNewRule();
         this.addObject(SymbolTable.getInstance().lparen);
         this.addMeta(SymbolTable.getInstance().expr);

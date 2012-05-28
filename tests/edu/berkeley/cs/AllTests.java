@@ -160,7 +160,6 @@ public class AllTests extends TestCase {
     public void test16() throws Exception {
         System.out.println("16.");
         CObject ret = Interpreter.interpret("print {1 + 2}");
-        assertTrue(ret instanceof UserFunctionObject);
         System.out.println(ret);
     }
 
@@ -170,7 +169,6 @@ public class AllTests extends TestCase {
                 "x = x + 1\n" +
                 "return x + y\n" +
                 "}");
-        assertTrue(ret instanceof UserFunctionObject);
         System.out.println(ret);
     }
 

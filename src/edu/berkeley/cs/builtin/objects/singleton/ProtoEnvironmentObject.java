@@ -2,13 +2,10 @@ package edu.berkeley.cs.builtin.objects.singleton;
 
 import edu.berkeley.cs.builtin.Reference;
 import edu.berkeley.cs.builtin.functions.Invokable;
-import edu.berkeley.cs.builtin.objects.mutable.CObject;
-import edu.berkeley.cs.builtin.objects.mutable.StandardObject;
 import edu.berkeley.cs.builtin.objects.mutable.*;
 import edu.berkeley.cs.lexer.SourcePosition;
-import edu.berkeley.cs.parser.SymbolTable;
+import edu.berkeley.cs.parser.*;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -70,7 +67,7 @@ public class ProtoEnvironmentObject {
             public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
                 CObject self = args.removeFirst();
                 TokenEater arg = (TokenEater)args.removeFirst();
-                CObject ret = new UserFunctionObject(null,arg,DS);
+                CObject ret = new UserFunctionObject(null,arg.tokens,DS);
                 return ret;
             }
         }, INSTANCE);
@@ -95,7 +92,7 @@ public class ProtoEnvironmentObject {
                 CObject self = args.removeFirst();
                 ParameterEater parg = (ParameterEater)args.removeFirst();
                 TokenEater arg = (TokenEater)args.removeFirst();
-                CObject ret = new UserFunctionObject(parg,arg,DS);
+                CObject ret = new UserFunctionObject(parg.parameters,arg.tokens,DS);
                 return ret;
             }
         }, INSTANCE);
@@ -111,26 +108,26 @@ public class ProtoEnvironmentObject {
             }
         }, INSTANCE);
 
-        INSTANCE.addNewRule();
-        INSTANCE.addObject(SymbolTable.getInstance().load);
-        INSTANCE.addMeta(SymbolTable.getInstance().expr);
-        INSTANCE.addAction(new Invokable() {
-            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
-                CObject self = args.removeFirst();
-                CObject fobj = args.removeFirst();
-                File f;
-                String currentFile = DS.getPosition().getFilename();
-
-                if (currentFile != null) {
-                    f = new File(currentFile);
-                    f = new File(f.getParent(),((StringToken)fobj).value);
-                } else {
-                    f = new File(((StringToken)fobj).value);
-                }
-                String file = f.getAbsolutePath();
-                return self.evalFile(file);
-            }
-        }, INSTANCE);
+//        INSTANCE.addNewRule();
+//        INSTANCE.addObject(SymbolTable.getInstance().load);
+//        INSTANCE.addMeta(SymbolTable.getInstance().expr);
+//        INSTANCE.addAction(new Invokable() {
+//            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+//                CObject self = args.removeFirst();
+//                CObject fobj = args.removeFirst();
+//                File f;
+//                String currentFile = DS.getPosition().getFilename();
+//
+//                if (currentFile != null) {
+//                    f = new File(currentFile);
+//                    f = new File(f.getParent(),((StringToken)fobj).value);
+//                } else {
+//                    f = new File(((StringToken)fobj).value);
+//                }
+//                String file = f.getAbsolutePath();
+//                return self.evalFile(file);
+//            }
+//        }, INSTANCE);
 
         INSTANCE.addNewRule();
         INSTANCE.addObject(SymbolTable.getInstance().tokenToExpr);
@@ -216,100 +213,100 @@ public class ProtoEnvironmentObject {
             }
         }, INSTANCE);
 
-        INSTANCE.addNewRule();
-        INSTANCE.addObject(SymbolTable.getInstance().If);
-        INSTANCE.addMeta(SymbolTable.getInstance().expr);
-        INSTANCE.addObject(SymbolTable.getInstance().then);
-        INSTANCE.addMeta(SymbolTable.getInstance().expr);
-        INSTANCE.addObject(SymbolTable.getInstance().Else);
-        INSTANCE.addMeta(SymbolTable.getInstance().expr);
-        INSTANCE.addAction(new Invokable() {
-            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
-                CObject self = args.removeFirst();
-                BooleanToken cond = (BooleanToken) args.removeFirst();
-                UserFunctionObject s1 = (UserFunctionObject)args.removeFirst();
-                UserFunctionObject s2 = (UserFunctionObject)args.removeFirst();
-                if (cond.value) {
-                    CObject ret = s1.executeInScope();
-                    if (ret.isException()) return ret;
-                    return VoidToken.VOID();
-                } else {
-                    CObject ret = s2.executeInScope();
-                    if (ret.isException()) return ret;
-                    return VoidToken.VOID();
-                }
+//        INSTANCE.addNewRule();
+//        INSTANCE.addObject(SymbolTable.getInstance().If);
+//        INSTANCE.addMeta(SymbolTable.getInstance().expr);
+//        INSTANCE.addObject(SymbolTable.getInstance().then);
+//        INSTANCE.addMeta(SymbolTable.getInstance().expr);
+//        INSTANCE.addObject(SymbolTable.getInstance().Else);
+//        INSTANCE.addMeta(SymbolTable.getInstance().expr);
+//        INSTANCE.addAction(new Invokable() {
+//            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+//                CObject self = args.removeFirst();
+//                BooleanToken cond = (BooleanToken) args.removeFirst();
+//                UserFunctionObject s1 = (UserFunctionObject)args.removeFirst();
+//                UserFunctionObject s2 = (UserFunctionObject)args.removeFirst();
+//                if (cond.value) {
+//                    CObject ret = s1.executeInScope();
+//                    if (ret.isException()) return ret;
+//                    return VoidToken.VOID();
+//                } else {
+//                    CObject ret = s2.executeInScope();
+//                    if (ret.isException()) return ret;
+//                    return VoidToken.VOID();
+//                }
+//
+//            }
+//        }, INSTANCE);
 
-            }
-        }, INSTANCE);
+//        INSTANCE.addNewRule();
+//        INSTANCE.addObject(SymbolTable.getInstance().Try);
+//        INSTANCE.addMeta(SymbolTable.getInstance().expr);
+//        INSTANCE.addObject(SymbolTable.getInstance().Catch);
+//        INSTANCE.addMeta(SymbolTable.getInstance().token);
+//        INSTANCE.addMeta(SymbolTable.getInstance().expr);
+//        INSTANCE.addAction(new Invokable() {
+//            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+//                CObject self = args.removeFirst();
+//                UserFunctionObject s1 = (UserFunctionObject)args.removeFirst();
+//                SymbolToken symbol = (SymbolToken)args.removeFirst();
+//                UserFunctionObject s2 = (UserFunctionObject)args.removeFirst();
+//                CObject ret = s1.executeInScope();
+//                if (ret.isException()) {
+//                    ret.clearException();
+//                    Reference common = new Reference(ret);
+//                    self.assign(symbol, common);
+//
+//                    ret = s2.executeInScope();
+//                    if (ret.isException()) return ret;
+//                }
+//                return VoidToken.VOID();
+//
+//            }
+//        }, INSTANCE);
 
-        INSTANCE.addNewRule();
-        INSTANCE.addObject(SymbolTable.getInstance().Try);
-        INSTANCE.addMeta(SymbolTable.getInstance().expr);
-        INSTANCE.addObject(SymbolTable.getInstance().Catch);
-        INSTANCE.addMeta(SymbolTable.getInstance().token);
-        INSTANCE.addMeta(SymbolTable.getInstance().expr);
-        INSTANCE.addAction(new Invokable() {
-            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
-                CObject self = args.removeFirst();
-                UserFunctionObject s1 = (UserFunctionObject)args.removeFirst();
-                SymbolToken symbol = (SymbolToken)args.removeFirst();
-                UserFunctionObject s2 = (UserFunctionObject)args.removeFirst();
-                CObject ret = s1.executeInScope();
-                if (ret.isException()) {
-                    ret.clearException();
-                    Reference common = new Reference(ret);
-                    self.assign(symbol, common);
+//        INSTANCE.addNewRule();
+//        INSTANCE.addObject(SymbolTable.getInstance().While);
+//        INSTANCE.addMeta(SymbolTable.getInstance().expr);
+//        INSTANCE.addMeta(SymbolTable.getInstance().expr);
+//        INSTANCE.addAction(new Invokable() {
+//            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+//                CObject self = args.removeFirst();
+//                UserFunctionObject s1 = (UserFunctionObject)args.removeFirst();
+//                UserFunctionObject s2 = (UserFunctionObject)args.removeFirst();
+//                CObject ret;
+//                ret = s1.executeInScope();
+//                if (ret.isException()) return ret;
+//
+//                while(((BooleanToken)ret).value) {
+//                    ret = s2.executeInScope();
+//                    if (ret.isException()) return ret;
+//
+//                    ret = s1.executeInScope();
+//                    if (ret.isException()) return ret;
+//                }
+//                return VoidToken.VOID();
+//
+//            }
+//        }, INSTANCE);
 
-                    ret = s2.executeInScope();
-                    if (ret.isException()) return ret;
-                }
-                return VoidToken.VOID();
-
-            }
-        }, INSTANCE);
-
-        INSTANCE.addNewRule();
-        INSTANCE.addObject(SymbolTable.getInstance().While);
-        INSTANCE.addMeta(SymbolTable.getInstance().expr);
-        INSTANCE.addMeta(SymbolTable.getInstance().expr);
-        INSTANCE.addAction(new Invokable() {
-            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
-                CObject self = args.removeFirst();
-                UserFunctionObject s1 = (UserFunctionObject)args.removeFirst();
-                UserFunctionObject s2 = (UserFunctionObject)args.removeFirst();
-                CObject ret;
-                ret = s1.executeInScope();
-                if (ret.isException()) return ret;
-
-                while(((BooleanToken)ret).value) {
-                    ret = s2.executeInScope();
-                    if (ret.isException()) return ret;
-
-                    ret = s1.executeInScope();
-                    if (ret.isException()) return ret;
-                }
-                return VoidToken.VOID();
-
-            }
-        }, INSTANCE);
-
-        INSTANCE.addNewRule();
-        INSTANCE.addObject(SymbolTable.getInstance().once);
-        INSTANCE.addMeta(SymbolTable.getInstance().expr);
-        INSTANCE.addAction(new Invokable() {
-            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
-                CObject self = args.removeFirst();
-                FunctionObject func = (FunctionObject)args.removeFirst();
-                CObject val;
-                if ((val = staticObjects.get(DS.getPosition()))==null) {
-                    val = func.execute(DS);
-                    if (val.isException()) return val;
-                    staticObjects.put(DS.getPosition(),val);
-                }
-                return val;
-
-            }
-        }, INSTANCE);
+//        INSTANCE.addNewRule();
+//        INSTANCE.addObject(SymbolTable.getInstance().once);
+//        INSTANCE.addMeta(SymbolTable.getInstance().expr);
+//        INSTANCE.addAction(new Invokable() {
+//            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+//                CObject self = args.removeFirst();
+//                FunctionObject func = (FunctionObject)args.removeFirst();
+//                CObject val;
+//                if ((val = staticObjects.get(DS.getPosition()))==null) {
+//                    val = func.execute(DS);
+//                    if (val.isException()) return val;
+//                    staticObjects.put(DS.getPosition(),val);
+//                }
+//                return val;
+//
+//            }
+//        }, INSTANCE);
 
         INSTANCE.addNewRule();
         INSTANCE.addObject(SymbolTable.getInstance().Throw);
@@ -326,14 +323,22 @@ public class ProtoEnvironmentObject {
         INSTANCE.addNewRule();
         INSTANCE.addObject(SymbolTable.getInstance().Return);
         INSTANCE.addMeta(SymbolTable.getInstance().expr);
-        INSTANCE.addAction(new Invokable() {
-            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
-                args.removeFirst();
-                CObject arg = args.removeFirst();
-                arg.setReturn();
-                return arg;
-            }
-        }, INSTANCE);
+        INSTANCE.addAction(new ReturnToDSAction());
+
+        INSTANCE.addNewRule();
+        INSTANCE.addObject(SymbolTable.getInstance().Return);
+        INSTANCE.addMeta(SymbolTable.getInstance().expr);
+        INSTANCE.addObject(SymbolTable.getInstance().to);
+        INSTANCE.addMeta(SymbolTable.getInstance().expr);
+        INSTANCE.addAction(new ReturnToAction());
+//        INSTANCE.addAction(new Invokable() {
+//            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+//                args.removeFirst();
+//                CObject arg = args.removeFirst();
+//                arg.setReturn();
+//                return arg;
+//            }
+//        }, INSTANCE);
 
         INSTANCE.assign(SymbolTable.getInstance().LS,new Reference(INSTANCE));
     }

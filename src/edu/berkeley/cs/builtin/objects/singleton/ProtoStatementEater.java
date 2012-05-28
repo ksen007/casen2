@@ -3,7 +3,8 @@ package edu.berkeley.cs.builtin.objects.singleton;
 import edu.berkeley.cs.builtin.functions.Invokable;
 import edu.berkeley.cs.builtin.objects.mutable.CObject;
 import edu.berkeley.cs.builtin.objects.mutable.SymbolToken;
-import edu.berkeley.cs.builtin.objects.mutable.VoidToken;
+import edu.berkeley.cs.parser.ReturnAction;
+import edu.berkeley.cs.parser.ReturnVoidAction;
 import edu.berkeley.cs.parser.SymbolTable;
 
 import java.util.LinkedList;
@@ -67,14 +68,15 @@ public final class ProtoStatementEater {
         INSTANCE.addNewRule();
         INSTANCE.addMeta(SymbolTable.getInstance().expr, true);
         INSTANCE.addObject(SymbolToken.end);
-        INSTANCE.addAction(new Invokable() {
-            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
-                CObject self = args.removeFirst();
-                CObject arg = args.removeFirst();
-                arg.setReturn();
-                return arg;
-            }
-        }, INSTANCE);
+        INSTANCE.addAction(new ReturnAction());
+//        INSTANCE.addAction(new Invokable() {
+//            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+//                CObject self = args.removeFirst();
+//                CObject arg = args.removeFirst();
+//                arg.setReturn();
+//                return arg;
+//            }
+//        }, INSTANCE);
 
         INSTANCE.addNewRule();
         INSTANCE.addObject(SymbolTable.getInstance().semi);
@@ -96,13 +98,14 @@ public final class ProtoStatementEater {
 
         INSTANCE.addNewRule();
         INSTANCE.addObject(SymbolToken.end);
-        INSTANCE.addAction(new Invokable() {
-            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
-                CObject self = args.removeFirst();
-                VoidToken.VOID().setReturn();
-                return VoidToken.VOID();
-            }
-        }, INSTANCE);
+        INSTANCE.addAction(new ReturnVoidAction());
+//        INSTANCE.addAction(new Invokable() {
+//            public CObject apply(LinkedList<CObject> args, CObject SS, CObject DS) {
+//                CObject self = args.removeFirst();
+//                VoidToken.VOID().setReturn();
+//                return VoidToken.VOID();
+//            }
+//        }, INSTANCE);
 
     }
 }

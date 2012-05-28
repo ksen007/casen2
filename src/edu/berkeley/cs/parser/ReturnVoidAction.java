@@ -1,6 +1,7 @@
 package edu.berkeley.cs.parser;
 
 import edu.berkeley.cs.builtin.objects.mutable.CObject;
+import edu.berkeley.cs.builtin.objects.mutable.VoidToken;
 
 import java.util.Stack;
 
@@ -36,8 +37,15 @@ import java.util.Stack;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public interface Action {
-    public Continuation apply(Stack<CObject> computationStack, Continuation cf);
+public class ReturnVoidAction implements Action {
+    public Continuation apply(Stack<CObject> computationStack, Continuation cf) {
+        computationStack.pop();
+        cf.parentContinuation.computationStack.push(VoidToken.VOID());
+        return cf.parentContinuation;
+    }
 
-    public int getArgCount();
+    public int getArgCount() {
+        return 0;
+    }
+
 }

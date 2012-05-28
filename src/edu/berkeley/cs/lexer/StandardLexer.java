@@ -7,8 +7,11 @@ import edu.berkeley.cs.parser.SymbolTable;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
 
-public class StandardLexer implements Lexer {
+public class StandardLexer {
+    private ArrayList<CObject> tokens;
+
     static final private int END_OF_FILE = -1;
 
     private int lineNo = 1;
@@ -21,6 +24,15 @@ public class StandardLexer implements Lexer {
         this.id = id;
         this.isFile = isFile;
         this.in = new PeekReader(in, 2);
+        tokens = new ArrayList<CObject>();
+        CObject t;
+        while((t=getNextToken())!=SymbolToken.end) {
+            tokens.add(t);
+        }
+    }
+
+    public ArrayList<CObject> getTokens() {
+        return tokens;
     }
 
     private int lookAhead(int i) {
@@ -81,7 +93,7 @@ public class StandardLexer implements Lexer {
         return new SymbolToken(pos, isSpace, SymbolTable.getInstance().getId(str));
     }
 
-    public CObject getNextToken() {
+    private CObject getNextToken() {
         int character = lookAhead(1);
         boolean isSpace = false;
         while (character == ' ' || character == '\t' ||

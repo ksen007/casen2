@@ -1,10 +1,7 @@
 package edu.berkeley.cs.parser;
 
-import edu.berkeley.cs.builtin.objects.mutable.CObject;
-import edu.berkeley.cs.builtin.objects.mutable.ExprToTokenObject;
-import edu.berkeley.cs.builtin.objects.mutable.StringToken;
-import edu.berkeley.cs.builtin.objects.mutable.SymbolToken;
-import edu.berkeley.cs.lexer.Scanner;
+import edu.berkeley.cs.builtin.objects.mutable.*;
+import edu.berkeley.cs.lexer.TokenList;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -43,27 +40,30 @@ import java.util.Stack;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class CallFrame {
+public class Continuation {
     private Stack<RuleNode> parseRuleStack;
-    private Stack<CObject> computationStack;
+    public Stack<CObject> computationStack;
     private Stack<Integer> precedenceStack;
-    CObject LS;
-    private Scanner scnr;
-    private boolean tryShifting;
+    EnvironmentObject LS;
+    public Continuation parentContinuation;
+    private TokenList scnr;
+    private int state;
+
 
     public static final boolean DEBUG = false;
 
 
-    public CallFrame(CObject LS, CObject base, Scanner scnr) {
+    public Continuation(EnvironmentObject LS, CObject base, TokenList scnr, Continuation parentContinuation) {
         this.LS = LS;
         this.scnr = scnr;
+        this.parentContinuation = parentContinuation;
         parseRuleStack = new Stack<RuleNode>();
         computationStack = new Stack<CObject>();
         precedenceStack = new Stack<Integer>();
 
         if (scnr!=null){
             computationStack.push(base);
-            tryShifting = true;
+            state = 1;
 //            parseRuleStack.push(base.getRuleNode());
 //            precedenceStack.push(0);
         }
@@ -87,57 +87,78 @@ public class CallFrame {
         return false;
     }
 
-    public CObject interpret() {
-        while(true) {
-            interpretAux();
-            CObject top = computationStack.peek();
-            if (top.isReturn()) {
-                top.clearReturn();
-                return top;
-            }
-            if (top.isException()) {
-                return top;
-            }
-        }
-    }
+//    public CObject interpret() {
+//        while(true) {
+//            interpretAux();
+//            CObject top = computationStack.peek();
+//            if (top.isReturn()) {
+//                top.clearReturn();
+//                return top;
+//            }
+//            if (top.isException()) {
+//                return top;
+//            }
+//        }
+//    }
 
-    public boolean interpretAux() {
-        if (!tryShifting) {
+    public Continuation step() {
+        if (state == 0) {
             CObject t = scnr.nextToken();
             RuleNode currentRule = parseRuleStack.peek();
 
             try {
-                if (consumeSymbol(currentRule,t)) return true;
+                if (consumeSymbol(currentRule,t)) return this;
 
                 if (matchesToken(t,SymbolTable.getInstance().exprToToken) && !currentRule.isActionOnly()) {
                     parseRuleStack.push((new ExprToTokenObject(scnr)).getRuleNode());
                     precedenceStack.push(0);
-                    return true;
+                    return this;
                 }
 
                 if (!matchesToken(t,SymbolTable.getInstance().newline) && !matchesToken(t,SymbolToken.end)) {
-                    if (consumeToken(currentRule,t)) return true;
-                    if (consumeExpr(currentRule,t)) return true;
-                    if (consumeOther(currentRule,t)) return true;
+                    if (consumeToken(currentRule,t)) return this;
+                    if (consumeExpr(currentRule,t)) return this;
+                    OtherPair toBePushed;
+                    if ((toBePushed = currentRule.getRuleForOther()) !=null) {
+                        scnr.pushBack(t);
+                        computationStack.push(toBePushed.fst);
+                        Continuation tmpContinuation = toBePushed.fst.apply(computationStack,this);
+                        state = 2;
+                        return tmpContinuation;
+                    }
                 }
-                if (consumeAction(currentRule,t)) return true;
+                if (currentRule.getRuleForAction() != null) {
+                    scnr.pushBack(t);
+                    parseRuleStack.pop();
+                    precedenceStack.pop();
+                    Continuation tmpContinuation = currentRule.getRuleForAction().apply(computationStack,this);
+
+                    state = 1;
+                    return tmpContinuation;
+                }
+
+//                if (consumeAction(currentRule,t)) return true;
 
                 if (matchesToken(t,SymbolTable.getInstance().newline)) {
-                    return true;
+                    return this;
                 }
             } catch (Exception e) {
                 StringToken ret = new StringToken(null,"Failed to consume "+t+" at "+t.locationString()
                         +" with "+this+ " because "+ getStackTrace(e));
                 ret.setException();
                 computationStack.push(ret);
-                return true;
+                return this;
             }
             StringToken ret = new StringToken(null,"Failed to consume "+t+" at "+t.locationString()+" with "+this);
             ret.setException();
             computationStack.push(ret);
-            return true;
+            return this;
+        } else if (state == 1){
+            state = 0;
+            tryShifting(); return this;
         } else {
-            tryShifting(); return true;
+            state = 0;
+            consumeOther(); return this;
         }
     }
 
@@ -200,41 +221,28 @@ public class CallFrame {
         return false;
     }
 
-    private boolean consumeOther(RuleNode currentRule, CObject t) {
+    private void consumeOther() {
         Pair rn;
         OtherPair toBePushed;
-        CObject ctxt;
+        CObject ctxt ;
 
-        if ((toBePushed = currentRule.getRuleForOther()) !=null) {
-            ctxt = toBePushed.fst.execute(LS);
-            if ((rn = contextLookAhead(ctxt, t))!=null) {
-                if (DEBUG) {
-                    System.out.print('(');
-                }
-                parseRuleStack.pop();
-                parseRuleStack.push(toBePushed.next);
+        CObject t = scnr.nextToken();
+        RuleNode currentRule = parseRuleStack.peek();
 
-                computationStack.push(ctxt);
-                parseRuleStack.push(rn.fst);
-                precedenceStack.push(rn.snd);
-                scnr.pushBack(t);
-                return true;
+        toBePushed = currentRule.getRuleForOther();
+        ctxt = computationStack.pop();
+        if ((rn = contextLookAhead(ctxt, t))!=null) {
+            if (DEBUG) {
+                System.out.print('(');
             }
-        }
-        return false;
-    }
-
-    private boolean consumeAction(RuleNode currentRule, CObject t) {
-        if (currentRule.getRuleForAction() != null) {
-            scnr.pushBack(t);
             parseRuleStack.pop();
-            precedenceStack.pop();
-            currentRule.getRuleForAction().apply(computationStack,this);
+            parseRuleStack.push(toBePushed.next);
 
-            tryShifting = true;
-            return true;
+            computationStack.push(ctxt);
+            parseRuleStack.push(rn.fst);
+            precedenceStack.push(rn.snd);
+            scnr.pushBack(t);
         }
-        return false;
     }
 
     private void tryShifting() {
@@ -263,7 +271,6 @@ public class CallFrame {
             }
         }
         scnr.pushBack(t);
-        tryShifting = false;
     }
 
 

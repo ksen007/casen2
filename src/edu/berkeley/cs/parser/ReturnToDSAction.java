@@ -1,9 +1,8 @@
-package edu.berkeley.cs.builtin.objects.mutable;
+package edu.berkeley.cs.parser;
 
-import edu.berkeley.cs.builtin.functions.Invokable;
-import edu.berkeley.cs.parser.SymbolTable;
+import edu.berkeley.cs.builtin.objects.mutable.CObject;
 
-import java.util.LinkedList;
+import java.util.Stack;
 
 /**
  * Copyright (c) 2006-2011,
@@ -37,27 +36,17 @@ import java.util.LinkedList;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class NativeFunctionObject extends FunctionObject {
-    public Invokable fun;
-
-    public NativeFunctionObject(Invokable fun, CObject scope, int N) {
-        super(null, scope);
-        this.fun = fun;
-
-        this.addNewRule();
-        this.addObject(SymbolTable.getInstance().lparen);
-        for(int i=0; i<N; i++) {
-            this.addMeta(SymbolTable.getInstance().expr);
-            if (i<N-1)
-                this.addObject(SymbolTable.getInstance().comma);
-        }
-        this.addObject(SymbolTable.getInstance().rparen);
-        this.addAction(this,false);
-
+public class ReturnToDSAction implements Action {
+    public Continuation apply(Stack<CObject> computationStack, Continuation cf) {
+        CObject arg = computationStack.pop();
+        computationStack.pop();
+        Continuation ret = cf.LS.thisContinuation.parentContinuation;
+        if (ret!=null)
+            ret.computationStack.push(arg);
+        return ret;
     }
 
-    @Override
-    public CObject apply(LinkedList<CObject> args, CObject DS, boolean reuse) {
-        return fun.apply(args,scope,DS);
+    public int getArgCount() {
+        return 1;
     }
 }

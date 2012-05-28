@@ -2,6 +2,11 @@ package edu.berkeley.cs;
 
 import edu.berkeley.cs.builtin.objects.mutable.CObject;
 import edu.berkeley.cs.builtin.objects.mutable.EnvironmentObject;
+import edu.berkeley.cs.lexer.StandardLexer;
+import edu.berkeley.cs.parser.Continuation;
+import edu.berkeley.cs.parser.UserFunctionObject;
+
+import java.io.StringReader;
 
 /**
  * Copyright (c) 2006-2011,
@@ -37,17 +42,31 @@ import edu.berkeley.cs.builtin.objects.mutable.EnvironmentObject;
  */
 public class Interpreter {
     public static CObject interpret(String s) {
-        EnvironmentObject tmp = new EnvironmentObject();
-        return tmp.evalString(s);
+        try {
+            EnvironmentObject granny = new EnvironmentObject();
+            Continuation grannyContinuation = new Continuation(granny, null,null,null);
+            granny.thisContinuation = grannyContinuation;
+
+            UserFunctionObject fun = new UserFunctionObject(null,(new StandardLexer(new StringReader(s),s,false)).getTokens(),granny);
+            Continuation continuation;
+            continuation = fun.execute(grannyContinuation);
+            do {
+                continuation = continuation.step();
+            } while(continuation != grannyContinuation);
+            return grannyContinuation.computationStack.pop();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public static void main(String[] args) {
-        EnvironmentObject tmp = new EnvironmentObject();
-        CObject ret = tmp.evalFile(args[0]);
-        if (ret.isException()) {
-            System.err.println(ret);
-        }
-    }
+//    public static void main(String[] args) {
+//        EnvironmentObject tmp = new EnvironmentObject();
+//        CObject ret = tmp.evalFile(args[0]);
+//        if (ret.isException()) {
+//            System.err.println(ret);
+//        }
+//    }
 }
 
 //@todo make shift default

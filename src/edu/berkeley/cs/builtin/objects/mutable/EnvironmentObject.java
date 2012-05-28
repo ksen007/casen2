@@ -2,6 +2,7 @@ package edu.berkeley.cs.builtin.objects.mutable;
 
 import edu.berkeley.cs.builtin.Reference;
 import edu.berkeley.cs.builtin.objects.singleton.ProtoEnvironmentObject;
+import edu.berkeley.cs.parser.Continuation;
 import edu.berkeley.cs.parser.SymbolTable;
 
 /**
@@ -37,6 +38,8 @@ import edu.berkeley.cs.parser.SymbolTable;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class EnvironmentObject extends CObject {
+    public Continuation thisContinuation;
+
     public EnvironmentObject() {
         this.assign(SymbolTable.getInstance().LS,new Reference(this));
         setPrototype(ProtoEnvironmentObject.INSTANCE);

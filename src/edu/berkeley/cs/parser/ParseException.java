@@ -36,17 +36,17 @@ import edu.berkeley.cs.builtin.objects.mutable.CObject;
  */
 public class ParseException extends RuntimeException {
     private CObject token;
-    private CallFrame frame;
+    private Continuation frame;
     private Exception child;
     private String message;
 
-    public ParseException(CObject token, CallFrame frame, Exception child) {
+    public ParseException(CObject token, Continuation frame, Exception child) {
         this.token = token;
         this.frame = frame;
         this.child = child;
     }
 
-    public ParseException(CObject token, CallFrame frame) {
+    public ParseException(CObject token, Continuation frame) {
         this.token = token;
         this.frame = frame;
         this.child = null;
